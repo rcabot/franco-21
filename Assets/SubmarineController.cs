@@ -26,11 +26,14 @@ public class SubmarineController : MonoBehaviour
     Vector2 currentLookRotation;
     Vector3 currentSpeed = Vector3.zero;
     Vector2 currentLookVelocity;
+    AudioSource engineSound;
+    AudioSource underwaterSound;
 
     void Start()
     {
         characterController = GetComponent<CharacterController>();
-
+        engineSound = transform.Find("ship_engine").GetComponent<AudioSource>();
+        underwaterSound = transform.Find("water_ambience").GetComponent<AudioSource>();
         // Lock cursor
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -62,6 +65,8 @@ public class SubmarineController : MonoBehaviour
         // clamp speed
         currentSpeed = Vector3.ClampMagnitude(currentSpeed, maxSpeed);
 
+        engineSound.pitch = 1 + (4 * (currentSpeed.magnitude / maxSpeed));
+        underwaterSound.pitch = 1 + (1 * (currentSpeed.magnitude / maxSpeed));
         // todo: buoyancy
         /*if (Input.GetButton("Jump"))
         {
@@ -80,7 +85,6 @@ public class SubmarineController : MonoBehaviour
         targetLookRotation.x += -Input.GetAxis("Mouse Y") * baseLookSpeed;
         targetLookRotation.x = Mathf.Clamp(targetLookRotation.x, -lookXLimit, lookXLimit);
         targetLookRotation.y += Input.GetAxis("Mouse X") * baseLookSpeed;
-
         currentLookRotation = Vector2.SmoothDamp(currentLookRotation, targetLookRotation, ref currentLookVelocity, lookSmoothTime,maxLookSpeed);
         playerCamera.transform.rotation = Quaternion.Euler(targetLookRotation.x, targetLookRotation.y, 0);
         submarineCockpit.localRotation = Quaternion.Euler(currentLookRotation.x, currentLookRotation.y, 0);
