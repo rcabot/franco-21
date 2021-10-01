@@ -53,12 +53,12 @@ public class SubmarineController : MonoBehaviour
         currentSpeed = Vector3.ClampMagnitude(currentSpeed, maxSpeed);
 
         // todo: buoyancy
-        if (Input.GetButton("Jump"))
+        /*if (Input.GetButton("Jump"))
         {
         }
         if (Input.GetButton("Crouch"))
         {
-        }
+        }*/
 
         // Move the controller
         characterController.Move(currentSpeed);
