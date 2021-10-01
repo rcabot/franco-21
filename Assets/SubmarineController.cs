@@ -6,17 +6,19 @@ using UnityEngine;
 
 public class SubmarineController : MonoBehaviour
 {
-    public float walkingSpeed = 7.5f;
-    public float jumpSpeed = 8.0f;
-    public float gravity = 20.0f;
+    public float acceleration = 7.5f;
     public Camera playerCamera;
     public float lookSpeed = 2.0f;
     public float lookXLimit = 45.0f;
 
-    CharacterController characterController;
-    Vector3 moveDirection = Vector3.zero;
-    float rotationX = 0;
+    public float strafeFactor = 0.0f;
+    public float maxSpeed = 10.0f;
 
+    public float friction = 0.1f;
+
+    CharacterController characterController;
+    Vector3 currentSpeed = Vector3.zero;
+    float rotationX = 0;
 
     void Start()
     {
@@ -37,23 +39,29 @@ public class SubmarineController : MonoBehaviour
     {
         Vector3 forward = playerCamera.transform.forward;
         Vector3 right = playerCamera.transform.right;
-        // Press Left Shift to run
-        float curSpeedX = walkingSpeed * Input.GetAxis("Vertical");
-        float curSpeedY = walkingSpeed * Input.GetAxis("Horizontal");
-        float movementDirectionY = moveDirection.y;
-        moveDirection = (forward * curSpeedX) + (right * curSpeedY);
-/*
+        float accelX = acceleration * Input.GetAxis("Vertical");
+        float accelY = acceleration * Input.GetAxis("Horizontal");
+
+        // acceleration
+        currentSpeed += ((forward * accelX) + (right * accelY) * strafeFactor) * Time.deltaTime;
+
+        // apply friction
+        if (currentSpeed.magnitude > 0) 
+            currentSpeed = currentSpeed.normalized * Mathf.Max(0f,currentSpeed.magnitude - friction * Time.deltaTime);
+
+        // clamp speed
+        currentSpeed = Vector3.ClampMagnitude(currentSpeed, maxSpeed);
+
+        // todo: buoyancy
         if (Input.GetButton("Jump"))
         {
-            moveDirection.y = jumpSpeed;
         }
-        else
+        if (Input.GetButton("Crouch"))
         {
-            moveDirection.y = movementDirectionY;
-        }*/
+        }
 
         // Move the controller
-        characterController.Move(moveDirection * Time.deltaTime);
+        characterController.Move(currentSpeed);
     }
 
     private void UpdateLookDirection()
