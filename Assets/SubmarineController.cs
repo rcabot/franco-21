@@ -21,7 +21,6 @@ public class SubmarineController : MonoBehaviour
     CharacterController characterController;
     Vector2 currentLookSpeed;
     Vector3 currentSpeed = Vector3.zero;
-    float rotationX = 0;
 
     void Start()
     {
@@ -73,9 +72,11 @@ public class SubmarineController : MonoBehaviour
     private void UpdateLookDirection()
     {
         // Player and Camera rotation
-        rotationX += -Input.GetAxis("Mouse Y") * maxLookSpeed;
-        rotationX = Mathf.Clamp(rotationX, -lookXLimit, lookXLimit);
-        playerCamera.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
-        transform.rotation *= Quaternion.Euler(0, Input.GetAxis("Mouse X") * maxLookSpeed, 0);
+        currentLookSpeed.x += -Input.GetAxis("Mouse Y") * maxLookSpeed;
+        currentLookSpeed.x = Mathf.Clamp(currentLookSpeed.x, -lookXLimit, lookXLimit);
+        currentLookSpeed.y = Input.GetAxis("Mouse X") * maxLookSpeed;
+
+        playerCamera.transform.localRotation = Quaternion.Euler(currentLookSpeed.x, 0, 0);
+        transform.rotation *= Quaternion.Euler(0, currentLookSpeed.y, 0);
     }
 }

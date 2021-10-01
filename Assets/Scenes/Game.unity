@@ -685,5 +685,37 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7626430705779275367, guid: 3916969f96a4f91429ccfd53e994ee14, type: 3}
+      propertyPath: frictionCurve.m_Curve.Array.data[0].time
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7626430705779275367, guid: 3916969f96a4f91429ccfd53e994ee14, type: 3}
+      propertyPath: frictionCurve.m_Curve.Array.data[0].inSlope
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7626430705779275367, guid: 3916969f96a4f91429ccfd53e994ee14, type: 3}
+      propertyPath: frictionCurve.m_Curve.Array.data[1].inSlope
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7626430705779275367, guid: 3916969f96a4f91429ccfd53e994ee14, type: 3}
+      propertyPath: frictionCurve.m_Curve.Array.data[0].outSlope
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7626430705779275367, guid: 3916969f96a4f91429ccfd53e994ee14, type: 3}
+      propertyPath: frictionCurve.m_Curve.Array.data[1].outSlope
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7626430705779275367, guid: 3916969f96a4f91429ccfd53e994ee14, type: 3}
+      propertyPath: frictionCurve.m_Curve.Array.data[0].outWeight
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7626430705779275367, guid: 3916969f96a4f91429ccfd53e994ee14, type: 3}
+      propertyPath: frictionCurve.m_Curve.Array.data[0].tangentMode
+      value: 34
+      objectReference: {fileID: 0}
+    - target: {fileID: 7626430705779275367, guid: 3916969f96a4f91429ccfd53e994ee14, type: 3}
+      propertyPath: frictionCurve.m_Curve.Array.data[1].tangentMode
+      value: 34
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3916969f96a4f91429ccfd53e994ee14, type: 3}
