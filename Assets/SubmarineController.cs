@@ -14,7 +14,9 @@ public class SubmarineController : MonoBehaviour
     public float strafeFactor = 0.0f;
     public float maxSpeed = 10.0f;
 
-    public float friction = 0.1f;
+    public AnimationCurve frictionCurve;
+
+    public float baseFriction = 0.1f;
 
     CharacterController characterController;
     Vector3 currentSpeed = Vector3.zero;
@@ -45,9 +47,12 @@ public class SubmarineController : MonoBehaviour
         // acceleration
         currentSpeed += ((forward * accelX) + (right * accelY) * strafeFactor) * Time.deltaTime;
 
+        // modify friction with speed
+        var friction = frictionCurve.Evaluate(currentSpeed.magnitude/maxSpeed) * baseFriction * Time.deltaTime;
+
         // apply friction
         if (currentSpeed.magnitude > 0) 
-            currentSpeed = currentSpeed.normalized * Mathf.Max(0f,currentSpeed.magnitude - friction * Time.deltaTime);
+            currentSpeed = currentSpeed.normalized * Mathf.Max(0f,currentSpeed.magnitude - friction);
 
         // clamp speed
         currentSpeed = Vector3.ClampMagnitude(currentSpeed, maxSpeed);
