@@ -141,7 +141,7 @@ Material:
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
     - _specular: {r: 0, g: 0, b: 0, a: 0}
     - anim_axis: {r: 0, g: 0, b: 1, a: 0}
-    - anim_offset_axis: {r: 0, g: 0, b: 1, a: 0}
+    - anim_offset_axis: {r: 0, g: 0, b: 0.4, a: 0}
     - anim_spine_axis: {r: 0, g: 1, b: 0, a: 0}
     - emissive_colour: {r: 0.4103774, g: 0.9702372, b: 1, a: 0}
   m_BuildTextureStacks: []
