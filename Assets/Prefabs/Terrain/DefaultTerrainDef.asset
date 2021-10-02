@@ -12,12 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78a54a9172c074745902efd17b87242b, type: 3}
   m_Name: DefaultTerrainDef
   m_EditorClassIdentifier: 
-  _TerrainSize: 1024
+  _TerrainSize: 2048
   _EdgeTileCount: 4
   _Resolution: {x: 1024, y: 512}
-  _MaxHeight: 100
+  _MaxHeight: 200
   _BaseNoiseScale: 0.0123
-  _TileNoiseScale: 0.123
-  _TileFactor: 0.1
-  _TileDamping: 0.5
+  _BaseFactor: 0.3
+  _MountainNoiseScale: 0.03
+  _MountainAreaFactor: 1.5
+  _MountainCount: 5
   _TilePrefab: {fileID: -6482972591216050592, guid: a36e9ce48ef9dab4988ad8a02bd30062, type: 3}

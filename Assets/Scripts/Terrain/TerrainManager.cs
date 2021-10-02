@@ -198,7 +198,8 @@ public class TerrainManager : MonoBehaviour
         }
 
         int mountainCount = 0;
-        while(mountainCount < Definition.MountainCount)
+        int mountainCountMax = Mathf.Min(Definition.MountainCount, Definition.EdgeTileCount * Definition.EdgeTileCount);
+        while(mountainCount < mountainCountMax)
         {
             int mountainRow = Random.Range(0, Definition.EdgeTileCount);
             int mountainColumn = Random.Range(0, Definition.EdgeTileCount);
