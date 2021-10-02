@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(CharacterController))]
+[RequireComponent(typeof(Rigidbody))]
 
 public class SubmarineController : MonoBehaviour
 {
@@ -23,7 +23,7 @@ public class SubmarineController : MonoBehaviour
 
     public bool enableGradualRotation = false;
 
-    CharacterController characterController;
+    Rigidbody characterController;
     Vector2 targetLookRotation;
     Vector2 currentLookRotation;
     Vector3 currentSpeed = Vector3.zero;
@@ -34,7 +34,7 @@ public class SubmarineController : MonoBehaviour
 
     void Start()
     {
-        characterController = GetComponent<CharacterController>();
+        characterController = GetComponent<Rigidbody>();
         engineSound = transform.Find("ship_engine").GetComponent<AudioSource>();
         underwaterSound = transform.Find("water_ambience").GetComponent<AudioSource>();
         // Lock cursor
@@ -45,6 +45,10 @@ public class SubmarineController : MonoBehaviour
     void Update()
     {
         UpdateLookDirection();
+    }
+
+    private void FixedUpdate()
+    {
         UpdateMovement();
     }
 
@@ -79,7 +83,8 @@ public class SubmarineController : MonoBehaviour
         }*/
 
         // Move the controller
-        characterController.Move(currentSpeed * Time.deltaTime*speedScale);
+        characterController.MovePosition(characterController.position + currentSpeed * Time.deltaTime * speedScale);
+        //characterController.Move(currentSpeed * Time.deltaTime*speedScale);
     }
 
     private void UpdateLookDirection()

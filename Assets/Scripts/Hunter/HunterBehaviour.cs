@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(AudioSource))]
+[RequireComponent(typeof(AudioSource), typeof(Rigidbody))]
 public class HunterBehaviour : MonoBehaviour
 {
     //Members
@@ -12,7 +12,8 @@ public class HunterBehaviour : MonoBehaviour
     [SerializeField] private List<HunterState> m_States = new List<HunterState>();
     private HunterState                        m_CurrentState;
     private float                              m_TimeUntilPeriodEffect = 0f;
-    [SerializeField] private AudioSource       m_AudioSource;
+    private AudioSource                        m_AudioSource;
+    private Rigidbody                          m_RigidBody;
 
     //Events
     public event EventHandler<int>             OnAttentionChanged;
@@ -111,6 +112,7 @@ public class HunterBehaviour : MonoBehaviour
             Instance = this;
 
             m_AudioSource = GetComponent<AudioSource>();
+            m_RigidBody = GetComponent<Rigidbody>();
 
             HunterState default_state = m_States.FirstOrDefault(s => s.IsDefault);
             if (default_state)

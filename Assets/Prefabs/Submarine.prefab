@@ -5880,7 +5880,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7626430705779275366}
   - component: {fileID: 7626430705779275367}
-  - component: {fileID: 7626430705779275369}
+  - component: {fileID: 1880942715}
   m_Layer: 0
   m_Name: Submarine
   m_TagString: Untagged
@@ -5957,8 +5957,8 @@ MonoBehaviour:
   lookSmoothTime: 0.15
   enableGradualRotation: 0
   speedScale: 200
---- !u!143 &7626430705779275369
-CharacterController:
+--- !u!135 &1880942715
+SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -5968,13 +5968,8 @@ CharacterController:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Height: 2
-  m_Radius: 0.5
-  m_SlopeLimit: 45
-  m_StepOffset: 0.3
-  m_SkinWidth: 0.08
-  m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Radius: 4
+  m_Center: {x: 0, y: 0, z: 3}
 --- !u!1 &7626430706555402592
 GameObject:
   m_ObjectHideFlags: 0
