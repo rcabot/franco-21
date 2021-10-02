@@ -5265,7 +5265,7 @@ Camera:
     serializedVersion: 2
     m_Bits: 8
   m_RenderingPath: -1
-  m_TargetTexture: {fileID: 8400000, guid: c93dbe8f5250e1e48b3fcd43c270e1a2, type: 2}
+  m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 0
@@ -5298,7 +5298,7 @@ MonoBehaviour:
   m_RenderShadows: 1
   m_RequiresDepthTextureOption: 2
   m_RequiresOpaqueTextureOption: 2
-  m_CameraType: 0
+  m_CameraType: 1
   m_Cameras: []
   m_RendererIndex: -1
   m_VolumeLayerMask:
@@ -5555,7 +5555,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7626430706555402597}
   - component: {fileID: 7626430706555402594}
-  - component: {fileID: 7626430706555402595}
   - component: {fileID: 732018806}
   m_Layer: 0
   m_Name: Render Texture Camera
@@ -5623,14 +5622,6 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!81 &7626430706555402595
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7626430706555402592}
-  m_Enabled: 1
 --- !u!114 &732018806
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5647,7 +5638,8 @@ MonoBehaviour:
   m_RequiresDepthTextureOption: 2
   m_RequiresOpaqueTextureOption: 2
   m_CameraType: 0
-  m_Cameras: []
+  m_Cameras:
+  - {fileID: 4086226099407391426}
   m_RendererIndex: -1
   m_VolumeLayerMask:
     serializedVersion: 2
