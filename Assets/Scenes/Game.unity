@@ -611,7 +611,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 7626430705779275364, guid: d58106fc1154cc249ba0bfe455a7d056, type: 3}
       propertyPath: m_Name
-      value: Submarine v2
+      value: Submarine
       objectReference: {fileID: 0}
     - target: {fileID: 7626430705779275366, guid: d58106fc1154cc249ba0bfe455a7d056, type: 3}
       propertyPath: m_RootOrder
