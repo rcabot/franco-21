@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class CollectablesDistributor : MonoBehaviour
@@ -8,16 +9,21 @@ public class CollectablesDistributor : MonoBehaviour
     public int AmountToDistribute;
     public GameObject[] Prefabs;
     public List<GameObject> SpawnedCollectables;
-    // Start is called before the first frame update
-    void Awake()
+    private bool spawned;
+
+    void Update()
     {
-        var prefabsLength = Prefabs.Length;
-        for (int i = 0; i < AmountToDistribute; i++)
+        if (!spawned)
         {
-            GameObject[] prefabs = Prefabs;
-            Bounds bounds = DistributionArea.bounds;
-            Transform parent = transform;
-            SpawnedCollectables.Add(SpawnRandomPrefabAtRandomPlaceInBounds(prefabsLength, prefabs, bounds, parent));
+            var prefabsLength = Prefabs.Length;
+            for (int i = 0; i < AmountToDistribute; i++)
+            {
+                GameObject[] prefabs = Prefabs;
+                Bounds bounds = DistributionArea.bounds;
+                Transform parent = transform;
+                SpawnedCollectables.Add(SpawnRandomPrefabAtRandomPlaceInBounds(prefabsLength, prefabs, bounds, parent));
+            }
+            spawned = true;
         }
     }
 
@@ -36,9 +42,16 @@ public class CollectablesDistributor : MonoBehaviour
             Random.Range(bounds.min.y, bounds.max.y),
             Random.Range(bounds.min.z, bounds.max.z)
         );
-        if (Physics.Raycast(p + Vector3.up*1000,Vector3.down,maxDistance:2000,hitInfo: out var hit))
+        var hits = Physics.RaycastAll(p + Vector3.up * 1000, Vector3.down, maxDistance: 2000,
+            layerMask: LayerMask.GetMask("Terrain"));
+        if (hits.Any())
         {
-            p.y = hit.point.y;
+            p.y = hits.First().point.y;
+            Debug.Log("hit!");
+        }
+        else
+        {
+            Debug.Log("miss!");
         }
         return p;
     }

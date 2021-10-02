@@ -42,6 +42,7 @@ public class TerrainTile : MonoBehaviour
         terrainData.SetHeights(0, 0, tileHeightmap);
         TerrainObject = Terrain.CreateTerrainGameObject(terrainData);
         TerrainObject.transform.SetParent(transform, false);
+        TerrainObject.layer = LayerMask.NameToLayer("Terrain");
 
         _TerrainComponent = TerrainObject.GetComponent<Terrain>();
     }
