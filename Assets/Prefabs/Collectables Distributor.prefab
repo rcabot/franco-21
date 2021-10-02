@@ -45,10 +45,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DistributionArea: {fileID: 927092377325406737}
-  AmountToDistribute: 1000
+  AmountToDistribute: 100
   Prefabs:
-  - {fileID: 8924919154853848546, guid: d7481c9bc0f762a40ab0b92224a05c9a, type: 3}
   - {fileID: 9078295109074770923, guid: c7d2a1bb027c53b48b17d8bcfc05cc61, type: 3}
+  - {fileID: 9078295109074770923, guid: 4b604008b1c25a24cb64513249b09a46, type: 3}
+  - {fileID: 9078295109074770923, guid: 0af8583e4538d7b4d82362296ba02deb, type: 3}
+  SpawnedCollectables: []
 --- !u!65 &927092377325406737
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -60,5 +62,5 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 144.68, y: 40.04, z: 236.08}
-  m_Center: {x: 0, y: 19.56, z: 0}
+  m_Size: {x: 1024, y: 24.5, z: 1024}
+  m_Center: {x: 0, y: 18.6, z: 0}
