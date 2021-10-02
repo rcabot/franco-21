@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3701361731666391932}
   - component: {fileID: -6482972591216050592}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: TerrainTilePrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
