@@ -137,8 +137,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c19c621ae9c84646a0840542eed1e6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ButtonName: Fire2
-  light: {fileID: 587862633}
+  m_ButtonName: Fire2
+  m_Light: {fileID: 587862633}
 --- !u!1 &1242628788
 GameObject:
   m_ObjectHideFlags: 0
