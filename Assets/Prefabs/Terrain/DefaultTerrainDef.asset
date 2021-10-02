@@ -15,5 +15,5 @@ MonoBehaviour:
   _TerrainSize: 256
   _EdgeTileCount: 2
   _Resolution: {x: 1024, y: 512}
-  _MaxHeight: 5
+  _MaxHeight: 2
   _TilePrefab: {fileID: -6482972591216050592, guid: a36e9ce48ef9dab4988ad8a02bd30062, type: 3}

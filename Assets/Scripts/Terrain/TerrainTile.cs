@@ -6,16 +6,16 @@ public class TerrainTile : MonoBehaviour
 {
     private Vector2Int _TileIndex;
     private GameObject TerrainObject;
+    private Terrain _TerrainComponent;
 
-    public Vector2Int TileIndex
-    {
-        get { return _TileIndex; }
-    }
+    public Terrain TerrainComponent => _TerrainComponent;
+
+    public Vector2Int TileIndex => _TileIndex;
 
     public void Init(TerrainDefinition definition, Vector2Int tileIndex)
     {
         _TileIndex = tileIndex;
-        transform.position = new Vector3(tileIndex.x * definition.TerrainSize, 0, tileIndex.y * definition.TerrainSize);
+        transform.position = (Vector3.right * definition.TerrainSize * tileIndex.x) + (Vector3.forward * definition.TerrainSize * tileIndex.y);
 
         float[,] heightmap = new float[definition.Resolution.y, definition.Resolution.y];
 
@@ -36,6 +36,8 @@ public class TerrainTile : MonoBehaviour
         terrainData.SetHeights(0, 0, heightmap);
         TerrainObject = Terrain.CreateTerrainGameObject(terrainData);
         TerrainObject.transform.SetParent(transform, false);
+
+        _TerrainComponent = TerrainObject.GetComponent<Terrain>();
     }
 
     // Start is called before the first frame update

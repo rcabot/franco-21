@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5470941763397547617}
   - component: {fileID: 5470941763397547616}
+  - component: {fileID: 5195924198965675715}
   m_Layer: 0
   m_Name: SystemHost
   m_TagString: Untagged
@@ -45,3 +46,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_ShakeDuration: 0
   m_ShakeMagnitude: 0.2
+--- !u!114 &5195924198965675715
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5470941763397547550}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a9bbdc4abc48d44ca64cd70b9f850ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Definition: {fileID: 11400000, guid: a64c1238de2ac2c4695f648ed8f4eb87, type: 2}
