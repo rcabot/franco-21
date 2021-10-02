@@ -16,15 +16,30 @@ public class TerrainManager : MonoBehaviour
         public float Radius;
     }
 
+    private int GetEdgeTileCount()
+    {
+        return (Definition.EdgeTileCount + 2);
+    }
+
     public TerrainTile GetTile(Vector2Int index)
     {
-        int offset = (Definition.EdgeTileCount * index.x) + index.y;
+        int offset = (GetEdgeTileCount() * index.x) + index.y;
         if (offset < Tiles.Count)
         {
             return Tiles[offset];
         }
 
         return null;
+    }
+
+    private float GetTileSize()
+    {
+        return (Definition.TerrainSize / Definition.EdgeTileCount);
+    }
+
+    private float GetTerrainSize()
+    {
+        return GetTileSize() * GetEdgeTileCount();
     }
 
     private void Awake()
@@ -148,12 +163,56 @@ public class TerrainManager : MonoBehaviour
         }
     }
 
+
+    void CalculateBasinTile(float[,] heightmap, Vector2Int tileIndex, TerrainData terrainData)
+    {
+#if false
+        // Loop over the texels in the tile and modify them to create a basin
+        float terrainMinOffset = -(GetTerrainSize() * 0.5f);
+        int resolution = terrainData.heightmapResolution * GetEdgeTileCount();
+        float texelStepSize = GetTerrainSize() / resolution;
+
+        Vector2Int baseIndexOffset = new Vector2Int(tileIndex.x * terrainData.heightmapResolution, tileIndex.y * terrainData.heightmapResolution);
+        for (int currentRow = 0; currentRow < terrainData.heightmapResolution; ++currentRow)
+        {
+            int baseRow = baseIndexOffset.x + currentRow;
+            float texelYCoord = terrainMinOffset + (texelStepSize * baseRow);
+            for (int currentCol = 0; currentCol < terrainData.heightmapResolution; ++currentCol)
+            {
+                int baseColumn = baseIndexOffset.y + currentCol;
+                float texelXCoord = terrainMinOffset + (texelStepSize * baseColumn);
+
+                Vector2 texelPos = new Vector2(texelXCoord, texelYCoord);
+                float mountainDistance = Vector2.Distance(texelPos, mountainData.Position);
+            }
+        }
+#endif
+    }    
+
+    void GenerateBasin(float[,] heightmap, TerrainData terrainData)
+    {
+        int edgeTileCount = GetEdgeTileCount();
+        for (int currentRow = 0; currentRow < edgeTileCount; ++currentRow)
+        {
+            for (int currentColumn = 0; currentColumn < edgeTileCount; ++currentColumn)
+            {
+                if ((currentRow == 0) 
+                    || (currentRow == (edgeTileCount - 1))
+                    || (currentColumn == 0) 
+                    || (currentColumn == (edgeTileCount - 1)))
+                {
+                    CalculateBasinTile(heightmap, new Vector2Int(currentRow, currentColumn), terrainData);
+                }
+            }
+        }
+    }
+
     void CalculateTileMountainInfluence(float[,] heightmap, Vector2Int tileIndex, Mountain mountainData, TerrainData terrainData)
     {
         // Loop over the texels in the tile and check how much the mountain influences them
-        float terrainMinOffset = -(Definition.TerrainSize * 0.5f);
-        int resolution = terrainData.heightmapResolution * Definition.EdgeTileCount;
-        float texelStepSize = Definition.TerrainSize / resolution;
+        float terrainMinOffset = -(GetTerrainSize() * 0.5f);
+        int resolution = terrainData.heightmapResolution * GetEdgeTileCount();
+        float texelStepSize = GetTerrainSize() / resolution;
 
         Vector2Int baseIndexOffset = new Vector2Int(tileIndex.x * terrainData.heightmapResolution, tileIndex.y * terrainData.heightmapResolution);
         for (int currentRow = 0; currentRow < terrainData.heightmapResolution; ++currentRow)
@@ -185,8 +244,8 @@ public class TerrainManager : MonoBehaviour
 
     void GenerateMountains(float[,] heightmap, TerrainData terrainData)
     {
-        float tileSize = Definition.TerrainSize / Definition.EdgeTileCount;
-        float terrainMinOffset = -(Definition.TerrainSize * 0.5f);
+        float tileSize = GetTileSize();
+        float terrainMinOffset = -(GetTerrainSize() * 0.5f);
 
         bool[,] influenceGrid = new bool[Definition.EdgeTileCount, Definition.EdgeTileCount];
         for (int currentRow = 0; currentRow < Definition.EdgeTileCount; ++currentRow)
@@ -208,7 +267,7 @@ public class TerrainManager : MonoBehaviour
             {
                 // Add a mountain
                 Mountain mountainData = new Mountain();
-                mountainData.Position = new Vector2(terrainMinOffset + ((mountainColumn + 0.5f) * tileSize), terrainMinOffset + ((mountainRow + 0.5f) * tileSize));
+                mountainData.Position = new Vector2(terrainMinOffset + ((mountainColumn + 1.5f) * tileSize), terrainMinOffset + ((mountainRow + 1.5f) * tileSize));
                 mountainData.Radius = (tileSize * Definition.MountainAreaFactor) * 0.5f;
 
                 GameObject mountainObj = new GameObject(string.Format("Mountain_{0}", mountainCount));
@@ -216,23 +275,22 @@ public class TerrainManager : MonoBehaviour
                 mountainObj.transform.position = new Vector3(mountainData.Position.x, 0, mountainData.Position.y);
 
                 // Calculate the boundaries that need to be updated
-                int startRow = Mathf.Max(mountainRow - 1, 0);
-                int endRow = Mathf.Min(mountainRow + 2, Definition.EdgeTileCount);
-                int startCol = Mathf.Max(mountainColumn - 1, 0);
-                int endCol = Mathf.Min(mountainColumn + 2, Definition.EdgeTileCount);
+                int startRow = Mathf.Max(mountainRow - 1, -1);
+                int endRow = Mathf.Min(mountainRow + 2, Definition.EdgeTileCount + 1);
+                int startCol = Mathf.Max(mountainColumn - 1, -1);
+                int endCol = Mathf.Min(mountainColumn + 2, Definition.EdgeTileCount + 1);
 
                 for (int currentRow = startRow; currentRow < endRow; ++currentRow)
                 {
                     for (int currentColumn = startCol; currentColumn < endCol; ++currentColumn)
                     {
-                        // Update the heightmap values within the tile
-                        CalculateTileMountainInfluence(heightmap, new Vector2Int(currentRow, currentColumn), mountainData, terrainData);
+                        // Update the heightmap values within the tile (offset the values, as we only apply this change within the "basin"
+                        CalculateTileMountainInfluence(heightmap, new Vector2Int(currentRow + 1, currentColumn + 1), mountainData, terrainData);
                     }
                 }
 
                 // Update the influences
                 influenceGrid[mountainRow, mountainColumn] = true;
-
                 ++mountainCount;
             }
         }
@@ -243,7 +301,7 @@ public class TerrainManager : MonoBehaviour
         TerrainData terrainData = new TerrainData();
         terrainData.heightmapResolution = Definition.Resolution.y;
 
-        int resolution = terrainData.heightmapResolution * Definition.EdgeTileCount;
+        int resolution = terrainData.heightmapResolution * GetEdgeTileCount();
         float[,] heightmap = new float[resolution, resolution];
 
         // First perform the base pass
@@ -260,7 +318,8 @@ public class TerrainManager : MonoBehaviour
             }
         }
 
-        // Add mountains
+        // Add basin & mountains
+        GenerateBasin(heightmap, terrainData);
         GenerateMountains(heightmap, terrainData);
 
         return heightmap;
@@ -276,13 +335,15 @@ public class TerrainManager : MonoBehaviour
         // NOTE: need to use the resolution from the heightmap, since it gets adjusted (e.g 512 becomes 513, don't ask why...)
         float[,] baseHeightmap = GenerateHeightmap();
 
-        float tileSize = Definition.TerrainSize / Definition.EdgeTileCount;
-        float terrainMinOffset = -(Definition.TerrainSize * 0.5f);
+        float tileSize = GetTileSize();
+        float terrainMinOffset = -(GetTerrainSize() * 0.5f);
         float rowOffset = terrainMinOffset;
-        for (int tileRow = 0; tileRow < Definition.EdgeTileCount; ++tileRow)
+        int edgeTileCount = GetEdgeTileCount();
+
+        for (int tileRow = 0; tileRow < edgeTileCount; ++tileRow)
         {
             float columnOffset = terrainMinOffset;
-            for(int tileCol = 0; tileCol < Definition.EdgeTileCount; ++tileCol)
+            for(int tileCol = 0; tileCol < edgeTileCount; ++tileCol)
             {
                 TerrainTile currentTile = Instantiate(Definition.TilePrefab);
                 currentTile.transform.parent = TerrainRoot.transform;

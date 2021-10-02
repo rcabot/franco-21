@@ -18,6 +18,7 @@ public class TerrainDefinition : ScriptableObject
     [SerializeField, Tooltip("Spawn this many mountains")] private int _MountainCount = 0;
 
     [SerializeField] private TerrainTile _TilePrefab = null;
+    [SerializeField] private Material _TileMaterial = null;
 
     public float TerrainSize => _TerrainSize;
     public int EdgeTileCount => _EdgeTileCount;
@@ -32,4 +33,5 @@ public class TerrainDefinition : ScriptableObject
     public int MountainCount => _MountainCount;
 
     public TerrainTile TilePrefab => _TilePrefab;
+    public Material TileMaterial => _TileMaterial;
 }
