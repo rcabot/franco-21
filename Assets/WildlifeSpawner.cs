@@ -16,6 +16,7 @@ public class WildlifeSpawner : MonoBehaviour
 
     private List<GameObject> m_spawnedWildLife = new List<GameObject>();
     public int MaxWildlife;
+    public float EntityTravelSpeed = 5.0f;
 
     public CollectablesDistributor CollectablesRegistry { get; private set; }
 
@@ -70,15 +71,23 @@ public class WildlifeSpawner : MonoBehaviour
                 Sectors[arrayx, arrayz].CollectablesAmount++;
             }
         }
+
         foreach (var spawned in m_spawnedWildLife)
         {
             if (spawned == null) continue;
+            spawned.transform.position += spawned.transform.forward * EntityTravelSpeed * Time.deltaTime;
             HashSectorPosition(spawned.transform.position, out var arrayx, out var arrayz);
+            if (!DistributionArea.bounds.Contains(spawned.transform.position))
+            {
+                Destroy(spawned);
+                continue;
+            }
             if (IsBetween(arrayx, 0, SectorsX) && IsBetween(arrayz, 0, SectorsZ))
             {
                 Sectors[arrayx, arrayz].WildlifeAmount++;
             }
         }
+        m_spawnedWildLife.RemoveAll(s => s == null);
         foreach (var sector in Sectors)
         {
             if(sector.CollectablesAmount < CollectablesAmountInSectorToPreventWildlifeSpawning 

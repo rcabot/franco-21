@@ -26,7 +26,7 @@ public class CollectablesDistributor : MonoBehaviour
         return Instantiate(
             prefabs[Random.Range(0, prefabsLength)], 
             RandomPointInBounds(bounds),
-            Quaternion.identity, parent);
+            Quaternion.Euler(0f,Random.value*360f,0f), parent);
     }
 
     public static Vector3 RandomPointInBounds(Bounds bounds)

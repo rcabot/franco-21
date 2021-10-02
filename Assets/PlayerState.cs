@@ -20,7 +20,7 @@ public class PlayerState : MonoBehaviour
 
     public enum State
     {
-        Start,
+        Intro,
         Main,
         Victory,
         Defeat
