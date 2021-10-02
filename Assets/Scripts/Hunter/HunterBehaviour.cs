@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(AudioSource))]
 public class HunterBehaviour : MonoBehaviour
 {
     //Members
@@ -11,8 +12,7 @@ public class HunterBehaviour : MonoBehaviour
     [SerializeField] private List<HunterState> m_States = new List<HunterState>();
     private HunterState                        m_CurrentState;
     private float                              m_TimeUntilPeriodEffect = 0f;
-    [SerializeField] private AudioSource       m_StateStartSounds;
-    [SerializeField] private AudioSource       m_StatePeriodicSounds;
+    [SerializeField] private AudioSource       m_AudioSource;
 
     //Events
     public event EventHandler<int>             OnAttentionChanged;
@@ -77,21 +77,21 @@ public class HunterBehaviour : MonoBehaviour
 
     private void PlayStateEnterSound()
     {
-        m_StateStartSounds.clip = m_CurrentState.StateStartSounds.RandomSound;
-        if (m_StateStartSounds.clip)
+        m_AudioSource.clip = m_CurrentState.StateStartSounds.RandomSound;
+        if (m_AudioSource.clip)
         {
-            m_StateStartSounds.volume = m_CurrentState.StartSoundVolume;
-            m_StateStartSounds.Play();
+            m_AudioSource.volume = m_CurrentState.StartSoundVolume;
+            m_AudioSource.Play();
         }
     }
 
     private void PlayPeriodicSound()
     {
-        m_StatePeriodicSounds.clip = m_CurrentState.PeriodicSounds.RandomSound;
-        if (m_StatePeriodicSounds.clip)
+        m_AudioSource.clip = m_CurrentState.PeriodicSounds.RandomSound;
+        if (m_AudioSource.clip)
         {
-            m_StatePeriodicSounds.volume = m_CurrentState.PeriodicSoundVolumeScale;
-            m_StatePeriodicSounds.Play();
+            m_AudioSource.volume = m_CurrentState.PeriodicSoundVolumeScale;
+            m_AudioSource.Play();
         }
     }
 
@@ -110,8 +110,7 @@ public class HunterBehaviour : MonoBehaviour
         {
             Instance = this;
 
-            Debug.Assert(m_StateStartSounds != null, $"Error: No audio source defined for state start sounds - {name}");
-            Debug.Assert(m_StatePeriodicSounds != null, $"Error: No audio source defined for state periodic sounds - {name}");
+            m_AudioSource = GetComponent<AudioSource>();
 
             HunterState default_state = m_States.FirstOrDefault(s => s.IsDefault);
             if (default_state)

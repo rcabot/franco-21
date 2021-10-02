@@ -16,23 +16,23 @@ public enum HunterFollowState
 public class HunterState : ScriptableObject
 {
     [Header("General")]
-    [SerializeField] private bool                  m_default_state;
+    [SerializeField] private bool                  m_default_state = false;
 
     [SerializeField, Tooltip("Minimum attention required for the hunter to enter this state")]
-    private int                                    m_MinimumAttention;
+    private int                                    m_MinimumAttention = 0;
 
     [SerializeField]
     private HunterFollowState                      m_FollowState = HunterFollowState.Backstage;
 
 
     [Header("Start Effects")]
-    [SerializeField] private SoundBank             m_StartSounds;
+    [SerializeField] private SoundBank             m_StartSounds = null;
     [Range(0f, 1f), SerializeField] private float  m_StartVolumeScale = 1f;
     [Range(0f, 2f), SerializeField] private float  m_StartScreenShakeMagnitude = 0f;
     [Range(0f, 10f), SerializeField] private float m_StartScreenShakeDuration = 0f;
 
     [Header("Periodic Effects")]
-    [SerializeField] private SoundBank             m_PeriodicSounds;
+    [SerializeField] private SoundBank             m_PeriodicSounds = null;
     [Range(0f, 1f), SerializeField] private float  m_PeriodicSoundScale = 1f;
     [Range(0f, 1f), SerializeField] private float  m_PeriodicScreenShakeMagnitude = 0f;
     [Range(0f, 10f), SerializeField] private float m_PeriodicScreenShakeDuration = 0f;
