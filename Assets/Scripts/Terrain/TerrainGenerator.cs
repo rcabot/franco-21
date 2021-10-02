@@ -4,30 +4,34 @@ using UnityEngine;
 
 public class TerrainGenerator : MonoBehaviour
 {
-    [SerializeField] private Vector2Int HorizontalDimensions;
-    [SerializeField] private Vector2 VerticalLimits;
-    private GameObject TerrainObject;
+    [SerializeField] TerrainDefinition Definition;
+    private List<TerrainTile> Tiles;
 
     // Start is called before the first frame update
     void Start()
-    {
-        TerrainData terrainData = new TerrainData();
-        terrainData.size = new Vector3(HorizontalDimensions.x, VerticalLimits.y - VerticalLimits.x, HorizontalDimensions.y);
-        terrainData.heightmapResolution = 512;
-        terrainData.baseMapResolution = 1024;
-        terrainData.SetDetailResolution(32, 8);
+    {        
+        Tiles = new List<TerrainTile>();
 
-        float[,] heightMap = new float[HorizontalDimensions.x, HorizontalDimensions.y];
-        for(int currentX = 0; currentX < HorizontalDimensions.x; ++currentX)
+        float tileSize = Definition.TerrainSize / Definition.EdgeTileCount;
+        float rowOffset = 0;
+        for (int tileRow = 0; tileRow < Definition.EdgeTileCount; ++tileRow)
         {
-            for(int currentY = 0; currentY < HorizontalDimensions.y; ++currentY)
+            float columnOffset = 0;
+            for(int tileCol = 0; tileCol < Definition.EdgeTileCount; ++tileCol)
             {
-                heightMap[currentX, currentY] = Random.Range(VerticalLimits.x, VerticalLimits.y);
-            }
-        }
+                TerrainTile currentTile = Instantiate(Definition.TilePrefab);
+                currentTile.transform.parent = gameObject.transform;
+                currentTile.transform.position = new Vector3(columnOffset, 0, rowOffset);
+                currentTile.name = string.Format("Tile ({0},{1})", tileRow, tileCol);
 
-        terrainData.SetHeights(0, 0, heightMap);
-        TerrainObject = Terrain.CreateTerrainGameObject(terrainData);
+                currentTile.Init(Definition, new Vector2Int(tileRow, tileCol));
+                Tiles.Add(currentTile);
+
+                columnOffset += tileSize;
+            }
+
+            rowOffset += tileSize;
+        }
     }
 
     // Update is called once per frame
