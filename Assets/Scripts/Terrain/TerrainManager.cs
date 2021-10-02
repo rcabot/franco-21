@@ -142,6 +142,36 @@ public class TerrainManager : MonoBehaviour
         }
     }
 
+    float[,] GenerateHeightmap()
+    {
+        TerrainData terrainData = new TerrainData();
+        terrainData.heightmapResolution = Definition.Resolution.y;
+
+        int resolution = terrainData.heightmapResolution * Definition.EdgeTileCount;
+        float[,] heightmap = new float[resolution, resolution];
+
+        float baseFactor = 1.0f - Definition.DetailFactor;
+
+        for (int currentRow = 0; currentRow < resolution; ++currentRow)
+        {
+            float baseNoiseYCoord = currentRow * Definition.BaseNoiseScale;
+            float detailNoiseYCoord = currentRow * Definition.DetailNoiseScale;
+            for (int currentCol = 0; currentCol < resolution; ++currentCol)
+            {
+                float baseNoiseXCoord = currentCol * Definition.BaseNoiseScale;
+                float detailNoiseXCoord = currentCol * Definition.DetailNoiseScale;
+
+                float baseValue = Mathf.PerlinNoise(baseNoiseXCoord, baseNoiseYCoord);
+                float detailValue = Mathf.PerlinNoise(detailNoiseXCoord, detailNoiseYCoord) * Definition.DetailDamping;
+                float heightValue = Mathf.Clamp((baseValue * baseFactor) + (detailValue * Definition.DetailFactor), 0.0f, 1.0f);
+
+                heightmap[currentRow, currentCol] = heightValue;
+            }
+        }
+
+        return heightmap;
+    }
+
     // Start is called before the first frame update
     void Start()
     {        
@@ -149,7 +179,8 @@ public class TerrainManager : MonoBehaviour
 
         TerrainRoot = new GameObject("Terrain Root");
 
-        // First generate 
+        // NOTE: need to use the resolution from the heightmap, since it gets adjusted (e.g 512 becomes 513, don't ask why...)
+        float[,] baseHeightmap = GenerateHeightmap();
 
         float tileSize = Definition.TerrainSize / Definition.EdgeTileCount;
         float rowOffset = 0;
@@ -163,7 +194,7 @@ public class TerrainManager : MonoBehaviour
                 currentTile.transform.position = new Vector3(columnOffset, 0, rowOffset);
                 currentTile.name = string.Format("Terrain Tile ({0},{1})", tileRow, tileCol);
 
-                currentTile.Init(Definition, new Vector2Int(tileRow, tileCol));
+                currentTile.Init(Definition, baseHeightmap, new Vector2Int(tileRow, tileCol));
                 Tiles.Add(currentTile);
 
                 columnOffset += tileSize;
