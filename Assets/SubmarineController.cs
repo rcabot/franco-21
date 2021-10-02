@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,7 +7,7 @@ using UnityEngine;
 
 public class SubmarineController : MonoBehaviour
 {
-    public float acceleration = 7.5f;
+    float acceleration = 7.5f;
     public Camera playerCamera;
     public Transform submarineCockpit;
     public float baseLookSpeed = 2.0f;
@@ -29,6 +30,17 @@ public class SubmarineController : MonoBehaviour
     AudioSource engineSound;
     AudioSource underwaterSound;
 
+    public enum MovementGear
+    {
+        SLOW,
+        NORMAL,
+        FAST
+    }
+    public MovementGear currentGear = MovementGear.SLOW;
+    int num_gears = Enum.GetNames(typeof(MovementGear)).Length;
+    public float[] gearSpeeds = { 2, 5, 10 };
+
+
     void Start()
     {
         rigidBody = GetComponent<Rigidbody>();
@@ -37,11 +49,17 @@ public class SubmarineController : MonoBehaviour
         // Lock cursor
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        currentGear = MovementGear.SLOW;
+        acceleration = gearSpeeds[(int)currentGear];
     }
 
     void Update()
     {
         UpdateLookDirection();
+        if( Input.GetButtonDown("toggle_gear"))
+        {
+            ToggleCurrentGear();
+        }
     }
 
     private void FixedUpdate()
@@ -49,15 +67,22 @@ public class SubmarineController : MonoBehaviour
         UpdateMovement();
     }
 
+
+    void ToggleCurrentGear()
+    {
+        currentGear = (MovementGear)(((int)currentGear + 1) % num_gears);
+        acceleration = gearSpeeds[(int)currentGear];
+    }
+
     private void UpdateMovement()
     {
         Vector3 forward = submarineCockpit.transform.forward;
         Vector3 right = submarineCockpit.transform.right;
 
-        Vector3 strafe_acceleration = right * acceleration * Input.GetAxis("Horizontal") * strafeFactor;
-        Vector3 forward_acceleration = forward * acceleration * Input.GetAxis("Vertical");
+        Vector3 strafe_acceleration = right * Input.GetAxis("Horizontal") * strafeFactor;
+        Vector3 forward_acceleration = forward * Input.GetAxis("Vertical");
 
-        Vector3 input_acceleration = (strafe_acceleration + forward_acceleration) * Time.fixedDeltaTime;
+        Vector3 input_acceleration = ((strafe_acceleration + forward_acceleration).normalized * acceleration) * Time.fixedDeltaTime;
 
         // acceleration
         currentSpeed += input_acceleration;
