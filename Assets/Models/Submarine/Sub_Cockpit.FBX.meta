@@ -10,6 +10,11 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
+      name: Ceiling [Willypit]
+    second: {fileID: 2100000, guid: d39e9a18c362cf8439cdbd6a299f289a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
       name: Monitors
     second: {fileID: 2100000, guid: 2f3362217beba33448e8bd592cdea3ba, type: 2}
   materials:
