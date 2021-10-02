@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class TractorBeam : MonoBehaviour
 {
-    [SerializeField] private Transform m_pullTo;
-    [SerializeField] private float m_pullForce=10.0f;
+    [SerializeField] private Transform m_pullTo = null;
+    [SerializeField] private float m_pullForce =10.0f;
     void OnTriggerStay(Collider other)
     {
         if (other.CompareTag("Collectable"))

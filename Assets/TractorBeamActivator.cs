@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class TractorBeamActivator : MonoBehaviour
 {
-    [SerializeField] private GameObject m_tractorBeam;
+    [SerializeField] private GameObject m_tractorBeam = null;
+
     // Update is called once per frame
     void Update()
     {

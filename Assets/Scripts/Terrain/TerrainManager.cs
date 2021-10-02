@@ -6,7 +6,7 @@ public class TerrainManager : MonoBehaviour
 {
     public static TerrainManager Instance = null;
 
-    [SerializeField] TerrainDefinition Definition;
+    [SerializeField] TerrainDefinition Definition = null;
     private GameObject TerrainRoot;
     private List<TerrainTile> Tiles;
 

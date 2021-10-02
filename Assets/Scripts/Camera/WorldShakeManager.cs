@@ -39,6 +39,7 @@ public class WorldShakeManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.F1))
         {
             m_ShakeDuration = 3f;
+            m_ShakeMagnitude = .2f;
         }
 #endif
 
