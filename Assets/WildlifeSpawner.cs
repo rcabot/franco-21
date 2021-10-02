@@ -25,15 +25,19 @@ public class WildlifeSpawner : MonoBehaviour
         Sectors = new Sector[SectorsX,SectorsZ];
         var bounds = DistributionArea.bounds;
         var corner1 = bounds.center - bounds.extents;
-        var corner2 = bounds.center + bounds.extents;
         float sectorUnitSizeX = bounds.size.x / SectorsX;
         float sectorUnitSizeZ = bounds.size.z / SectorsZ;
-        for (float x = corner1.x; x < corner2.x; x+= sectorUnitSizeX)
+
+        for (int arrayx = 0; arrayx < SectorsX; arrayx++)
         {
-            for (float z = corner1.z; z < corner2.z; z+= sectorUnitSizeZ)
+            for (int arrayz = 0; arrayz < SectorsZ; arrayz++)
             {
-                var sectorPos = new Vector3(x, corner1.y, z);
-                HashSectorPosition(sectorPos, out var arrayx, out var arrayz);
+                var sectorPos = new Vector3(
+                    corner1.x+arrayx*sectorUnitSizeX, 
+                    corner1.y,
+                    corner1.z + arrayz * sectorUnitSizeZ);
+                //Debug.LogFormat("{0},{1}", arrayx, arrayz);
+                //HashSectorPosition(sectorPos, out var arrayx, out var arrayz);
                 Sectors[arrayx, arrayz] = new Sector(
                     sectorPos,
                     sectorPos + new Vector3(sectorUnitSizeX, bounds.size.y, sectorUnitSizeZ),
@@ -48,8 +52,8 @@ public class WildlifeSpawner : MonoBehaviour
         var bounds = DistributionArea.bounds;
         p += bounds.extents;
 
-        float sectorUnitScaleX = SectorsX / bounds.size.x;
-        float sectorUnitScaleY = SectorsZ / bounds.size.z;
+        float sectorUnitScaleX = (float)SectorsX / bounds.size.x;
+        float sectorUnitScaleY = (float)SectorsZ / bounds.size.z;
         p.Scale(new Vector3(sectorUnitScaleX,0f, sectorUnitScaleY));
         x = Mathf.FloorToInt(p.x);
         z = Mathf.FloorToInt(p.z);

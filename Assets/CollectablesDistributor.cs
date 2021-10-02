@@ -25,16 +25,21 @@ public class CollectablesDistributor : MonoBehaviour
     {
         return Instantiate(
             prefabs[Random.Range(0, prefabsLength)], 
-            RandomPointInBounds(bounds),
+            RandomPointInBoundsOnTerrain(bounds),
             Quaternion.Euler(0f,Random.value*360f,0f), parent);
     }
 
-    public static Vector3 RandomPointInBounds(Bounds bounds)
+    public static Vector3 RandomPointInBoundsOnTerrain(Bounds bounds)
     {
-        return new Vector3(
+        var p = new Vector3(
             Random.Range(bounds.min.x, bounds.max.x),
             Random.Range(bounds.min.y, bounds.max.y),
             Random.Range(bounds.min.z, bounds.max.z)
         );
+        if (Physics.Raycast(p + Vector3.up*1000,Vector3.down,maxDistance:2000,hitInfo: out var hit))
+        {
+            p.y = hit.point.y;
+        }
+        return p;
     }
 }

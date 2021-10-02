@@ -391,6 +391,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5195924198965675715, guid: dd8865b6ed33bbb4c84f8f392fdf4f8e, type: 3}
+      propertyPath: Definition
+      value: 
+      objectReference: {fileID: 11400000, guid: 17baa5f319547d94ba202f19c659e262, type: 2}
     - target: {fileID: 5470941763397547550, guid: dd8865b6ed33bbb4c84f8f392fdf4f8e, type: 3}
       propertyPath: m_Name
       value: SystemHost
@@ -631,6 +635,22 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 927092377325406737, guid: d9d4b94fb8c0563409092f3e347de1c6, type: 3}
+      propertyPath: m_Size.x
+      value: 1024
+      objectReference: {fileID: 0}
+    - target: {fileID: 927092377325406737, guid: d9d4b94fb8c0563409092f3e347de1c6, type: 3}
+      propertyPath: m_Size.y
+      value: 215.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 927092377325406737, guid: d9d4b94fb8c0563409092f3e347de1c6, type: 3}
+      propertyPath: m_Size.z
+      value: 1024
+      objectReference: {fileID: 0}
+    - target: {fileID: 927092377325406737, guid: d9d4b94fb8c0563409092f3e347de1c6, type: 3}
+      propertyPath: m_Center.y
+      value: 106.88
+      objectReference: {fileID: 0}
     - target: {fileID: 927092377325406740, guid: d9d4b94fb8c0563409092f3e347de1c6, type: 3}
       propertyPath: m_Name
       value: Collectables Distributor
@@ -735,6 +755,22 @@ PrefabInstance:
     - target: {fileID: 7380199096935502369, guid: e95680062927bfd46a40630a1197d828, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7380199096935502371, guid: e95680062927bfd46a40630a1197d828, type: 3}
+      propertyPath: m_Size.x
+      value: 1024
+      objectReference: {fileID: 0}
+    - target: {fileID: 7380199096935502371, guid: e95680062927bfd46a40630a1197d828, type: 3}
+      propertyPath: m_Size.y
+      value: 215.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7380199096935502371, guid: e95680062927bfd46a40630a1197d828, type: 3}
+      propertyPath: m_Size.z
+      value: 1024
+      objectReference: {fileID: 0}
+    - target: {fileID: 7380199096935502371, guid: e95680062927bfd46a40630a1197d828, type: 3}
+      propertyPath: m_Center.y
+      value: 106.88
       objectReference: {fileID: 0}
     - target: {fileID: 7380199096935502396, guid: e95680062927bfd46a40630a1197d828, type: 3}
       propertyPath: m_Name

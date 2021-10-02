@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78a54a9172c074745902efd17b87242b, type: 3}
+  m_Name: Game Scene Terrain Def
+  m_EditorClassIdentifier: 
+  _TerrainSize: 1024
+  _EdgeTileCount: 4
+  _Resolution: {x: 1024, y: 512}
+  _MaxHeight: 100
+  _BaseNoiseScale: 0.0123
+  _BaseFactor: 0.3
+  _MountainNoiseScale: 0.123
+  _MountainAreaFactor: 0.5
+  _MountainCount: 0
+  _TilePrefab: {fileID: -6482972591216050592, guid: a36e9ce48ef9dab4988ad8a02bd30062, type: 3}
