@@ -5928,7 +5928,7 @@ MonoBehaviour:
   maxLookSpeed: 1000
   lookXLimit: 80
   strafeFactor: 0.75
-  maxAudioSpeed: 6
+  maxAudioSpeed: 10
   frictionCurve:
     serializedVersion: 2
     m_Curve:
@@ -5955,6 +5955,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   lookSmoothTime: 0.15
   enableGradualRotation: 0
+  currentSpeed: {x: 0, y: 0, z: 0}
   currentGear: 0
   gearSpeeds:
   - 2

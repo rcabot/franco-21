@@ -25,7 +25,7 @@ public class SubmarineController : MonoBehaviour
     Rigidbody rigidBody;
     Vector2 targetLookRotation;
     Vector2 currentLookRotation;
-    Vector3 currentSpeed = Vector3.zero;
+    public Vector3 currentSpeed = Vector3.zero;
     Vector2 currentLookVelocity;
     AudioSource engineSound;
     AudioSource underwaterSound;
