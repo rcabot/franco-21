@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class TerrainManager : MonoBehaviour
 {
-    const int MERGE_WIDTH = 1;
-
     public static TerrainManager Instance = null;
 
     [SerializeField] TerrainDefinition Definition;
@@ -44,20 +42,6 @@ public class TerrainManager : MonoBehaviour
         }
     }
 
-    private static void MergeHeights(float[,] baseHeights, float[,] neighborHeights, int width, int height)
-    {
-        for(int currentRow = 0; currentRow < height; ++currentRow)
-        {
-            for(int currentColumn = 0; currentColumn < width; ++currentColumn)
-            {
-                float prevValue = neighborHeights[currentRow, currentColumn];
-                float baseValue = baseHeights[currentRow, currentColumn];
-                float newValue = (prevValue + baseValue) * 0.5f;
-                neighborHeights[currentRow, currentColumn] = newValue;
-            }
-        }
-    }
-
     private void StitchTiles(TerrainTile tileBase, TerrainTile tileNeighbor)
     {
         // Stitch neighbor using the base
@@ -65,29 +49,17 @@ public class TerrainManager : MonoBehaviour
         TerrainData neighborData = tileNeighbor.TerrainComponent.terrainData;
 
         float[,] baseHeights;
-        //float[,] neighborHeights;
-        //int width = 0;
-        //int height = 0;
-
         if (tileNeighbor.TileIndex.x > tileBase.TileIndex.x)
         {
             // Stitching with base on the left
-            //width = MERGE_WIDTH;
-            //height = baseData.heightmapResolution;
-            baseHeights = baseData.GetHeights(baseData.heightmapResolution - MERGE_WIDTH, 0, MERGE_WIDTH, baseData.heightmapResolution);
-            //neighborHeights = neighborData.GetHeights(0, 0, MERGE_WIDTH, baseData.heightmapResolution);
+            baseHeights = baseData.GetHeights(baseData.heightmapResolution - 1, 0, 1, baseData.heightmapResolution);
         }
         else 
         {
             // Stitching with base on the bottom
-            //width = baseData.heightmapResolution;
-            //height = MERGE_WIDTH;
-            baseHeights = baseData.GetHeights(0, baseData.heightmapResolution - MERGE_WIDTH, baseData.heightmapResolution, MERGE_WIDTH);
-            //neighborHeights = neighborData.GetHeights(0, 0, baseData.heightmapResolution, MERGE_WIDTH);
+            baseHeights = baseData.GetHeights(0, baseData.heightmapResolution - 1, baseData.heightmapResolution, 1);
         }
 
-        //MergeHeights(baseHeights, neighborHeights, width, height);
-        //neighborData.SetHeightsDelayLOD(0, 0, neighborHeights);
         neighborData.SetHeightsDelayLOD(0, 0, baseHeights);
     }
 
@@ -110,6 +82,7 @@ public class TerrainManager : MonoBehaviour
                 neighborList.Add(leftNeighbor.TerrainComponent);
 
                 StitchTiles(leftNeighbor, currentTile);
+                leftNeighbor.TerrainComponent.terrainData.SyncHeightmap();
             }
             else
             {
@@ -150,6 +123,7 @@ public class TerrainManager : MonoBehaviour
                 neighborList.Add(bottomNeighbor.TerrainComponent);
 
                 StitchTiles(bottomNeighbor, currentTile);
+                bottomNeighbor.TerrainComponent.terrainData.SyncHeightmap();
             }
             else
             {
@@ -174,6 +148,8 @@ public class TerrainManager : MonoBehaviour
         Tiles = new List<TerrainTile>();
 
         TerrainRoot = new GameObject("Terrain Root");
+
+        // First generate 
 
         float tileSize = Definition.TerrainSize / Definition.EdgeTileCount;
         float rowOffset = 0;

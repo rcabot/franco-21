@@ -15,23 +15,30 @@ public class TerrainTile : MonoBehaviour
     public void Init(TerrainDefinition definition, Vector2Int tileIndex)
     {
         _TileIndex = tileIndex;
-        transform.position = (Vector3.right * definition.TerrainSize * tileIndex.x) + (Vector3.forward * definition.TerrainSize * tileIndex.y);
-
-        float[,] heightmap = new float[definition.Resolution.y, definition.Resolution.y];
-
-        for (int currentRow = 0; currentRow < definition.Resolution.y; ++currentRow)
-        {
-            for (int currentCol = 0; currentCol < definition.Resolution.y; ++currentCol)
-            {
-                heightmap[currentRow, currentCol] = Random.Range(0.0f, 1.0f);
-            }
-        }
+        float tileWidth = definition.TerrainSize / definition.EdgeTileCount;
+        transform.position = (Vector3.right * tileWidth * tileIndex.x) + (Vector3.forward * tileWidth * tileIndex.y);
 
         TerrainData terrainData = new TerrainData();
         terrainData.baseMapResolution = definition.Resolution.x;
         terrainData.heightmapResolution = definition.Resolution.y;
         terrainData.SetDetailResolution(32, 8);
-        terrainData.size = new Vector3(definition.TerrainSize, definition.MaxHeight, definition.TerrainSize);
+        terrainData.size = new Vector3(tileWidth, definition.MaxHeight, tileWidth);
+
+        // NOTE: need to use the resolution from the heightmap, since it gets adjusted (e.g 512 becomes 513, don't ask why...)
+        float[,] heightmap = new float[terrainData.heightmapResolution, terrainData.heightmapResolution];
+        float scale = (definition.Resolution.y * 0.123f);
+        Vector2 noiseOffset = new Vector2(tileIndex.x * scale, tileIndex.y * scale);
+
+        for (int currentRow = 0; currentRow < terrainData.heightmapResolution; ++currentRow)
+        {
+            float noiseYCoord = noiseOffset.y + (currentRow / ((float)definition.Resolution.y)) * scale;
+            for (int currentCol = 0; currentCol < terrainData.heightmapResolution; ++currentCol)
+            {
+                float noiseXCoord = noiseOffset.x + (currentCol / ((float)definition.Resolution.y) * scale);
+                float heightValue = Mathf.Clamp(Mathf.PerlinNoise(noiseXCoord, noiseYCoord), 0.0f, 1.0f);
+                heightmap[currentRow, currentCol] = heightValue;
+            }
+        }
 
         terrainData.SetHeights(0, 0, heightmap);
         TerrainObject = Terrain.CreateTerrainGameObject(terrainData);
