@@ -119,8 +119,8 @@ Material:
     - _UVSec: 0
     - _WorkflowMode: 1
     - _ZWrite: 0
-    - beam_tightness: 5
-    - beams: 4
+    - beam_tightness: 3
+    - beams: 10
     - frequency: 10
     - speed: 0.2
     m_Colors:
@@ -128,5 +128,5 @@ Material:
     - _Color: {r: 0.342798, g: 0.37335056, b: 0.589, a: 0.45490196}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
-    - colour: {r: 0.1842293, g: 0.6407062, b: 0.8679245, a: 0.5019608}
+    - colour: {r: 0.1842293, g: 0.8666667, b: 0.5176471, a: 1}
   m_BuildTextureStacks: []
