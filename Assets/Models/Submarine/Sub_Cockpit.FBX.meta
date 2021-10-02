@@ -6,7 +6,12 @@ ModelImporter:
   - first:
       74: 1827226128182048838
     second: Take 001
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Monitors
+    second: {fileID: 2100000, guid: 2f3362217beba33448e8bd592cdea3ba, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
