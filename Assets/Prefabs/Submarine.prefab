@@ -5145,7 +5145,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_pullTo: {fileID: 417333569}
-  m_pullForce: 10
+  m_pullForce: 50
 --- !u!64 &231607623228683158
 MeshCollider:
   m_ObjectHideFlags: 0
