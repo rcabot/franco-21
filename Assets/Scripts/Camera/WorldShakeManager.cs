@@ -10,6 +10,7 @@ public class WorldShakeManager : MonoBehaviour
     [SerializeField] private float m_ShakeDuration = 0f;
     [SerializeField] private float m_ShakeMagnitude = 0.2f;
 
+    //Unity Events
     private void Awake()
     {
         if (Instance == null)
@@ -28,6 +29,7 @@ public class WorldShakeManager : MonoBehaviour
         if (Instance == this)
         {
             Instance = null;
+            m_Shakeables.Clear();
         }
     }
 
@@ -54,11 +56,30 @@ public class WorldShakeManager : MonoBehaviour
             }
             else
             {
-                foreach (ShakeableObject obj in m_Shakeables)
-                {
-                    obj.StopShake();
-                }
+                StopShake();
             }
+        }
+    }
+
+    //Methods
+    public void Shake(float magnitude, float duration)
+    {
+        m_ShakeDuration = duration;
+        m_ShakeMagnitude = magnitude;
+
+        if (Mathf.Approximately(magnitude, 0f) || duration <= 0f)
+        {
+            StopShake();
+        }
+    }
+
+    public void StopShake()
+    {
+        m_ShakeDuration = m_ShakeMagnitude = 0f;
+
+        foreach (ShakeableObject obj in m_Shakeables)
+        {
+            obj.StopShake();
         }
     }
 

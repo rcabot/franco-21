@@ -11,6 +11,6 @@ public class SoundBank : ScriptableObject
     [SerializeField] private List<AudioClip> m_AudioClips = new List<AudioClip>();
 
     public IReadOnlyList<AudioClip> AudioClips => m_AudioClips;
-    public AudioClip                RandomSound => m_AudioClips[UnityRandom.Range(0, m_AudioClips.Count - 1)];
+    public AudioClip                RandomSound => m_AudioClips.Count > 0 ? m_AudioClips[UnityRandom.Range(0, m_AudioClips.Count - 1)] : null;
     public List<AudioClip>          ShuffledSequence => m_AudioClips.OrderBy(a => UnityRandom.value).ToList();
 }

@@ -89,7 +89,6 @@ public static class ArrayExtensions
     }
 }
 
-
 public static class Vector2Extensions
 {
     public static Vector2 RotateCw(this Vector2 v, float radians)
