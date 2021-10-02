@@ -16,7 +16,6 @@ public class TerrainTile : MonoBehaviour
     {
         _TileIndex = tileIndex;
         float tileWidth = definition.TerrainSize / definition.EdgeTileCount;
-        transform.position = (Vector3.right * tileWidth * tileIndex.x) + (Vector3.forward * tileWidth * tileIndex.y);
 
         // Generate the local heightmap
         TerrainData terrainData = new TerrainData();

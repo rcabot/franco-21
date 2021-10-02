@@ -10,10 +10,12 @@ public class TerrainDefinition : ScriptableObject
     [SerializeField] private Vector2Int _Resolution = Vector2Int.zero;
     [SerializeField] private float _MaxHeight = 1f;
 
-    [SerializeField] private float _BaseNoiseScale = 1f;
-    [SerializeField] private float _DetailNoiseScale = 1f;
-    [SerializeField] private float _DetailFactor = 1f;
-    [SerializeField] private float _DetailDamping = 1f;
+    [SerializeField] private float _BaseNoiseScale = 0.0123f;
+    [SerializeField] private float _BaseFactor = 0.3f;
+
+    [SerializeField] private float _MountainNoiseScale = 0.123f;
+    [SerializeField] private float _MountainAreaFactor = 0.5f;
+    [SerializeField] private int _MountainCount = 0;
 
     [SerializeField] private TerrainTile _TilePrefab = null;
 
@@ -21,9 +23,13 @@ public class TerrainDefinition : ScriptableObject
     public int EdgeTileCount => _EdgeTileCount;
     public Vector2Int Resolution => _Resolution;
     public float MaxHeight => _MaxHeight;
+
     public float BaseNoiseScale => _BaseNoiseScale;
-    public float DetailNoiseScale => _DetailNoiseScale;
-    public float DetailFactor => _DetailFactor;
-    public float DetailDamping => _DetailDamping;
+    public float BaseFactor => _BaseFactor;
+
+    public float MountainNoiseScale => _MountainNoiseScale;
+    public float MountainAreaFactor => _MountainAreaFactor;
+    public int MountainCount => _MountainCount;
+
     public TerrainTile TilePrefab => _TilePrefab;
 }
