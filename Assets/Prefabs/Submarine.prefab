@@ -5922,42 +5922,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62e05bb43b7ae514fa28d0191f9216b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  acceleration: 0.05
+  acceleration: 2
   playerCamera: {fileID: 7626430706555402594}
   submarineCockpit: {fileID: 215297124}
   baseLookSpeed: 0.75
   maxLookSpeed: 1000
   lookXLimit: 80
   strafeFactor: 0.75
-  maxSpeed: 0.05
+  maxAudioSpeed: 6
   frictionCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 1
-      outSlope: 1
-      tangentMode: 34
+      inSlope: 0.6747542
+      outSlope: 0.6747542
+      tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0
+      outWeight: 0.065088764
     - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 1
-      outSlope: 1
-      tangentMode: 34
+      time: 5
+      value: 10
+      inSlope: 6.664926
+      outSlope: 6.664926
+      tangentMode: 0
       weightedMode: 0
-      inWeight: 0
+      inWeight: 0.072485164
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  baseFriction: 0.1
   lookSmoothTime: 0.15
   enableGradualRotation: 0
-  speedScale: 200
 --- !u!135 &1880942715
 SphereCollider:
   m_ObjectHideFlags: 0
