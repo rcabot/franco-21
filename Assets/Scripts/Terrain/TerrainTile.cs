@@ -45,6 +45,7 @@ public class TerrainTile : MonoBehaviour
         TerrainObject.layer = LayerMask.NameToLayer("Terrain");
 
         _TerrainComponent = TerrainObject.GetComponent<Terrain>();
+        _TerrainComponent.materialTemplate = definition.TileMaterial;
     }
 
     // Start is called before the first frame update
