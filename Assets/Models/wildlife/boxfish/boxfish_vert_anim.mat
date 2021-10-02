@@ -120,8 +120,8 @@ Material:
     - _Surface: 0
     - _WorkflowMode: 1
     - _ZWrite: 1
-    - anim_amp: 0.02
-    - anim_freq: 15
+    - anim_amp: 0.5
+    - anim_freq: 0.5
     - anim_speed: 2
     - smoothness: 0
     - use_vertex_alpha: 0
@@ -132,4 +132,6 @@ Material:
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
     - _specular: {r: 0, g: 0, b: 0, a: 0}
     - anim_axis: {r: 0, g: 0, b: 1, a: 0}
+    - anim_offset_axis: {r: 1, g: 0, b: 0, a: 0}
+    - anim_spine_axis: {r: 0, g: 0, b: 1, a: 0}
   m_BuildTextureStacks: []
