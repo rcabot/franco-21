@@ -29,7 +29,17 @@ public class HunterBehaviour : MonoBehaviour
     }
 
     //Methods
-    void HandleAttentionChanged()
+    public void ForceSetState(HunterState state)
+    {
+        if (!m_States.Contains(state))
+        {
+            m_States.Add(state);
+        }
+
+        EnterState(state);
+    }
+
+    private void HandleAttentionChanged()
     {
         Debug.Log($"Player Attention: {m_PlayerAttention}");
 
@@ -79,7 +89,7 @@ public class HunterBehaviour : MonoBehaviour
 
     private void PlayStateEnterSound()
     {
-        m_AudioSource.clip = m_CurrentState.StateStartSounds.RandomSound;
+        m_AudioSource.clip = m_CurrentState.StateStartSounds?.RandomSound;
         if (m_AudioSource.clip)
         {
             m_AudioSource.volume = m_CurrentState.StartSoundVolume;
@@ -89,7 +99,7 @@ public class HunterBehaviour : MonoBehaviour
 
     private void PlayPeriodicSound()
     {
-        m_AudioSource.clip = m_CurrentState.PeriodicSounds.RandomSound;
+        m_AudioSource.clip = m_CurrentState.PeriodicSounds?.RandomSound;
         if (m_AudioSource.clip)
         {
             m_AudioSource.volume = m_CurrentState.PeriodicSoundVolumeScale;

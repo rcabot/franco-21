@@ -47,12 +47,12 @@ public class CollectablesDistributor : MonoBehaviour
         if (hits.Any())
         {
             p.y = hits.First().point.y;
-            Debug.Log("hit!");
+            //Debug.Log("hit!");
         }
-        else
-        {
-            Debug.Log("miss!");
-        }
+        //else
+        //{
+        //    Debug.Log("miss!");
+        //}
         return p;
     }
 }
