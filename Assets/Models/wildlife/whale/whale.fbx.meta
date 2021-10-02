@@ -1,22 +1,14 @@
 fileFormatVersion: 2
-guid: 583b7bfc9d4cd8c46995d282ce3995ae
+guid: 90bf797e1b198114aa67cf48c374ca78
 ModelImporter:
   serializedVersion: 21100
-  internalIDToNameTable:
-  - first:
-      74: 1827226128182048838
-    second: Take 001
+  internalIDToNameTable: []
   externalObjects:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: Ceiling [Willypit]
-    second: {fileID: 2100000, guid: d39e9a18c362cf8439cdbd6a299f289a, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Monitors
-    second: {fileID: 2100000, guid: 2f3362217beba33448e8bd592cdea3ba, type: 2}
+      name: whale_mat
+    second: {fileID: 2100000, guid: 03d8e0dfe7456404f8d0548d305528df, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -47,7 +39,7 @@ ModelImporter:
     isReadable: 0
   meshes:
     lODScreenPercentages: []
-    globalScale: 0.3
+    globalScale: 1
     meshCompression: 0
     addColliders: 0
     useSRGBMaterialColor: 1
@@ -98,7 +90,7 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
-    globalScale: 0.3
+    globalScale: 1
     rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0
