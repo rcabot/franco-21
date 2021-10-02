@@ -302,6 +302,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 470611213}
   m_CullTransparentMesh: 1
+--- !u!108 &532545750 stripped
+Light:
+  m_CorrespondingSourceObject: {fileID: 587862633, guid: d58106fc1154cc249ba0bfe455a7d056, type: 3}
+  m_PrefabInstance: {fileID: 1967415198}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &605990963
 GameObject:
   m_ObjectHideFlags: 0
@@ -609,6 +614,22 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 587862633, guid: d58106fc1154cc249ba0bfe455a7d056, type: 3}
+      propertyPath: m_Range
+      value: 43.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 587862633, guid: d58106fc1154cc249ba0bfe455a7d056, type: 3}
+      propertyPath: m_Intensity
+      value: 21.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 587862633, guid: d58106fc1154cc249ba0bfe455a7d056, type: 3}
+      propertyPath: m_SpotAngle
+      value: 81.00981
+      objectReference: {fileID: 0}
+    - target: {fileID: 587862633, guid: d58106fc1154cc249ba0bfe455a7d056, type: 3}
+      propertyPath: m_InnerSpotAngle
+      value: 25.80344
+      objectReference: {fileID: 0}
     - target: {fileID: 7626430705779275364, guid: d58106fc1154cc249ba0bfe455a7d056, type: 3}
       propertyPath: m_Name
       value: Submarine
@@ -656,6 +677,22 @@ PrefabInstance:
     - target: {fileID: 7626430705779275366, guid: d58106fc1154cc249ba0bfe455a7d056, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7626430705779275367, guid: d58106fc1154cc249ba0bfe455a7d056, type: 3}
+      propertyPath: strafeFactor
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7626430705779275367, guid: d58106fc1154cc249ba0bfe455a7d056, type: 3}
+      propertyPath: enableGradualRotation
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7683541107179527702, guid: d58106fc1154cc249ba0bfe455a7d056, type: 3}
+      propertyPath: light
+      value: 
+      objectReference: {fileID: 532545750}
+    - target: {fileID: 7683541107179527702, guid: d58106fc1154cc249ba0bfe455a7d056, type: 3}
+      propertyPath: ButtonName
+      value: Fire2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d58106fc1154cc249ba0bfe455a7d056, type: 3}
