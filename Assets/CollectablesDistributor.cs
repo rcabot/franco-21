@@ -14,10 +14,21 @@ public class CollectablesDistributor : MonoBehaviour
         var prefabsLength = Prefabs.Length;
         for (int i = 0; i < AmountToDistribute; i++)
         {
-            SpawnedCollectables.Add(Instantiate(Prefabs[Random.Range(0, prefabsLength)], RandomPointInBounds(DistributionArea.bounds), 
-                Quaternion.identity, transform));
+            GameObject[] prefabs = Prefabs;
+            Bounds bounds = DistributionArea.bounds;
+            Transform parent = transform;
+            SpawnedCollectables.Add(SpawnRandomPrefabAtRandomPlaceInBounds(prefabsLength, prefabs, bounds, parent));
         }
     }
+
+    public static GameObject SpawnRandomPrefabAtRandomPlaceInBounds(int prefabsLength, GameObject[] prefabs, Bounds bounds, Transform parent)
+    {
+        return Instantiate(
+            prefabs[Random.Range(0, prefabsLength)], 
+            RandomPointInBounds(bounds),
+            Quaternion.identity, parent);
+    }
+
     public static Vector3 RandomPointInBounds(Bounds bounds)
     {
         return new Vector3(

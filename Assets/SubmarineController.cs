@@ -30,6 +30,7 @@ public class SubmarineController : MonoBehaviour
     Vector2 currentLookVelocity;
     AudioSource engineSound;
     AudioSource underwaterSound;
+    public float speedScale;
 
     void Start()
     {
@@ -78,7 +79,7 @@ public class SubmarineController : MonoBehaviour
         }*/
 
         // Move the controller
-        characterController.Move(currentSpeed);
+        characterController.Move(currentSpeed * Time.deltaTime*speedScale);
     }
 
     private void UpdateLookDirection()

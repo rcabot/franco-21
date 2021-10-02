@@ -1,24 +1,145 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class WildlifeSpawner : MonoBehaviour
 {
-    public float SectorUnitSize;
+    public int SectorsX = 10;
+    public int SectorsZ = 10;
+    public int WildlifeAmountPerSector;
     public BoxCollider DistributionArea;
     public GameObject[] Prefabs;
-    public Dictionary<int, Sector> Sectors;
+    public Sector[,] Sectors;
+    public int CollectablesAmountInSectorToPreventWildlifeSpawning = 1;
+    public float SpawnFrequency;
+
+    private List<GameObject> m_spawnedWildLife = new List<GameObject>();
+    public int MaxWildlife;
+
+    public CollectablesDistributor CollectablesRegistry { get; private set; }
+
     void Awake()
     {
-        
+        Sectors = new Sector[SectorsX,SectorsZ];
+        var bounds = DistributionArea.bounds;
+        var corner1 = bounds.center - bounds.extents;
+        var corner2 = bounds.center + bounds.extents;
+        float sectorUnitSizeX = bounds.size.x / SectorsX;
+        float sectorUnitSizeZ = bounds.size.z / SectorsZ;
+        for (float x = corner1.x; x < corner2.x; x+= sectorUnitSizeX)
+        {
+            for (float z = corner1.z; z < corner2.z; z+= sectorUnitSizeZ)
+            {
+                var sectorPos = new Vector3(x, corner1.y, z);
+                HashSectorPosition(sectorPos, out var arrayx, out var arrayz);
+                Sectors[arrayx, arrayz] = new Sector(
+                    sectorPos,
+                    sectorPos + new Vector3(sectorUnitSizeX, bounds.size.y, sectorUnitSizeZ),
+                    SpawnFrequency * UnityEngine.Random.value);
+            }
+        }
+        CollectablesRegistry = FindObjectOfType<CollectablesDistributor>();
+    }
+
+    private void HashSectorPosition(Vector3 p, out int x, out int z)
+    {
+        var bounds = DistributionArea.bounds;
+        p += bounds.extents;
+
+        float sectorUnitScaleX = SectorsX / bounds.size.x;
+        float sectorUnitScaleY = SectorsZ / bounds.size.z;
+        p.Scale(new Vector3(sectorUnitScaleX,0f, sectorUnitScaleY));
+        x = Mathf.FloorToInt(p.x);
+        z = Mathf.FloorToInt(p.z);
+        //Debug.LogFormat("{0},{1}", x, z);
     }
 
     void Update()
     {
-        
+        foreach (var sector in Sectors)
+        {
+            sector.Reset();
+        }
+        foreach (var spawned in CollectablesRegistry.SpawnedCollectables)
+        {
+            if (spawned == null) continue;
+            HashSectorPosition(spawned.transform.position, out var arrayx, out var arrayz);
+            if (IsBetween(arrayx, 0, SectorsX) && IsBetween(arrayz, 0, SectorsZ))
+            {
+                Sectors[arrayx, arrayz].CollectablesAmount++;
+            }
+        }
+        foreach (var spawned in m_spawnedWildLife)
+        {
+            if (spawned == null) continue;
+            HashSectorPosition(spawned.transform.position, out var arrayx, out var arrayz);
+            if (IsBetween(arrayx, 0, SectorsX) && IsBetween(arrayz, 0, SectorsZ))
+            {
+                Sectors[arrayx, arrayz].WildlifeAmount++;
+            }
+        }
+        foreach (var sector in Sectors)
+        {
+            if(sector.CollectablesAmount < CollectablesAmountInSectorToPreventWildlifeSpawning 
+                && sector.WildlifeAmount < WildlifeAmountPerSector
+                && m_spawnedWildLife.Count < MaxWildlife)
+            {
+                sector.SpawnTimer -= Time.deltaTime;
+                if (sector.SpawnTimer < 0)
+                {
+                    SpawnWildlifeInSector(sector);
+                    sector.SpawnTimer = SpawnFrequency * UnityEngine.Random.value;
+                }
+            }
+        }
+    }
+
+    public bool IsBetween(int testValue, int bound1, int bound2)
+    {
+        return (testValue >= Math.Min(bound1, bound2) && testValue < Math.Max(bound1, bound2));
+    }
+
+    void OnDrawGizmosSelected()
+    {
+        if (!Application.isPlaying) return;
+        foreach (var sector in Sectors)
+        {
+            Gizmos.color = sector.CollectablesAmount > 0 ? Color.red : Color.green;
+            Gizmos.DrawWireCube(sector.bounds.center, sector.bounds.size*0.9f);
+        }
+    }
+
+    private void SpawnWildlifeInSector(Sector sector)
+    {
+        m_spawnedWildLife.Add(CollectablesDistributor.SpawnRandomPrefabAtRandomPlaceInBounds(
+            Prefabs.Length,Prefabs,sector.bounds,transform));
+        Debug.LogFormat("Spawning new wildlife in section {0}", sector.bounds);
     }
 
     public class Sector
     {
+        public readonly Vector3 corner1;
+        public readonly Vector3 corner2;
+        public readonly Bounds bounds;
+        public int CollectablesAmount;
+        public int WildlifeAmount;
+        public float SpawnTimer;
+
+        public Sector(Vector3 corner1, Vector3 corner2, float spawnTimer)
+        {
+            this.corner1 = corner1;
+            this.corner2 = corner2;
+            this.bounds = new Bounds((corner1 + corner2) / 2f, corner2 - corner1);
+            this.CollectablesAmount = 0;
+            this.WildlifeAmount = 0;
+            this.SpawnTimer = spawnTimer;
+        }
+
+        internal void Reset()
+        {
+            this.CollectablesAmount = 0;
+            this.WildlifeAmount = 0;
+        }
     }
 }
