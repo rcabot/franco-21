@@ -6,21 +6,29 @@ using UnityRandom = UnityEngine.Random;
 
 public class ShakeableObject : MonoBehaviour
 {
-    private Vector3 m_ShakeOffset = Vector3.zero;
+    private Vector2 m_original_position = Vector2.zero;
+    private Vector2 m_ShakeOffset = Vector2.zero;
 
     public void Shake(float magnitude)
     {
-        Vector3 offset = UnityRandom.insideUnitCircle * magnitude;
-        transform.Translate(-m_ShakeOffset + offset, Space.Self);
+        if (m_original_position.Approximately(Vector2.zero))
+        {
+            m_original_position = transform.position;
+        }
+
+        Vector2 offset = UnityRandom.insideUnitCircle * magnitude;
+        transform.Translate(offset - m_ShakeOffset, Space.Self);
         m_ShakeOffset = offset;
     }
 
     public void StopShake()
     {
         transform.Translate(-m_ShakeOffset, Space.Self);
+        m_ShakeOffset = Vector2.zero;
+        m_original_position = Vector3.zero;
     }
 
-    private void Awake()
+    private void Start()
     {
         WorldShakeManager.AddShakeable(this);
     }
