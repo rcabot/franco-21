@@ -21,7 +21,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: boxfish_vert_anim
-  m_Shader: {fileID: -6465566751694194690, guid: 61db1a5607ca31d48824c2a9690d39d4, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: 028812229d2875f428697a9bca89c5e8, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -77,7 +77,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - albedo:
-        m_Texture: {fileID: 2800000, guid: 450e5f9d0ae56fe4bb894a6d1a0aaca9, type: 3}
+        m_Texture: {fileID: 2800000, guid: 2f83022b1050dce4b97fa6f61f8e1c25, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
@@ -124,6 +124,7 @@ Material:
     - anim_freq: 15
     - anim_speed: 2
     - smoothness: 0
+    - use_vertex_alpha: 0
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
