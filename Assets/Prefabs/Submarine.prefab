@@ -32,6 +32,63 @@ Transform:
   m_Father: {fileID: 7626430705779275366}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &417333568
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 417333569}
+  - component: {fileID: 417333570}
+  - component: {fileID: 417333571}
+  m_Layer: 0
+  m_Name: Collector
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &417333569
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 417333568}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 7626430705779275366}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &417333570
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 417333568}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 1.67
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &417333571
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 417333568}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9acc7c284dd0b248bfaa9b230c03d28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &587862631
 GameObject:
   m_ObjectHideFlags: 0
@@ -4955,6 +5012,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1623479760}
+  - component: {fileID: 824590335117160248}
   m_Layer: 0
   m_Name: Tractor Beam
   m_TagString: Untagged
@@ -4977,6 +5035,19 @@ Transform:
   m_Father: {fileID: 215297124}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &824590335117160248
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1623479759}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b58c68e4a9d464342a828ba1bd2bb801, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_tractorBeam: {fileID: 1922901009}
 --- !u!1 &1922901009
 GameObject:
   m_ObjectHideFlags: 0
@@ -4988,7 +5059,8 @@ GameObject:
   - component: {fileID: 1922901010}
   - component: {fileID: 1922901013}
   - component: {fileID: 1922901012}
-  - component: {fileID: 1922901011}
+  - component: {fileID: 8196519225599473701}
+  - component: {fileID: 231607623228683158}
   m_Layer: 0
   m_Name: Cone
   m_TagString: Untagged
@@ -5004,8 +5076,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1922901009}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: 0, y: 0, z: 4.29}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 15.76}
+  m_LocalScale: {x: 1, y: 1, z: 3.6}
   m_Children: []
   m_Father: {fileID: 1623479760}
   m_RootOrder: 0
@@ -5060,8 +5132,20 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!136 &1922901011
-CapsuleCollider:
+--- !u!114 &8196519225599473701
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1922901009}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2bd161578614a444fa546b01dcb75281, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!64 &231607623228683158
+MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -5070,10 +5154,10 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
-  m_Radius: 0.5000001
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -5491780849873737984, guid: 06c97183f6123a24692ade08bd6991e5, type: 3}
 --- !u!1 &1182951838131342878
 GameObject:
   m_ObjectHideFlags: 0
@@ -5606,6 +5690,7 @@ Transform:
   - {fileID: 7203190589555926913}
   - {fileID: 7738469287596373730}
   - {fileID: 1242628789}
+  - {fileID: 417333569}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
