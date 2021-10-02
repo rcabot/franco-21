@@ -1637,7 +1637,7 @@
     "m_CustomColors": {
         "m_SerializableColors": []
     },
-    "m_filter": 0,
+    "m_filter": 1,
     "m_wrap": 0
 }
 

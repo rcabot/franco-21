@@ -72,6 +72,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_e477bd1bb3724a5c9cbb8d5ce68a3bfd_Texture_1:
+        m_Texture: {fileID: 2800000, guid: 87090b88abc22014b95b3dd61de2d5b1, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -123,6 +127,11 @@ Material:
     - anim_amp: 0.5
     - anim_freq: 2
     - anim_speed: 2
+    - emissive_fade_range: 5
+    - emissive_start_range: 1
+    - emissive_strength: 0
+    - pulse_anim_amount: 0
+    - pulse_anim_speed: 0
     - smoothness: 0.1
     - use_vertex_alpha: 1
     m_Colors:
@@ -134,4 +143,5 @@ Material:
     - anim_axis: {r: 0, g: 0, b: 1, a: 0}
     - anim_offset_axis: {r: 0, g: 0, b: 1, a: 0}
     - anim_spine_axis: {r: 0, g: 1, b: 0, a: 0}
+    - emissive_colour: {r: 0.4103774, g: 0.9702372, b: 1, a: 0}
   m_BuildTextureStacks: []
