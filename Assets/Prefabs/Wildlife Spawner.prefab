@@ -46,7 +46,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SectorsX: 10
   SectorsZ: 10
-  WildlifeAmountPerSector: 1
+  WildlifeAmountPerSector: 5
   DistributionArea: {fileID: 7380199096935502371}
   Prefabs:
   - {fileID: 2696988072141467019, guid: 60a341d09c1817240820d11a6730591b, type: 3}
