@@ -10,9 +10,10 @@ public class CollectablesDistributor : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
+        var prefabsLength = Prefabs.Length;
         for (int i = 0; i < AmountToDistribute; i++)
         {
-            Instantiate(Prefabs[0], RandomPointInBounds(DistributionArea.bounds), 
+            Instantiate(Prefabs[Random.Range(0, prefabsLength)], RandomPointInBounds(DistributionArea.bounds), 
                 Quaternion.identity, transform);
         }
     }

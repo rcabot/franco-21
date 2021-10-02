@@ -48,6 +48,7 @@ MonoBehaviour:
   AmountToDistribute: 1000
   Prefabs:
   - {fileID: 8924919154853848546, guid: d7481c9bc0f762a40ab0b92224a05c9a, type: 3}
+  - {fileID: 9078295109074770923, guid: c7d2a1bb027c53b48b17d8bcfc05cc61, type: 3}
 --- !u!65 &927092377325406737
 BoxCollider:
   m_ObjectHideFlags: 0
