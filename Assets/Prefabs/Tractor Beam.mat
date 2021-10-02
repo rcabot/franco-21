@@ -21,14 +21,13 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Tractor Beam
-  m_Shader: {fileID: 4800000, guid: 933532a4fcc9baf4fa0491de14d08ed7, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: a5202f2a152e03947b7c9000bd77274e, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3000
-  stringTagMap:
-    RenderType: Transparent
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
   disabledShaderPasses:
   - SHADOWCASTER
   m_SavedProperties:
@@ -120,9 +119,14 @@ Material:
     - _UVSec: 0
     - _WorkflowMode: 1
     - _ZWrite: 0
+    - beam_tightness: 5
+    - beams: 4
+    - frequency: 10
+    - speed: 0.2
     m_Colors:
     - _BaseColor: {r: 0.08499998, g: 0.5143613, b: 1, a: 0.2627451}
     - _Color: {r: 0.342798, g: 0.37335056, b: 0.589, a: 0.45490196}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
+    - colour: {r: 0.1842293, g: 0.6407062, b: 0.8679245, a: 0.5019608}
   m_BuildTextureStacks: []
