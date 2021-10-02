@@ -7,14 +7,15 @@ public class CollectablesDistributor : MonoBehaviour
     public BoxCollider DistributionArea;
     public int AmountToDistribute;
     public GameObject[] Prefabs;
+    public List<GameObject> SpawnedCollectables;
     // Start is called before the first frame update
     void Awake()
     {
         var prefabsLength = Prefabs.Length;
         for (int i = 0; i < AmountToDistribute; i++)
         {
-            Instantiate(Prefabs[Random.Range(0, prefabsLength)], RandomPointInBounds(DistributionArea.bounds), 
-                Quaternion.identity, transform);
+            SpawnedCollectables.Add(Instantiate(Prefabs[Random.Range(0, prefabsLength)], RandomPointInBounds(DistributionArea.bounds), 
+                Quaternion.identity, transform));
         }
     }
     public static Vector3 RandomPointInBounds(Bounds bounds)
