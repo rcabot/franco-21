@@ -5922,7 +5922,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62e05bb43b7ae514fa28d0191f9216b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  acceleration: 2
   playerCamera: {fileID: 7626430706555402594}
   submarineCockpit: {fileID: 215297124}
   baseLookSpeed: 0.75
@@ -5956,6 +5955,11 @@ MonoBehaviour:
     m_RotationOrder: 4
   lookSmoothTime: 0.15
   enableGradualRotation: 0
+  currentGear: 0
+  gearSpeeds:
+  - 2
+  - 5
+  - 10
 --- !u!135 &1880942715
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -5967,7 +5971,7 @@ SphereCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 4
+  m_Radius: 2
   m_Center: {x: 0, y: 0, z: 3}
 --- !u!54 &3487051285311501461
 Rigidbody:
@@ -6051,7 +6055,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 55
+    m_Bits: 119
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 8400000, guid: 7eb1cfa2c1a90234aa20f0a77bbcabc3, type: 2}
   m_TargetDisplay: 0
