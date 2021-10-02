@@ -14,6 +14,5 @@ public class TractorBeam : MonoBehaviour
             var pullDir = (m_pullTo.position - other.transform.position).normalized;
             other.GetComponent<Rigidbody>().AddForce(pullDir * m_pullForce);
         }
-
     }
 }
