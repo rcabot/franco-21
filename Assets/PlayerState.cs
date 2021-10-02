@@ -9,11 +9,20 @@ public class PlayerState : MonoBehaviour
 
     public int Health = 3;
     public int Collected = 0;
+    public State GameState;
     public float PercentageCollected => ((float)Collected) / m_totalCollectables;
 
     // Start is called before the first frame update
     void Start()
     {
         m_totalCollectables = FindObjectsOfType<GameObject>().Count(o=>o.tag=="Collectable");
+    }
+
+    public enum State
+    {
+        Start,
+        Main,
+        Victory,
+        Defeat
     }
 }
