@@ -694,7 +694,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c300bcd325667345a2b4d2173de9722, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_States: []
+  m_States:
+  - {fileID: 11400000, guid: 3e08ba4d84182b644a999e8c05bd17e4, type: 2}
+  - {fileID: 11400000, guid: 6bd75f648d6a013449e6097f364e0eee, type: 2}
+  - {fileID: 11400000, guid: bf6e18d5e77f2414286685d00c2defda, type: 2}
+  - {fileID: 11400000, guid: a332d4daf435cd0428c3fb8e4c195562, type: 2}
+  - {fileID: 11400000, guid: 52dd9799f2c58b64194bbb18d41c1f4c, type: 2}
+  - {fileID: 11400000, guid: c98aa8e3aa37506448b862110f0d9ef7, type: 2}
   m_BiteKnockbackForce: 30
 --- !u!1 &7219348142186065164
 GameObject:
