@@ -127,7 +127,7 @@ public class WildlifeSpawner : MonoBehaviour
     {
         m_spawnedWildLife.Add(CollectablesDistributor.SpawnRandomPrefabAtRandomPlaceInBounds(
             Prefabs.Length,Prefabs,sector.bounds,transform));
-        Debug.LogFormat("Spawning new wildlife in section {0}", sector.bounds);
+        //Debug.LogFormat("Spawning new wildlife in section {0}", sector.bounds);
     }
 
     public class Sector

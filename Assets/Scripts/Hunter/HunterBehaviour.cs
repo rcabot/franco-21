@@ -11,6 +11,7 @@ public class HunterBehaviour : MonoBehaviour
     private int                                m_PlayerAttention = 0;
     [SerializeField] private List<HunterState> m_States = new List<HunterState>();
     private HunterState                        m_CurrentState;
+    [SerializeField] private float             m_BiteKnockbackForce = 100f;
     private float                              m_TimeUntilPeriodEffect = 0f;
     private AudioSource                        m_AudioSource;
     private Rigidbody                          m_RigidBody;
@@ -152,5 +153,17 @@ public class HunterBehaviour : MonoBehaviour
     private void FixedUpdate()
     {
         UpdatePeriodicEffects();
+    }
+
+    private void OnTriggerEnter(Collider other_collider)
+    {
+        SubmarineController player_sub = other_collider.GetComponent<SubmarineController>();
+        if (player_sub != null)
+        {
+            Vector3 force_dir = transform.forward;
+            force_dir.y = 0f; //Don't knock the player up/down
+            player_sub.AddImpulse(force_dir.normalized * m_BiteKnockbackForce);
+            player_sub.TakeHit();
+        }
     }
 }
