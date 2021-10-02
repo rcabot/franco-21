@@ -21,6 +21,8 @@ public class SubmarineController : MonoBehaviour
     public float baseFriction = 0.1f;
     public float lookSmoothTime;
 
+    public bool enableGradualRotation = false;
+
     CharacterController characterController;
     Vector2 targetLookRotation;
     Vector2 currentLookRotation;
@@ -85,7 +87,12 @@ public class SubmarineController : MonoBehaviour
         targetLookRotation.x += -Input.GetAxis("Mouse Y") * baseLookSpeed;
         targetLookRotation.x = Mathf.Clamp(targetLookRotation.x, -lookXLimit, lookXLimit);
         targetLookRotation.y += Input.GetAxis("Mouse X") * baseLookSpeed;
+        var prevLook = targetLookRotation - currentLookRotation;
         currentLookRotation = Vector2.SmoothDamp(currentLookRotation, targetLookRotation, ref currentLookVelocity, lookSmoothTime,maxLookSpeed);
+        if (enableGradualRotation)
+        {
+            targetLookRotation = currentLookRotation + prevLook;
+        }
         playerCamera.transform.rotation = Quaternion.Euler(targetLookRotation.x, targetLookRotation.y, 0);
         submarineCockpit.localRotation = Quaternion.Euler(currentLookRotation.x, currentLookRotation.y, 0);
         //transform.rotation *= Quaternion.Euler(0, currentLookSpeed.y, 0);
