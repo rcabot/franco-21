@@ -5924,11 +5924,11 @@ MonoBehaviour:
   acceleration: 0.05
   playerCamera: {fileID: 7626430706555402594}
   submarineCockpit: {fileID: 215297124}
-  baseLookSpeed: 2
+  baseLookSpeed: 0.75
   maxLookSpeed: 1000
   lookXLimit: 80
-  strafeFactor: 1
-  maxSpeed: 0.1
+  strafeFactor: 0.75
+  maxSpeed: 0.05
   frictionCurve:
     serializedVersion: 2
     m_Curve:
@@ -5954,7 +5954,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   baseFriction: 0.1
-  lookSmoothTime: 0.2
+  lookSmoothTime: 0.15
   enableGradualRotation: 0
   speedScale: 200
 --- !u!143 &7626430705779275369
