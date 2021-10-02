@@ -33,10 +33,12 @@ public class WorldShakeManager : MonoBehaviour
 
     private void LateUpdate()
     {
+#if UNITY_EDITOR
         if (Input.GetKeyDown(KeyCode.F1))
         {
             m_ShakeDuration = 3f;
         }
+#endif
 
         if (m_ShakeDuration > 0f)
         {
