@@ -47,19 +47,22 @@ public class SubmarineController : MonoBehaviour
 
     public enum MovementGear
     {
+        STOP,
         SLOW,
         NORMAL,
         FAST
     }
     public MovementGear currentGear = MovementGear.SLOW;
     int num_gears = Enum.GetNames(typeof(MovementGear)).Length;
-    public float[] gearSpeeds = { 2, 5, 10 };
+    public float[] gearSpeeds = { 0, 2, 5, 10 };
 
     public bool LightsOn => lights?.LightsEnabled ?? false;
 
     public bool TractorBeamOn => tractor_beam?.TractorActive ?? false;
 
     public bool Scraping => scraping;
+
+    public event Action<SubmarineController, MovementGear> OnGearChanged;
 
     private void Awake()
     {
@@ -116,8 +119,15 @@ public class SubmarineController : MonoBehaviour
 
     void ToggleCurrentGear()
     {
+        MovementGear old_gear = currentGear;
+
         currentGear = (MovementGear)(((int)currentGear + 1) % num_gears);
         acceleration = gearSpeeds[(int)currentGear];
+
+        if (old_gear != currentGear)
+        {
+            OnGearChanged?.Invoke(this, currentGear);
+        }
     }
 
     private void UpdateMovement()

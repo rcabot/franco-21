@@ -8,7 +8,7 @@ public class ThreatIndicator : MonoBehaviour
     //[SerializeField, Tooltip("Sound made by the indicator when the creature is near")] private AudioSou _AlertSound = null;
 
     [SerializeField] GameObject[] Indicators = null;
-    [SerializeField] Texture[] IndicatorTextures = null;
+    [SerializeField] Sprite[] IndicatorTextures = null;
 
     private int AlertLevel = 0;
 
@@ -47,9 +47,9 @@ public class ThreatIndicator : MonoBehaviour
 
             foreach (GameObject currentIndicator in Indicators)
             {
-                RawImage rawImage = currentIndicator.GetComponent<RawImage>();
-                rawImage.texture = IndicatorTextures[AlertLevel];
-                rawImage.color = indicatorColor;
+                Image image = currentIndicator.GetComponent<Image>();
+                image.sprite = IndicatorTextures[AlertLevel];
+                image.color = indicatorColor;
             }
         }
     }
