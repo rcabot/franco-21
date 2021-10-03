@@ -107,17 +107,17 @@ Material:
     - _Surface: 0
     - _WorkflowMode: 1
     - _ZWrite: 1
-    - anim_amp: 0.5
-    - anim_freq: 1
-    - anim_speed: 1
+    - anim_amp: 0.2
+    - anim_freq: 2
+    - anim_speed: 0.5
     - mask_by_uv: 1
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
-    - anim_offset_axis: {r: 0.5, g: 1, b: 0, a: 0}
-    - anim_spine_axis: {r: 0, g: 0, b: 1, a: 0}
+    - anim_offset_axis: {r: 0.5, g: 0, b: 1, a: 0}
+    - anim_spine_axis: {r: 0, g: 1, b: 0, a: 0}
     - uvmask: {r: 0, g: 1, b: 0, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &8236758085965168922
