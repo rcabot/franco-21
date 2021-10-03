@@ -46,7 +46,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SectorsX: 10
   SectorsZ: 10
-  WildlifeAmountPerSector: 5
+  WildlifeAmountPerSector: 1
   DistributionArea: {fileID: 7380199096935502371}
   Prefabs:
   - {fileID: 2696988072141467019, guid: 60a341d09c1817240820d11a6730591b, type: 3}
@@ -54,7 +54,7 @@ MonoBehaviour:
   - {fileID: 919132149155446097, guid: 90bf797e1b198114aa67cf48c374ca78, type: 3}
   - {fileID: 919132149155446097, guid: 052ca0507a4b4164499d59e82d0a027c, type: 3}
   CollectablesAmountInSectorToPreventWildlifeSpawning: 1
-  SpawnFrequency: 20
+  SpawnFrequency: 60
   m_spawnedWildLife: []
   MaxWildlife: 200
   EntityTravelSpeed: 2
@@ -70,5 +70,5 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 256, y: 24.5, z: 256}
+  m_Size: {x: 256, y: 256, z: 256}
   m_Center: {x: 0, y: 18.6, z: 0}
