@@ -21,6 +21,7 @@ internal class VictoryPortal : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if ((PlayerState.Instance.GameState != PlayerState.State.ObjectiveComplete)) return;
         if (other.CompareTag("Player"))
         {
             TouchedByPlayer = true;

@@ -30,6 +30,16 @@ public class SubmarineController : MonoBehaviour
     AudioSource engineSound;
     AudioSource underwaterSound;
 
+
+    AudioSource shipAudioSource;
+    public AudioClip smallBonk;
+    public AudioClip bigBonk;
+
+
+    public float collisionElasticity = 0.5f;
+    public float collisionHardThreshold = 12.0f;
+    private bool hasCollidedThisFrame = false;
+
     public enum MovementGear
     {
         SLOW,
@@ -46,6 +56,7 @@ public class SubmarineController : MonoBehaviour
         rigidBody = GetComponent<Rigidbody>();
         engineSound = transform.Find("ship_engine").GetComponent<AudioSource>();
         underwaterSound = transform.Find("water_ambience").GetComponent<AudioSource>();
+        shipAudioSource = GetComponent<AudioSource>();
         // Lock cursor
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -60,11 +71,16 @@ public class SubmarineController : MonoBehaviour
         {
             ToggleCurrentGear();
         }
+        if (Input.GetKeyDown(KeyCode.F2))
+        {
+            TakeHit();
+        }
     }
 
     private void FixedUpdate()
     {
         UpdateMovement();
+        hasCollidedThisFrame = false;
     }
 
 
@@ -140,5 +156,26 @@ public class SubmarineController : MonoBehaviour
         WorldShakeManager.Instance.Shake(1.0f, 1.0f);
         PlayerState.Instance.Health--;
         Debug.Log("Player Hit");
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (hasCollidedThisFrame == false)
+        {
+            hasCollidedThisFrame = true;
+            float collision_intensity = Mathf.Abs(Vector3.Dot(collision.contacts[0].normal, currentSpeed) * currentSpeed.magnitude);
+            if (collision_intensity > collisionHardThreshold)
+            {
+                shipAudioSource.clip = bigBonk;
+            }
+            else
+            {
+                shipAudioSource.clip = smallBonk;
+            }
+
+            AddImpulse((collision_intensity * collisionElasticity) * collision.contacts[0].normal);
+
+            shipAudioSource.Play();
+        }
     }
 }

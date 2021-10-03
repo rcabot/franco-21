@@ -6,6 +6,7 @@ using UnityEngine;
 public class CollectablesDistributor : MonoBehaviour
 {
     public BoxCollider DistributionArea;
+    public int TilesToLitter;
     public int AmountToDistribute;
     public GameObject[] Prefabs;
     public List<GameObject> SpawnedCollectables;
@@ -16,12 +17,50 @@ public class CollectablesDistributor : MonoBehaviour
         if (!spawned)
         {
             var prefabsLength = Prefabs.Length;
-            for (int i = 0; i < AmountToDistribute; i++)
+            
+            // Randomly select a given number of tiles and put junk on them
+            int litteredTiles = 0;
+            int tileCount = TerrainManager.Instance.GetEdgeTileCount();
+            int playAreaTileCount = tileCount - 2;
+            int tilesToLitter = Mathf.Min(TilesToLitter, playAreaTileCount * playAreaTileCount);
+
+            // Prepare a LUT so we only litter a tile once
+            bool[,] doneTileLUT = new bool[tileCount - 1, tileCount - 1];
+            for(int currentRow = 0; currentRow < (tileCount - 1); ++currentRow)
             {
-                GameObject[] prefabs = Prefabs;
-                Bounds bounds = DistributionArea.bounds;
-                Transform parent = transform;
-                SpawnedCollectables.Add(SpawnRandomPrefabAtRandomPlaceInBounds(prefabsLength, prefabs, bounds, parent));
+                for(int currentCol = 0; currentCol < (tileCount - 1); ++currentCol)
+                {
+                    doneTileLUT[currentRow, currentCol] = false;
+                }
+            }
+
+            while (litteredTiles < tilesToLitter)
+            {
+                // Randomly select the tile indices
+                int selectedTileRow = Random.Range(1, tileCount - 1);
+                int selectedTileCol = Random.Range(1, tileCount - 1);
+
+                int adjustedTileRow = selectedTileRow - 1;
+                int adjustedTileCol = selectedTileCol - 1;
+
+                if (!doneTileLUT[adjustedTileRow, adjustedTileCol])
+                {
+                    // Tile not yet littered, get its terrain collider (for the bounds)
+                    TerrainTile selectedTile = TerrainManager.Instance.GetTile(new Vector2Int(selectedTileRow, selectedTileCol));
+                    Bounds bounds = selectedTile.TerrainComponent.gameObject.GetComponent<TerrainCollider>().bounds;
+
+                    for (int i = 0; i < AmountToDistribute; i++)
+                    {
+                        GameObject[] prefabs = Prefabs;
+                        //Bounds bounds = DistributionArea.bounds;
+                        Transform parent = transform;
+                        SpawnedCollectables.Add(SpawnRandomPrefabAtRandomPlaceInBounds(prefabsLength, prefabs, bounds, parent));
+                    }
+
+                    // Update LUT and increment the counter
+                    doneTileLUT[adjustedTileRow, adjustedTileCol] = true;
+                    ++litteredTiles;
+                }
             }
             spawned = true;
         }

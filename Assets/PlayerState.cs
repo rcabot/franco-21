@@ -30,23 +30,26 @@ public class PlayerState : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        m_totalCollectables = FindObjectsOfType<GameObject>().Count(o => o.tag == "Collectable");
+        foreach (var distributor in FindObjectsOfType<CollectablesDistributor>())
+        {
+            m_totalCollectables += distributor.AmountToDistribute * distributor.TilesToLitter;
+        }
         m_victoryPortal = FindObjectOfType<VictoryPortal>(true);
     }
 
     private void Update()
     {
-        if(Collected >= m_totalCollectables)
-        {
-            GameState = State.ObjectiveComplete;
-        }
-        else if (m_victoryPortal.TouchedByPlayer)
+        if (m_victoryPortal.TouchedByPlayer)
         {
             GameState = State.Victory;
         }
-        else if (Health <= 0)
+        else if(Health <= 0)
         {
             GameState = State.Defeat;
+        }
+        else if (Collected >= m_totalCollectables)
+        {
+            GameState = State.ObjectiveComplete;
         }
         else
         {

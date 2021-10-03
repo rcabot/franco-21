@@ -10,13 +10,15 @@ public class TerrainManager : MonoBehaviour
     private GameObject TerrainRoot;
     private List<TerrainTile> Tiles;
 
+    public Rect PlayableTerrainArea => new Rect(-Vector2.one * Definition.TerrainSize * 0.5f,  Vector2.one * Definition.TerrainSize);
+
     struct Mountain
     {
         public Vector2 Position;
         public float Radius;
     }
 
-    private int GetEdgeTileCount()
+    public int GetEdgeTileCount()
     {
         return (Definition.EdgeTileCount + 2);
     }
