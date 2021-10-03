@@ -46,7 +46,7 @@ public class CollectablesDistributor : MonoBehaviour
             layerMask: LayerMask.GetMask("Terrain"));
         if (hits.Any())
         {
-            p.y = hits.First().point.y;
+            p.y = hits.First().point.y + 2.0f;
             //Debug.Log("hit!");
         }
         //else
