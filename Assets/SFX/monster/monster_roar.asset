@@ -10,10 +10,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8e0ad07c92affd341943f86bc684b531, type: 3}
-  m_Name: monster_roars
+  m_Name: monster_roar
   m_EditorClassIdentifier: 
-  m_AudioClips:
-  - {fileID: 8300000, guid: 0434ff366e502304bae8da12bdb2f126, type: 3}
-  - {fileID: 8300000, guid: 2b55de292cf5ec6468071ee3d1313dc7, type: 3}
-  - {fileID: 8300000, guid: 8265ba048a02d4a469e97b029370e9f7, type: 3}
-  - {fileID: 8300000, guid: b06de3411f8857648923950a97ee67e6, type: 3}
+  m_AudioClips: []

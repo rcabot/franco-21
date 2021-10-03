@@ -7,13 +7,21 @@ using UnityEngine;
 
 
 [RequireComponent(typeof(Animator))]
-class HunterAnimEvents : MonoBehaviour
+class HunterAnimEvents : MonoBehaviour  
 {
     private Animator m_Animator;
+    public AudioSource biteAudioSource;
+    public AudioClip biteAudio;
 
     private void Awake()
     {
         m_Animator = GetComponent<Animator>();
+    }
+
+    public void TriggerBiteAudio()
+    {
+        biteAudioSource.clip = biteAudio;
+        biteAudioSource.Play();
     }
 
     public void EnableBiteCollider()
