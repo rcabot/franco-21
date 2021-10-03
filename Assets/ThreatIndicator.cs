@@ -6,13 +6,18 @@ using UnityEngine.UI;
 public class ThreatIndicator : MonoBehaviour
 {
     //[SerializeField, Tooltip("Sound made by the indicator when the creature is near")] private AudioSou _AlertSound = null;
-
-    [SerializeField] GameObject[] Indicators = null;
     [SerializeField] Sprite[] IndicatorTextures = null;
 
-    private int AlertLevel = 0;
+    Image[] m_Indicators;
+
+    private int AlertLevel = -1;
 
     int GetIndicatorCellCount() { return IndicatorTextures.Length; }
+
+    private void Awake()
+    {
+        m_Indicators = GetComponentsInChildren<Image>();
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -45,11 +50,10 @@ public class ThreatIndicator : MonoBehaviour
                 indicatorColor.r = 1.0f;
             }
 
-            foreach (GameObject currentIndicator in Indicators)
+            foreach (Image indicator in m_Indicators)
             {
-                Image image = currentIndicator.GetComponent<Image>();
-                image.sprite = IndicatorTextures[AlertLevel];
-                image.color = indicatorColor;
+                indicator.sprite = IndicatorTextures[AlertLevel];
+                indicator.color = indicatorColor;
             }
         }
     }
