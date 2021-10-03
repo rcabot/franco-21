@@ -8575,6 +8575,7 @@ MonoBehaviour:
   - {fileID: 5557100866714848397}
   - {fileID: 6051429440502006388}
   CentreWaypoint: {fileID: 7626430705779275366}
+  RotationWaypoint: {fileID: 215297124}
   Background: {fileID: 2087247758848671120}
   RadarDistance: 100
 --- !u!1 &6579096735789916392

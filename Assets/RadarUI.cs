@@ -9,10 +9,11 @@ public class RadarUI : MonoBehaviour
     public GameObject[] CollectablesBlips;
     public GameObject[] WildlifeBlips;
     public Transform CentreWaypoint;
+    public Transform RotationWaypoint;
     public RectTransform Background;
     private WildlifeSpawner WildlifeRegistry;
     private CollectablesDistributor CollectablesRegistry;
-    public float RadarDistance=100f;
+    public float RadarDistance = 100f;
 
     private void Awake()
     {
@@ -43,6 +44,9 @@ public class RadarUI : MonoBehaviour
                 PositionBlip(CollectablesBlips[i], collectables[i]);
             }
         }
+        var radarRotation = Background.eulerAngles;
+        radarRotation.z = RotationWaypoint.eulerAngles.y;
+        Background.eulerAngles = radarRotation;
     }
 
     private void PositionBlip(GameObject blip, GameObject inWorldObject)
@@ -54,5 +58,6 @@ public class RadarUI : MonoBehaviour
         ((RectTransform)blip.transform).anchoredPosition = radarRadius * distanceFromRadarCentre * new Vector2(
             direction.x,
             direction.z);
+        
     }
 }
