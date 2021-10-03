@@ -359,6 +359,8 @@ public class HunterBehaviour : MonoBehaviour
     #region Behaviour Coroutines
     private IEnumerator MoveTowardsBackstage()
     {
+        m_PlayerAggro = 0;
+
         while (true)
         {
             yield return new WaitForFixedUpdate();
@@ -638,7 +640,7 @@ public class HunterBehaviour : MonoBehaviour
         float scrape_aggro = m_PlayerSubmarine.Scraping ? m_CreatureAggroSettings.TerrainScrapeAggro : 0f;
 
 #if UNITY_EDITOR
-        LogHunterMessage($"[Hunter] Threat Tick. Decay: {passive_decay : #.##} | Lights: {light_aggro : #.##} | Speed: {speed_aggro : #.##} | Height: {height_aggro: #.##} | Tractor Beam: {tractor_aggro : #.##} | Scrape Aggro: {scrape_aggro : #.##}");
+        //LogHunterMessage($"[Hunter] Threat Tick. Decay: {passive_decay : #.##} | Lights: {light_aggro : #.##} | Speed: {speed_aggro : #.##} | Height: {height_aggro: #.##} | Tractor Beam: {tractor_aggro : #.##} | Scrape Aggro: {scrape_aggro : #.##}");
 #endif
 
         PlayerAggro += (passive_decay + light_aggro + height_aggro + speed_aggro + tractor_aggro + scrape_aggro) * delta_time;
@@ -724,8 +726,6 @@ public class HunterBehaviour : MonoBehaviour
             if (other_collider.gameObject == m_PlayerSubmarine.gameObject)
             {
                 PlayerBitten(m_PlayerSubmarine);
-
-                //Force the creature to retreat
             }
         }
     }
