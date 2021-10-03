@@ -21,7 +21,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: barrel
-  m_Shader: {fileID: -6465566751694194690, guid: 83316487c0ca8684dbe1f8f3203000bd, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: a55a63004bc7aa247b3014fccfb93ffb, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
