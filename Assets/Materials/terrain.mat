@@ -123,10 +123,10 @@ Material:
     - _Surface: 0
     - _WorkflowMode: 1
     - _ZWrite: 1
-    - b0: 5
-    - b1: 8
-    - b2: 17
-    - b3: 20
+    - b0: 10
+    - b1: 15
+    - b2: 20
+    - b3: 30
     - b4: 30
     - blend_width: 1
     m_Colors:
