@@ -272,6 +272,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_ButtonName: Fire2
   m_Light: {fileID: 587862633}
+  pulsePropMaterials:
+  - {fileID: 2100000, guid: b1a38d94fa92d374d9f9932ebe64815d, type: 2}
+  - {fileID: 2100000, guid: 3f738622d5d773e40bc45de1f50ecf53, type: 2}
+  - {fileID: 2100000, guid: 567cd93c36b319a4ca53bcbe286afc6e, type: 2}
+  - {fileID: 2100000, guid: 850c44532cc2a684eb4044a5ca20387e, type: 2}
 --- !u!1 &638144538
 GameObject:
   m_ObjectHideFlags: 0
