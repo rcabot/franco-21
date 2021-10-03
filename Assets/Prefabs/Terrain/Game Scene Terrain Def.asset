@@ -12,15 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78a54a9172c074745902efd17b87242b, type: 3}
   m_Name: Game Scene Terrain Def
   m_EditorClassIdentifier: 
-  _TerrainSize: 128
+  _TerrainSize: 256
   _EdgeTileCount: 4
-  _Resolution: {x: 1024, y: 512}
+  _Resolution: {x: 512, y: 512}
   _MaxHeight: 100
-  _BaseNoiseScale: 0.0123
-  _BaseFactor: 0.3
-  _MountainNoiseScale: 0.123
-  _MountainAreaFactor: 0.5
-  _MountainCount: 5
+  _BaseNoiseScale: 0.00523
+  _BaseFactor: 0.1
+  _MountainNoiseScale: 0.02
+  _MountainAreaFactor: 1.5
+  _MountainCount: 10
   _BasinSteepness: 7
   _BasinDamping: 4
   _BasinOffset: 0.4

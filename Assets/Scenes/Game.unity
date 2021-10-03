@@ -601,11 +601,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 927092377325406742, guid: d9d4b94fb8c0563409092f3e347de1c6, type: 3}
       propertyPath: TilesToLitter
-      value: 3
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 927092377325406742, guid: d9d4b94fb8c0563409092f3e347de1c6, type: 3}
       propertyPath: AmountToDistribute
-      value: 1
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 927092377325406743, guid: d9d4b94fb8c0563409092f3e347de1c6, type: 3}
       propertyPath: m_RootOrder
