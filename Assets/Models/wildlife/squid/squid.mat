@@ -128,23 +128,26 @@ Material:
     - _Surface: 0
     - _WorkflowMode: 1
     - _ZWrite: 1
-    - anim_amp: 0.1
-    - anim_freq: 5
+    - anim_amp: 0.15
+    - anim_freq: 2
     - anim_speed: 1
-    - emissive_fade_range: 0.5
+    - emissive_fade_range: 2
+    - emissive_fresnel_strength: 0
     - emissive_start_range: 5
     - emissive_strength: 2
     - pulse_anim_amount: -0.01
     - pulse_anim_speed: 1
     - smoothness: 0
-    - use_vertex_alpha: 0.75
+    - use_emissive_fresnel: 0
+    - use_vertex_alpha: 0.25
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
     - _specular: {r: 0.16945532, g: 0.2519053, b: 0.3018868, a: 0}
-    - anim_offset_axis: {r: 0, g: 0, b: 1, a: 0}
-    - anim_spine_axis: {r: 0, g: 1, b: 0, a: 0}
+    - albedo_tiling: {r: 1, g: 1, b: 0, a: 0}
+    - anim_offset_axis: {r: 1, g: 1, b: 0, a: 0}
+    - anim_spine_axis: {r: 0, g: 0, b: 1, a: 0}
     - emissive_colour: {r: 0, g: 0.96800303, b: 1, a: 0}
   m_BuildTextureStacks: []
