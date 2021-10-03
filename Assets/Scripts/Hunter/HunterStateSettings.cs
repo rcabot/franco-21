@@ -1,8 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum HunterFollowState
+public enum HunterState
 {
     Backstage,
     FrontstageIdle,
@@ -13,19 +14,10 @@ public enum HunterFollowState
     Retreat
 }
 
-[CreateAssetMenu(menuName = "Franco Jam/Hunter State")]
-public class HunterState : ScriptableObject
+[Serializable]
+public class HunterStateSettings
 {
-    [Header("General")]
-    [SerializeField]
-    private bool                                   m_default_state = false;
-
-    [SerializeField, Tooltip("Minimum attention required for the hunter to enter this state")]
-    private int                                    m_MinimumAttention = 0;
-
-    [SerializeField]
-    private HunterFollowState                      m_FollowState = HunterFollowState.Backstage;
-
+    [Range(0, 100), SerializeField] private int    m_ActivationAggro = 0;
 
     [Header("Start Effects")]
     [SerializeField] private SoundBank             m_StartSounds = null;
@@ -40,11 +32,9 @@ public class HunterState : ScriptableObject
     [Range(0f, 10f), SerializeField] private float m_PeriodicScreenShakeDuration = 0f;
 
     [SerializeField, RangeBeginEndAttribute(0f, 60f), Tooltip("Random time window (sec) between periodic effects")]
-    private RangeFloat                             m_PeriodTimeRange = new RangeFloat(0f, 1f);
+    private RangeFloat                             m_PeriodTimeRange = new RangeFloat(0f, 0f);
 
-    public bool              IsDefault                    => m_default_state;
-    public int               MinimumAttention             => m_MinimumAttention;
-    public HunterFollowState FollowState                  => m_FollowState;
+    public int               ActivationAggro              => m_ActivationAggro;
 
     public SoundBank         StateStartSounds             => m_StartSounds;
     public float             StartSoundVolume             => m_StartVolumeScale;

@@ -8,14 +8,14 @@ using UnityEngine;
 public class HunterBehaviour : MonoBehaviour
 {
     //Members
-    private int                                m_PlayerAttention = 0;
-    private HunterState                        m_CurrentState;
+    private int                                m_PlayerAggro = 0;
     private float                              m_TimeUntilPeriodEffect = 0f;
     private AudioSource                        m_AudioSource;
     private Rigidbody                          m_RigidBody;
     private SphereCollider                     m_BiteTriggerSphere;
     private SkinnedMeshRenderer                m_MeshRenderer;
-    private HunterFollowState                  m_FollowState;
+    private HunterStateSettings                m_CurrentStateSettings;
+    private HunterState                        m_CurrentState;
 
     private Vector3                            m_Velocity;
     [SerializeField] private Vector3           m_MoveTarget;
@@ -26,61 +26,72 @@ public class HunterBehaviour : MonoBehaviour
     [SerializeField] private float             m_BiteKnockbackForce = 40f;
 
     [Header("Behaviour")]
-    [SerializeField, Range(1f, 100f), Tooltip("Distance that it's safe for the creature to appear/disappear at even if infront of the player camera")]
-    private float                              m_SafeVisibilityDistance = 10f;
+    [SerializeField] private int               m_MaxPlayerAggro = 100;
     [SerializeField] private Vector3           m_BackstagePosition = new Vector3(0f, 0f, -10000f);
 
-    [SerializeField] private List<HunterState> m_States = new List<HunterState>();
+    [SerializeField, Range(1f, 100f), Tooltip("Distance that it's safe for the creature to appear/disappear at even if infront of the player camera")]
+    private float                              m_SafeVisibilityDistance = 10f;
+
+    //Custom inspector would be nice here. I'm restraining myself by not writing one
+    [SerializeField] private HunterStateSettings m_BackstageSettings            = new HunterStateSettings();
+    [SerializeField] private HunterStateSettings m_FrontstageIdleSettings       = new HunterStateSettings();
+    [SerializeField] private HunterStateSettings m_FrontstageDistantSettings    = new HunterStateSettings();
+    [SerializeField] private HunterStateSettings m_FrontstageSuspiciousSettings = new HunterStateSettings();
+    [SerializeField] private HunterStateSettings m_FrontstageCloseSettings      = new HunterStateSettings();
+    [SerializeField] private HunterStateSettings m_AttackingSettings            = new HunterStateSettings();
+    [SerializeField] private HunterStateSettings m_RetreatSettings              = new HunterStateSettings();
+
+    //Populated in awake. /!\ REMEMBER TO UPDATE THIS IF YOU ADD A NEW STATE /!\ 
+    List<HunterStateSettings>                    m_AllStateSettings = new List<HunterStateSettings>();
 
     //Events
-    public event EventHandler<int>             OnAttentionChanged;
-    public event EventHandler<HunterState>     OnStateChanged;
+    public event EventHandler<int>                                            OnAggroChanged;
+    public event EventHandler<KeyValuePair<HunterState, HunterStateSettings>> OnStateChanged;
 
     //Properties
     public static HunterBehaviour Instance { get; private set; }
-    public int PlayerAttention
+    public int PlayerAggro
     {
-        get => m_PlayerAttention;
-        set { if (m_PlayerAttention != value) { m_PlayerAttention = value; HandleAttentionChanged(); } }
+        get => m_PlayerAggro;
+        set { if (m_PlayerAggro != value) { m_PlayerAggro = value; HandleAggroChanged(); } }
     }
 
-    public HunterState        CurrentState => m_CurrentState;
-    public HunterFollowState  FollowState => m_FollowState;
+    public int MaxPlayerAggro => m_MaxPlayerAggro;
+
+    public HunterStateSettings CurrentStateSettings => m_CurrentStateSettings;
+    public HunterState         CurrentState => m_CurrentState;
 
     //Methods
     public void ForceSetState(HunterState state)
     {
-        LogHunterMessage($"[Hunter] Forced state change: {state.name}");
-
-        if (!m_States.Contains(state))
-        {
-            m_States.Add(state);
-        }
-
+        LogHunterMessage($"[Hunter] Forced state change: {state}");
         EnterState(state);
     }
 
-    private void HandleAttentionChanged()
+    private void HandleAggroChanged()
     {
-        LogHunterMessage($"[Hunter] Player Attention: {m_PlayerAttention}");
+        LogHunterMessage($"[Hunter] Player Aggro: {m_PlayerAggro}");
 
-        //If the creature is attacking or retreating then attention changes are ignored
-        switch (FollowState)
+        OnAggroChanged?.Invoke(this, m_PlayerAggro);
+
+        //If the creature is attacking or retreating then aggro changes are ignored
+        switch (CurrentState)
         {
-            case HunterFollowState.Attacking:
-            case HunterFollowState.Retreat:
+            case HunterState.Attacking:
+            case HunterState.Retreat:
                 return;
         }
 
-        int GetStateAttentionIfValid(HunterState state)
+        int TriggerAggroForStateIfValid(HunterStateSettings state_settings)
         {
-            return state.MinimumAttention <= m_PlayerAttention ? state.MinimumAttention : int.MinValue;
+            return state_settings.ActivationAggro <= m_PlayerAggro ? state_settings.ActivationAggro : int.MinValue;
         }
 
-        OnAttentionChanged?.Invoke(this, m_PlayerAttention);
+        //Test if a new state should be activated
+        HunterStateSettings best_state_settings = m_AllStateSettings.Aggregate((a, b) => TriggerAggroForStateIfValid(a) < TriggerAggroForStateIfValid(b) ? b : a);
+        HunterState new_state = (HunterState)m_AllStateSettings.IndexOf(best_state_settings);
 
-        HunterState new_state = m_States.Aggregate((a, b) => GetStateAttentionIfValid(a) < GetStateAttentionIfValid(b) ? b : a);
-        if (new_state != null && new_state != m_CurrentState)
+        if (new_state != m_CurrentState)
         {
             EnterState(new_state);
         }
@@ -88,19 +99,23 @@ public class HunterBehaviour : MonoBehaviour
 
     private void EnterState(HunterState state)
     {
-        LogHunterMessage($"[Hunter] Entering State  {state.name}");
+        LogHunterMessage($"[Hunter] Entering State:  {state}");
 
         m_CurrentState = state;
-        SetFollowBehaviour(m_CurrentState.FollowState);
+        m_CurrentStateSettings = m_AllStateSettings[(int)state];
+        StartStateBehaviour();
 
         //Apply enter effects
-        PlayStateEnterSound();
-        ApplyScreenShake(state.StartScreenShakeMagnitude, state.StartScreenShakeDuration);
+        if (m_CurrentStateSettings != null)
+        {
+            PlayStateEnterSound();
+            ApplyScreenShake(m_CurrentStateSettings.StartScreenShakeMagnitude, m_CurrentStateSettings.StartScreenShakeDuration);
 
-        //Setup the period effects
-        m_TimeUntilPeriodEffect = state.PeriodTimeRange.RandomValue;
+            //Setup the period effects
+            m_TimeUntilPeriodEffect = m_CurrentStateSettings.PeriodTimeRange.RandomValue;
+        }
 
-        OnStateChanged?.Invoke(this, state);
+        OnStateChanged?.Invoke(this, new KeyValuePair<HunterState, HunterStateSettings>(m_CurrentState, m_CurrentStateSettings));
     }
 
     private void UpdatePeriodicEffects()
@@ -111,12 +126,12 @@ public class HunterBehaviour : MonoBehaviour
 
             if (m_TimeUntilPeriodEffect <= 0f)
             {
-                if (m_CurrentState != null)
+                if (m_CurrentStateSettings != null)
                 {
-                    m_TimeUntilPeriodEffect = m_CurrentState.PeriodTimeRange.RandomValue;
+                    m_TimeUntilPeriodEffect = m_CurrentStateSettings.PeriodTimeRange.RandomValue;
 
                     PlayPeriodicSound();
-                    ApplyScreenShake(m_CurrentState.PeriodicScreenShakeMagnitude, m_CurrentState.PeriodicScreenShakeDuration);
+                    ApplyScreenShake(m_CurrentStateSettings.PeriodicScreenShakeMagnitude, m_CurrentStateSettings.PeriodicScreenShakeDuration);
 
                     LogHunterMessage($"[Hunter] Periodic Effects Triggered. Time Until Next: {m_TimeUntilPeriodEffect: #.##} seconds");
                 }
@@ -130,21 +145,27 @@ public class HunterBehaviour : MonoBehaviour
 
     private void PlayStateEnterSound()
     {
-        m_AudioSource.clip = m_CurrentState.StateStartSounds?.RandomSound;
-        if (m_AudioSource.clip)
+        if (m_CurrentStateSettings != null)
         {
-            m_AudioSource.volume = m_CurrentState.StartSoundVolume;
-            m_AudioSource.Play();
+            m_AudioSource.clip = m_CurrentStateSettings.StateStartSounds?.RandomSound;
+            if (m_AudioSource.clip)
+            {
+                m_AudioSource.volume = m_CurrentStateSettings.StartSoundVolume;
+                m_AudioSource.Play();
+            }
         }
     }
 
     private void PlayPeriodicSound()
     {
-        m_AudioSource.clip = m_CurrentState.PeriodicSounds?.RandomSound;
-        if (m_AudioSource.clip)
+        if (m_CurrentStateSettings != null)
         {
-            m_AudioSource.volume = m_CurrentState.PeriodicSoundVolumeScale;
-            m_AudioSource.Play();
+            m_AudioSource.clip = m_CurrentStateSettings.PeriodicSounds?.RandomSound;
+            if (m_AudioSource.clip)
+            {
+                m_AudioSource.volume = m_CurrentStateSettings.PeriodicSoundVolumeScale;
+                m_AudioSource.Play();
+            }
         }
     }
 
@@ -167,44 +188,33 @@ public class HunterBehaviour : MonoBehaviour
         player.TakeHit();
 
         //Start retreating
-        HunterState retreat_state = m_States.FirstOrDefault(s => s.FollowState == HunterFollowState.Retreat);
-        if (retreat_state != null)
-        {
-            EnterState(retreat_state);
-        }
-        else
-        {
-            //Even if there's no state defined for retreat. Force it
-            SetFollowBehaviour(HunterFollowState.Retreat);
-        }
+        EnterState(HunterState.Retreat);
     }
 
     //Woo coroutines
-    private void SetFollowBehaviour(HunterFollowState new_follow_state)
+    private void StartStateBehaviour()
     {
-        m_FollowState = new_follow_state;
-
-        switch (FollowState)
+        switch (CurrentState)
         {
-            case HunterFollowState.Backstage:
+            case HunterState.Backstage:
                 GoBackstage();
                 break;
-            case HunterFollowState.FrontstageIdle:
+            case HunterState.FrontstageIdle:
                 StartCoroutine(FrontstageIdle());
                 break;
-            case HunterFollowState.FrontstageDistant:
+            case HunterState.FrontstageDistant:
                 StartCoroutine(FrontstageDistant());
                 break;
-            case HunterFollowState.Suspicious:
+            case HunterState.Suspicious:
                 StartCoroutine(FrontstageSuspicious());
                 break;
-            case HunterFollowState.FrontstageClose:
+            case HunterState.FrontstageClose:
                 StartCoroutine(FrontstageClose());
                 break;
-            case HunterFollowState.Attacking:
+            case HunterState.Attacking:
                 StartCoroutine(Attacking());
                 break;
-            case HunterFollowState.Retreat:
+            case HunterState.Retreat:
                 StartCoroutine(Retreat());
                 break;
             default:
@@ -219,7 +229,7 @@ public class HunterBehaviour : MonoBehaviour
         {
             yield return new WaitForFixedUpdate();
 
-            if (FollowState != HunterFollowState.FrontstageIdle)
+            if (CurrentState != HunterState.FrontstageIdle)
             {
                 break;
             }
@@ -234,7 +244,7 @@ public class HunterBehaviour : MonoBehaviour
         {
             yield return new WaitForFixedUpdate();
 
-            if (FollowState != HunterFollowState.FrontstageDistant)
+            if (CurrentState != HunterState.FrontstageDistant)
             {
                 break;
             }
@@ -249,7 +259,7 @@ public class HunterBehaviour : MonoBehaviour
         {
             yield return new WaitForFixedUpdate();
 
-            if (FollowState != HunterFollowState.Suspicious)
+            if (CurrentState != HunterState.Suspicious)
             {
                 break;
             }
@@ -264,7 +274,7 @@ public class HunterBehaviour : MonoBehaviour
         {
             yield return new WaitForFixedUpdate();
 
-            if (FollowState != HunterFollowState.FrontstageClose)
+            if (CurrentState != HunterState.FrontstageClose)
             {
                 break;
             }
@@ -279,7 +289,7 @@ public class HunterBehaviour : MonoBehaviour
         {
             yield return new WaitForFixedUpdate();
 
-            if (FollowState != HunterFollowState.Attacking)
+            if (CurrentState != HunterState.Attacking)
             {
                 break;
             }
@@ -294,7 +304,7 @@ public class HunterBehaviour : MonoBehaviour
         {
             yield return new WaitForFixedUpdate();
 
-            if (FollowState != HunterFollowState.Retreat)
+            if (CurrentState != HunterState.Retreat)
             {
                 break;
             }
@@ -307,7 +317,7 @@ public class HunterBehaviour : MonoBehaviour
     {
         EnterLimbo();
         transform.position = m_BackstagePosition;
-        m_PlayerAttention = 0;
+        m_PlayerAggro = 0;
     }
 
     private void EnterLimbo()
@@ -319,11 +329,18 @@ public class HunterBehaviour : MonoBehaviour
     private void LeaveLimbo(Vector3 position)
     {
         //Teleport the creature way above the target position and then move them down with the physics engine.
-        transform.position = position + Vector3.up * 1000f;
+        const float teleport_drop_height = 1000f;
+        const float surface_offset = 0.5f;
+
+        transform.position = position + Vector3.up * teleport_drop_height;
         m_MeshRenderer.enabled = true;
         m_RigidBody.isKinematic = false;
 
-        m_RigidBody.MovePosition(position);
+        if (m_RigidBody.SweepTest(Vector3.down, out RaycastHit hit_info, teleport_drop_height))
+        {
+            position.y = hit_info.point.y + surface_offset;
+        }
+        transform.position = position;
     }
 
     //Unity Methods
@@ -338,11 +355,20 @@ public class HunterBehaviour : MonoBehaviour
             m_BiteTriggerSphere = GetComponentInChildren<SphereCollider>();
             m_MeshRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
 
-            HunterState default_state = m_States.FirstOrDefault(s => s.IsDefault);
-            if (default_state)
-            {
-                EnterState(default_state);
-            }
+            //Initialise the state settings collection
+            int num_states = Enum.GetValues(typeof(HunterState)).Length;
+            m_AllStateSettings.Resize(num_states);
+
+            m_AllStateSettings[(int)HunterState.Backstage]         = m_BackstageSettings;
+            m_AllStateSettings[(int)HunterState.FrontstageIdle]    = m_FrontstageIdleSettings;
+            m_AllStateSettings[(int)HunterState.FrontstageDistant] = m_FrontstageDistantSettings;
+            m_AllStateSettings[(int)HunterState.Suspicious]        = m_FrontstageSuspiciousSettings;
+            m_AllStateSettings[(int)HunterState.FrontstageClose]   = m_FrontstageCloseSettings;
+            m_AllStateSettings[(int)HunterState.Attacking]         = m_AttackingSettings;
+            m_AllStateSettings[(int)HunterState.Retreat]           = m_RetreatSettings;
+
+
+            EnterState(HunterState.Backstage);
         }
         else
         {
@@ -366,10 +392,13 @@ public class HunterBehaviour : MonoBehaviour
 
     private void OnTriggerEnter(Collider other_collider)
     {
-        SubmarineController player_sub = other_collider.GetComponent<SubmarineController>();
-        if (player_sub != null)
+        if (m_CurrentState == HunterState.Attacking)
         {
-            PlayerBitten(player_sub);
+            SubmarineController player_sub = other_collider.GetComponent<SubmarineController>();
+            if (player_sub != null)
+            {
+                PlayerBitten(player_sub);
+            }
         }
     }
 
@@ -380,15 +409,6 @@ public class HunterBehaviour : MonoBehaviour
     public void DebugTeleport(Vector3 position)
     {
         LeaveLimbo(position);
-    }
-
-    public void DebugForceBackstage()
-    {
-        HunterState backstage_state = m_States.FirstOrDefault(s => s.FollowState == HunterFollowState.Backstage);
-        if (backstage_state)
-        {
-            ForceSetState(backstage_state);
-        }
     }
 #endif
 

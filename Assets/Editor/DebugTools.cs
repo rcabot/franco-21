@@ -13,22 +13,12 @@ class DebugTools : EditorWindow
     float m_ShakeTestDuration = 0f;
 
     bool m_ShowCreatureTest = false;
-    HunterState m_OverrideState = null;
-    HunterBehaviour m_HunterBehaviour = null;
     Vector3 m_HunterTeleportPosition = Vector3.zero;
 
     [MenuItem("Franco Jam/Debug Tools")]
     public static void ShowWindow()
     {
         EditorWindow.GetWindow<DebugTools>();
-    }
-
-    private void Update()
-    {
-        if (m_HunterBehaviour == null)
-        {
-            m_HunterBehaviour = FindObjectOfType<HunterBehaviour>();
-        }
     }
 
     void OnGUI()
@@ -46,31 +36,31 @@ class DebugTools : EditorWindow
 
     private void CreatureUI()
     {
-        if (m_HunterBehaviour)
+        HunterBehaviour hunter = HunterBehaviour.Instance;
+        if (hunter != null)
         {
             m_ShowCreatureTest = EditorGUILayout.Foldout(m_ShowCreatureTest, "Creature Test");
             if (m_ShowCreatureTest)
             {
                 HunterBehaviour.EnableLogging = EditorGUILayout.Toggle("Enable Logging", HunterBehaviour.EnableLogging);
-                EditorGUILayout.LabelField("Current Follow State:", m_HunterBehaviour.FollowState.ToString());
-                EditorGUILayout.LabelField("Current State:", m_HunterBehaviour.CurrentState?.name ?? "None");
-                m_HunterBehaviour.PlayerAttention = EditorGUILayout.IntSlider("Player Aggro", m_HunterBehaviour.PlayerAttention, 0, 100);
-
-                m_OverrideState = EditorGUILayout.ObjectField("Override State", m_OverrideState, typeof(HunterBehaviour), false) as HunterState;
-                if (m_OverrideState != null && GUILayout.Button("Appply State Override"))
+                
+                HunterState new_state = (HunterState)EditorGUILayout.EnumPopup("Current State:", hunter.CurrentState);
+                if (new_state != hunter.CurrentState)
                 {
-                    m_HunterBehaviour.ForceSetState(m_OverrideState);
+                    hunter.ForceSetState(new_state);
                 }
+
+                hunter.PlayerAggro = EditorGUILayout.IntSlider("Player Aggro", hunter.PlayerAggro, 0, 100);
 
                 if (GUILayout.Button("Force Backstage"))
                 {
-                    m_HunterBehaviour.DebugForceBackstage();
+                    hunter.ForceSetState(HunterState.Backstage);
                 }
 
                 m_HunterTeleportPosition = EditorGUILayout.Vector3Field("Teleport Position", m_HunterTeleportPosition);
                 if (GUILayout.Button("Teleport"))
                 {
-                    m_HunterBehaviour.DebugTeleport(m_HunterTeleportPosition);
+                    hunter.DebugTeleport(m_HunterTeleportPosition);
                 }
             }
         }
