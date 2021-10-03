@@ -29,6 +29,7 @@ public class SubmarineController : MonoBehaviour
     Vector2 currentLookVelocity;
     AudioSource engineSound;
     AudioSource underwaterSound;
+    AudioSource scrapingSound;
 
 
     AudioSource shipAudioSource;
@@ -39,6 +40,7 @@ public class SubmarineController : MonoBehaviour
     public float collisionElasticity = 0.5f;
     public float collisionHardThreshold = 12.0f;
     private bool hasCollidedThisFrame = false;
+    private bool scraping = false;
 
     public enum MovementGear
     {
@@ -56,6 +58,7 @@ public class SubmarineController : MonoBehaviour
         rigidBody = GetComponent<Rigidbody>();
         engineSound = transform.Find("ship_engine").GetComponent<AudioSource>();
         underwaterSound = transform.Find("water_ambience").GetComponent<AudioSource>();
+        scrapingSound = transform.Find("ship_scrape").GetComponent<AudioSource>();
         shipAudioSource = GetComponent<AudioSource>();
         // Lock cursor
         Cursor.lockState = CursorLockMode.Locked;
@@ -66,6 +69,19 @@ public class SubmarineController : MonoBehaviour
 
     void Update()
     {
+        if( scraping)
+        {
+            if (scrapingSound.isPlaying == false)
+            {
+                scrapingSound.Play();
+            }
+            scrapingSound.volume = currentSpeed.magnitude / maxAudioSpeed;
+        }
+        else if( scraping == false && scrapingSound.isPlaying)
+        {
+            scrapingSound.Stop();
+        }
+
         UpdateLookDirection();
         if( Input.GetButtonDown("toggle_gear"))
         {
@@ -160,6 +176,7 @@ public class SubmarineController : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        scraping = true;
         if (hasCollidedThisFrame == false)
         {
             hasCollidedThisFrame = true;
@@ -177,5 +194,10 @@ public class SubmarineController : MonoBehaviour
 
             shipAudioSource.Play();
         }
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        scraping = false;
     }
 }
