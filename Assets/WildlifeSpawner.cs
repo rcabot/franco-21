@@ -17,6 +17,7 @@ public class WildlifeSpawner : MonoBehaviour
     public List<GameObject> m_spawnedWildLife = new List<GameObject>();
     public int MaxWildlife;
     public float EntityTravelSpeed = 5.0f;
+    public float WildlifeHeightAboveTerrain=5.0f;
 
     public CollectablesDistributor CollectablesRegistry { get; private set; }
 
@@ -80,6 +81,11 @@ public class WildlifeSpawner : MonoBehaviour
         {
             if (spawned == null) continue;
             spawned.transform.position += spawned.transform.forward * EntityTravelSpeed * Time.deltaTime;
+            if(Physics.Raycast(spawned.transform.position + Vector3.up * 1000, Vector3.down, 
+                hitInfo:out var hit,  maxDistance: 2000, layerMask: LayerMask.GetMask("Terrain")))
+            {
+                spawned.transform.position = hit.point + Vector3.up * WildlifeHeightAboveTerrain;
+            }
             HashSectorPosition(spawned.transform.position, out var arrayx, out var arrayz);
             if (!DistributionArea.bounds.Contains(spawned.transform.position))
             {
