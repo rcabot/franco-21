@@ -405,6 +405,13 @@ public class HunterBehaviour : MonoBehaviour
         bool exited_limbo = false;
         while (!exited_limbo)
         {
+            yield return new WaitForFixedUpdate();
+
+            if (CurrentState != HunterState.FrontstageIdle)
+            {
+                break;
+            }
+
             LogHunterMessage("[Hunter] Trying to leave limbo");
             if (FindPositionInPlayerRange(m_CurrentStateSettings.PlayerDistance, out Vector3 spawn_position))
             {
