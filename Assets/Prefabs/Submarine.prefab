@@ -10145,6 +10145,7 @@ GameObject:
   - component: {fileID: 3487051285311501461}
   - component: {fileID: 8359136923854504685}
   - component: {fileID: 1182551147}
+  - component: {fileID: 4969215032218195977}
   m_Layer: 8
   m_Name: Submarine
   m_TagString: Player
@@ -10394,6 +10395,21 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 3f738622d5d773e40bc45de1f50ecf53, type: 2}
   - {fileID: 2100000, guid: 567cd93c36b319a4ca53bcbe286afc6e, type: 2}
   - {fileID: 2100000, guid: 850c44532cc2a684eb4044a5ca20387e, type: 2}
+--- !u!114 &4969215032218195977
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7626430705779275364}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c19c621ae9c84646a0840542eed1e6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ButtonName: Fire2
+  m_Lights: []
+  pulsePropMaterials: []
 --- !u!1 &7626430706555402592
 GameObject:
   m_ObjectHideFlags: 0
@@ -10489,8 +10505,7 @@ MonoBehaviour:
   m_RequiresDepthTextureOption: 2
   m_RequiresOpaqueTextureOption: 2
   m_CameraType: 0
-  m_Cameras:
-  - {fileID: 4086226099407391426}
+  m_Cameras: []
   m_RendererIndex: -1
   m_VolumeLayerMask:
     serializedVersion: 2
