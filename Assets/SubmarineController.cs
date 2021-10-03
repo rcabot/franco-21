@@ -137,6 +137,8 @@ public class SubmarineController : MonoBehaviour
 
     public void TakeHit()
     {
+        WorldShakeManager.Instance.Shake(1.0f, 1.0f);
+        PlayerState.Instance.Health--;
         Debug.Log("Player Hit");
     }
 }
