@@ -8,10 +8,26 @@ public class TractorBeamActivator : MonoBehaviour
 
     public bool TractorActive { get; private set; }
 
+
+    AudioSource tractorAudio;
+
+    private void Start()
+    {
+        tractorAudio = GetComponent<AudioSource>();
+    }
+
     // Update is called once per frame
     void Update()
     {
         TractorActive = Input.GetButton("Fire1");
         m_tractorBeam.SetActive(TractorActive);
+        if( TractorActive && tractorAudio.isPlaying == false )
+        {
+            tractorAudio.Play();
+        }
+        else if( TractorActive == false )
+        {
+            tractorAudio.Stop();
+        }
     }
 }

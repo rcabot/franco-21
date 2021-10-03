@@ -6,6 +6,12 @@ using UnityEngine;
 public class Collector : MonoBehaviour
 {
     private PlayerState m_playerState;
+    AudioSource trashCollect;
+
+    private void Start()
+    {
+        trashCollect = GetComponent<AudioSource>();
+    }
 
     void Awake()
     {
@@ -18,6 +24,7 @@ public class Collector : MonoBehaviour
             Destroy(other.gameObject);
             HunterBehaviour.Instance?.OnPlayerPickup();
             ++m_playerState.Collected;
+            trashCollect.Play();
         }
 
     }
