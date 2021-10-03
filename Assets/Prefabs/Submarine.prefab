@@ -6436,6 +6436,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7576024100105493024}
   - component: {fileID: 3931523732993093990}
+  - component: {fileID: 3178669675735679956}
   m_Layer: 3
   m_Name: InteriorLight
   m_TagString: Untagged
@@ -6519,6 +6520,25 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+--- !u!95 &3178669675735679956
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1992740651443153909}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: cbc9f67bbe364d24a9537da0ca7680f6, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &2005668824104825709
 GameObject:
   m_ObjectHideFlags: 0
