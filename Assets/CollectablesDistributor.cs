@@ -50,7 +50,7 @@ public class CollectablesDistributor : MonoBehaviour
         return p;
     }
 
-    private static Vector3 PlaceOnTerrain(Vector3 p)
+    public static Vector3 PlaceOnTerrain(Vector3 p)
     {
         var hits = Physics.RaycastAll(p + Vector3.up * 1000, Vector3.down, maxDistance: 2000,
                     layerMask: LayerMask.GetMask("Terrain"));
