@@ -12,7 +12,7 @@ public class TerrainTile : MonoBehaviour
 
     public Vector2Int TileIndex => _TileIndex;
 
-    public float GetTerrainHeight(Vector2 position)
+    public float GetTerrainElevation(Vector2 position)
     {
         return _TerrainComponent.terrainData.GetInterpolatedHeight(position.x, position.y);
     }

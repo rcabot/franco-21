@@ -42,21 +42,23 @@ public class TerrainManager : MonoBehaviour
         return GetTileSize() * GetEdgeTileCount();
     }
 
-    public float GetHeight(Vector3 position)
+    public float GetTerrainElevation(Vector3 position)
     {
-        // Loop over the texels in the tile and modify them to create a basin
+        // First check if the position is within the terrain boundaries (on the XZ plane)
         float halfTerrainSize = GetTerrainSize() * 0.5f;
         if ((Mathf.Abs(position.x) <= halfTerrainSize) && (Mathf.Abs(position.y) <= (halfTerrainSize)))
         {
+            // Find which tile this point is on (use spatial hashing)
             float tileSize = GetTileSize();
             float terrainMinOffset = -(halfTerrainSize);
 
             Vector2 offset = new Vector2(position.x - terrainMinOffset, position.z - terrainMinOffset);
             Vector2Int tileIndex = new Vector2Int(Mathf.FloorToInt(offset.x / tileSize), Mathf.FloorToInt(offset.y / tileSize));
 
+            // Get the tile-local coordinates, use the interpolation function
             TerrainTile hashedTile = GetTile(tileIndex);
             Vector2 localNormCoords = new Vector2((offset.x / tileSize) - tileIndex.x, (offset.y / tileSize) - tileIndex.y);
-            return hashedTile.GetTerrainHeight(localNormCoords);
+            return hashedTile.GetTerrainElevation(localNormCoords);
         }
         else
         {
