@@ -129,7 +129,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Portal: {fileID: 443835277318939194}
   Collider: {fileID: 443835277754814981}
-  HeightAboveTerrain: 5
+  HeightAboveTerrain: 30
 --- !u!135 &443835277754814981
 SphereCollider:
   m_ObjectHideFlags: 0
