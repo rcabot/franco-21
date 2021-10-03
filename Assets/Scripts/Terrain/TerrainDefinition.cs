@@ -6,7 +6,7 @@ using UnityEngine;
 public class TerrainDefinition : ScriptableObject
 {
     [SerializeField, Tooltip("Size of the edge of the map")] private float _TerrainSize = 0f;
-    [SerializeField, Tooltip("Number of tiles on an edge")] private int _EdgeTileCount = 0;
+    [SerializeField, Tooltip("Number of tiles on an edge (i.e setting to N means the playable area is N x N)")] private int _EdgeTileCount = 0;
     [SerializeField, Tooltip("Heightmap resolution (default recommended)")] private Vector2Int _Resolution = Vector2Int.zero;
     [SerializeField, Tooltip("The maximum height of the generated terrain")] private float _MaxHeight = 1f;
 
@@ -21,8 +21,12 @@ public class TerrainDefinition : ScriptableObject
     [SerializeField, Tooltip("Basin wall gradient damping")] private float _BasinDamping = 1.0f;
     [SerializeField, Tooltip("Basin wall gradient offset")] private float _BasinOffset = 0.0f;
 
+    [SerializeField, Tooltip("Number of flora patches to spawn per tile")] private int _FloraPatchPerTile = 0;
+    [SerializeField, Tooltip("Number of flora objects in a patch")] private int _FloraPatchDensity = 0;
+
     [SerializeField] private TerrainTile _TilePrefab = null;
     [SerializeField] private Material _TileMaterial = null;
+    [SerializeField] private GameObject[] _TreePrototypes;
 
     public float TerrainSize => _TerrainSize;
     public int EdgeTileCount => _EdgeTileCount;
@@ -40,6 +44,10 @@ public class TerrainDefinition : ScriptableObject
     public float BasinDamping => _BasinDamping;
     public float BasinOffset => _BasinOffset;
 
+    public int FloraPatchPerTile => _FloraPatchPerTile;
+    public int FloraPatchDensity => _FloraPatchDensity;
+
     public TerrainTile TilePrefab => _TilePrefab;
     public Material TileMaterial => _TileMaterial;
+    public GameObject[] TreePrototypes => _TreePrototypes;
 }

@@ -17,6 +17,38 @@ public class TerrainTile : MonoBehaviour
         return _TerrainComponent.terrainData.GetInterpolatedHeight(position.x, position.y);
     }
 
+    public void GenerateFlora(TerrainDefinition definition)
+    {
+        List<TreePrototype> prototypeList = new List<TreePrototype>();
+        foreach(GameObject treeProtoPrefab in definition.TreePrototypes)
+        {
+            TreePrototype newTreeProto = new TreePrototype();
+            newTreeProto.prefab = treeProtoPrefab;
+            prototypeList.Add(newTreeProto);
+        }
+
+        _TerrainComponent.terrainData.treePrototypes = prototypeList.ToArray();
+        _TerrainComponent.terrainData.RefreshPrototypes();
+
+        float patchRadius = Mathf.Clamp(1.0f / definition.FloraPatchPerTile, 0.1f, 0.4f);
+        for (int patchCount = 0; patchCount < definition.FloraPatchPerTile; ++patchCount)
+        {
+            Vector2 patchOrigin = new Vector2(Random.Range(patchRadius, 1.0f - patchRadius), Random.Range(patchRadius, 1.0f - patchRadius));
+
+            for (int floraCount = 0; floraCount < definition.FloraPatchDensity; ++floraCount)
+            {
+                TreeInstance newTreeInstance = new TreeInstance();
+                newTreeInstance.prototypeIndex = Random.Range(0, definition.TreePrototypes.Length);
+                newTreeInstance.position = new Vector3(patchOrigin.x + Random.Range(-patchRadius, patchRadius), 0, patchOrigin.y + Random.Range(-patchRadius, patchRadius));
+                newTreeInstance.heightScale = Random.Range(0.6f, 1.0f);
+                newTreeInstance.widthScale = Random.Range(0.6f, 1.0f);
+                _TerrainComponent.AddTreeInstance(newTreeInstance);
+            }
+        }
+
+        TerrainComponent.Flush();
+    }
+
     public void Init(TerrainDefinition definition, float[,] baseHeightmap, Vector2Int tileIndex)
     {
         _TileIndex = tileIndex;

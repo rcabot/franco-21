@@ -174,7 +174,6 @@ GameObject:
   m_Component:
   - component: {fileID: 587862632}
   - component: {fileID: 587862633}
-  - component: {fileID: 7683541107179527702}
   m_Layer: 0
   m_Name: Spot Light
   m_TagString: Untagged
@@ -258,25 +257,6 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
---- !u!114 &7683541107179527702
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 587862631}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5c19c621ae9c84646a0840542eed1e6f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_ButtonName: Fire2
-  m_Light: {fileID: 587862633}
-  pulsePropMaterials:
-  - {fileID: 2100000, guid: b1a38d94fa92d374d9f9932ebe64815d, type: 2}
-  - {fileID: 2100000, guid: 3f738622d5d773e40bc45de1f50ecf53, type: 2}
-  - {fileID: 2100000, guid: 567cd93c36b319a4ca53bcbe286afc6e, type: 2}
-  - {fileID: 2100000, guid: 850c44532cc2a684eb4044a5ca20387e, type: 2}
 --- !u!1 &638144538
 GameObject:
   m_ObjectHideFlags: 0
@@ -6271,7 +6251,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7576024100105493024}
   - component: {fileID: 3931523732993093990}
-  - component: {fileID: 4129198921201915545}
   m_Layer: 3
   m_Name: InteriorLight
   m_TagString: Untagged
@@ -6355,25 +6334,6 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
---- !u!114 &4129198921201915545
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1992740651443153909}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5c19c621ae9c84646a0840542eed1e6f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_ButtonName: Fire2
-  m_Light: {fileID: 3931523732993093990}
-  pulsePropMaterials:
-  - {fileID: 2100000, guid: b1a38d94fa92d374d9f9932ebe64815d, type: 2}
-  - {fileID: 2100000, guid: 3f738622d5d773e40bc45de1f50ecf53, type: 2}
-  - {fileID: 2100000, guid: 567cd93c36b319a4ca53bcbe286afc6e, type: 2}
-  - {fileID: 2100000, guid: 850c44532cc2a684eb4044a5ca20387e, type: 2}
 --- !u!1 &2005668824104825709
 GameObject:
   m_ObjectHideFlags: 0
@@ -9656,6 +9616,7 @@ GameObject:
   - component: {fileID: 1880942715}
   - component: {fileID: 3487051285311501461}
   - component: {fileID: 8359136923854504685}
+  - component: {fileID: 1182551147}
   m_Layer: 8
   m_Name: Submarine
   m_TagString: Player
@@ -9865,6 +9826,27 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &1182551147
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7626430705779275364}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c19c621ae9c84646a0840542eed1e6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ButtonName: Fire2
+  m_Lights:
+  - {fileID: 3931523732993093990}
+  - {fileID: 587862633}
+  pulsePropMaterials:
+  - {fileID: 2100000, guid: b1a38d94fa92d374d9f9932ebe64815d, type: 2}
+  - {fileID: 2100000, guid: 3f738622d5d773e40bc45de1f50ecf53, type: 2}
+  - {fileID: 2100000, guid: 567cd93c36b319a4ca53bcbe286afc6e, type: 2}
+  - {fileID: 2100000, guid: 850c44532cc2a684eb4044a5ca20387e, type: 2}
 --- !u!1 &7626430706555402592
 GameObject:
   m_ObjectHideFlags: 0
@@ -9933,7 +9915,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 87
+    m_Bits: 471
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 8400000, guid: 7eb1cfa2c1a90234aa20f0a77bbcabc3, type: 2}
   m_TargetDisplay: 0
