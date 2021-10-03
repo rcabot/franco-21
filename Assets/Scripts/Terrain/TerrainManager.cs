@@ -42,6 +42,28 @@ public class TerrainManager : MonoBehaviour
         return GetTileSize() * GetEdgeTileCount();
     }
 
+    public float GetHeight(Vector3 position)
+    {
+        // Loop over the texels in the tile and modify them to create a basin
+        float halfTerrainSize = GetTerrainSize() * 0.5f;
+        if ((Mathf.Abs(position.x) <= halfTerrainSize) && (Mathf.Abs(position.y) <= (halfTerrainSize)))
+        {
+            float tileSize = GetTileSize();
+            float terrainMinOffset = -(halfTerrainSize);
+
+            Vector2 offset = new Vector2(position.x - terrainMinOffset, position.z - terrainMinOffset);
+            Vector2Int tileIndex = new Vector2Int(Mathf.FloorToInt(offset.x / tileSize), Mathf.FloorToInt(offset.y / tileSize));
+
+            TerrainTile hashedTile = GetTile(tileIndex);
+            Vector2 localNormCoords = new Vector2((offset.x / tileSize) - tileIndex.x, (offset.y / tileSize) - tileIndex.y);
+            return hashedTile.GetTerrainHeight(localNormCoords);
+        }
+        else
+        {
+            return 0.0f;
+        }
+    }
+
     private void Awake()
     {
         if (Instance == null)
@@ -163,6 +185,12 @@ public class TerrainManager : MonoBehaviour
         }
     }
 
+    float GetBasinGradient(float value)
+    {
+        float result = (Mathf.Exp(value * Definition.BasinSteepness) / Definition.BasinDamping) - Definition.BasinOffset;
+        return Mathf.Clamp(result / (1.0f + result), 0.0f, 1.0f);
+    }
+
     void CalculateBasinTile(float[,] heightmap, Vector2Int tileIndex, TerrainData terrainData)
     {
         // Loop over the texels in the tile and modify them to create a basin
@@ -188,7 +216,7 @@ public class TerrainManager : MonoBehaviour
                 float texelXCoord = terrainMinOffset + (texelStepSize * baseColumn);
 
                 float distanceToBounds = Mathf.Sqrt(bounds.SqrDistance(new Vector3(texelXCoord, 0, texelYCoord)));
-                float factor = Mathf.Min(distanceToBounds / tileSize, 1.0f);
+                float factor = GetBasinGradient(distanceToBounds / tileSize);
                 float baseValue = heightmap[baseRow, baseColumn];
 
                 heightmap[baseRow, baseColumn] = factor + baseValue * (1.0f - factor);

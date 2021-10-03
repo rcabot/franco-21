@@ -17,6 +17,10 @@ public class TerrainDefinition : ScriptableObject
     [SerializeField, Tooltip("Area of a mountain (factored w.r.t the size of a tile, e.g 0.5 --> it will be half as big as a tile")] private float _MountainAreaFactor = 0.5f;
     [SerializeField, Tooltip("Spawn this many mountains")] private int _MountainCount = 0;
 
+    [SerializeField, Tooltip("Basin wall gradient steepness")] private float _BasinSteepness = 1.0f;
+    [SerializeField, Tooltip("Basin wall gradient damping")] private float _BasinDamping = 1.0f;
+    [SerializeField, Tooltip("Basin wall gradient offset")] private float _BasinOffset = 0.0f;
+
     [SerializeField] private TerrainTile _TilePrefab = null;
     [SerializeField] private Material _TileMaterial = null;
 
@@ -31,6 +35,10 @@ public class TerrainDefinition : ScriptableObject
     public float MountainNoiseScale => _MountainNoiseScale;
     public float MountainAreaFactor => _MountainAreaFactor;
     public int MountainCount => _MountainCount;
+
+    public float BasinSteepness => _BasinSteepness;
+    public float BasinDamping => _BasinDamping;
+    public float BasinOffset => _BasinOffset;
 
     public TerrainTile TilePrefab => _TilePrefab;
     public Material TileMaterial => _TileMaterial;

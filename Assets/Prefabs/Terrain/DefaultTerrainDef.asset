@@ -15,7 +15,7 @@ MonoBehaviour:
   _TerrainSize: 2048
   _EdgeTileCount: 4
   _Resolution: {x: 1024, y: 512}
-  _MaxHeight: 200
+  _MaxHeight: 300
   _BaseNoiseScale: 0.00523
   _BaseFactor: 0.3
   _MountainNoiseScale: 0.01
