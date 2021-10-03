@@ -1,24 +1,32 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ThreatIndicator : MonoBehaviour
 {
     [SerializeField, Tooltip("Submarine transform")] private Transform SubTransform = null;
     [SerializeField, Tooltip("Range at which the indicator starts up")] private float RangeThreshold = 1.0f;
-    [SerializeField, Tooltip("Number of squares to fill on the indicator")] private int IndicatorCount = 1;
     //[SerializeField, Tooltip("Sound made by the indicator when the creature is near")] private AudioSou _AlertSound = null;
 
-    private int AlertLevel = 0;
+    [SerializeField] GameObject[] Indicators = null;
+    [SerializeField] Texture[] IndicatorTextures = null;
 
-    private void Awake()
-    {
-        // TODO: add a reference to the creature?
-    }
+    private int AlertLevel = 0;
 
     // Start is called before the first frame update
     void Start()
     {
+        UpdateAlertLevel();
+    }
+
+    void UpdateAlertLevel()
+    {
+        foreach(GameObject currentIndicator in Indicators)
+        {
+            RawImage rawImage = currentIndicator.GetComponent<RawImage>();
+            rawImage.texture = IndicatorTextures[AlertLevel];
+        }
     }
 
     // Update is called once per frame
@@ -30,9 +38,8 @@ public class ThreatIndicator : MonoBehaviour
         float creatureDistance = Vector3.Distance(creaturePosition, SubTransform.position);
         if (creatureDistance < RangeThreshold)
         {
-            //float stepSize = _RangeThreshold / _IndicatorCount
-            // 
-            AlertLevel = 1;
+            float stepSize = RangeThreshold / IndicatorTextures.Length;
+            AlertLevel = IndicatorTextures.Length - Mathf.FloorToInt(creatureDistance / stepSize);
         }
         else
         {
@@ -41,14 +48,7 @@ public class ThreatIndicator : MonoBehaviour
 
         if(prevAlertLevel != AlertLevel)
         {
-            if (prevAlertLevel > 0)
-            {
-                Debug.Log("Escaped the creature!");
-            }
-            else
-            {
-                Debug.Log("Creature too close!");
-            }
+            UpdateAlertLevel();
         }
     }
 }
