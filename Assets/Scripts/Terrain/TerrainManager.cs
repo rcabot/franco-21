@@ -14,6 +14,8 @@ public class TerrainManager : MonoBehaviour
 
     public Rect PlayableTerrainArea => new Rect(-Vector2.one * Definition.TerrainSize * 0.5f,  Vector2.one * Definition.TerrainSize);
 
+    public Rect TerrainAreaWithEdge { get { Vector2 half_terrain_size = Vector2.one * GetTerrainSize() * 0.5f; return new Rect(-half_terrain_size, half_terrain_size * 2f); } }
+
     struct Mountain
     {
         public Vector2 Position;
