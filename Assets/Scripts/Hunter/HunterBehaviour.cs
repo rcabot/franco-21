@@ -63,10 +63,14 @@ public class HunterBehaviour : MonoBehaviour
         get => m_PlayerAggro;
         set
         {
-            float clamped_value = Mathf.Clamp(value, 0f, MaxPlayerAggro);
-            if (!Mathf.Approximately(m_PlayerAggro, clamped_value))
+            //No Aggro changes in retreat
+            if (m_CurrentState != HunterState.Retreat)
             {
-                m_PlayerAggro = clamped_value; HandleAggroChanged();
+                float clamped_value = Mathf.Clamp(value, 0f, MaxPlayerAggro);
+                if (!Mathf.Approximately(m_PlayerAggro, clamped_value))
+                {
+                    m_PlayerAggro = clamped_value; HandleAggroChanged();
+                }
             }
         }
     }
@@ -206,6 +210,7 @@ public class HunterBehaviour : MonoBehaviour
         player.TakeHit();
 
         //Start retreating
+        PlayerAggro = 0f;
         EnterState(HunterState.Retreat);
     }
 
@@ -330,7 +335,7 @@ public class HunterBehaviour : MonoBehaviour
         switch (CurrentState)
         {
             case HunterState.Backstage:
-                StartCoroutine(MoveTowardsBackstage());
+                GoBackstage();
                 break;
             case HunterState.FrontstageIdle:
                 StartCoroutine(FrontstageIdle());
@@ -357,47 +362,6 @@ public class HunterBehaviour : MonoBehaviour
     }
 
     #region Behaviour Coroutines
-    private IEnumerator MoveTowardsBackstage()
-    {
-        m_PlayerAggro = 0;
-
-        while (true)
-        {
-            yield return new WaitForFixedUpdate();
-
-            if (m_CurrentState != HunterState.Backstage)
-            {
-                break;
-            }
-
-            //Despawn if far enough away from the player
-            Vector3 player_pos = m_PlayerSubmarine.transform.position;
-            Vector3 to_player = player_pos - transform.position;
-            float distance_to_player = to_player.magnitude;
-
-            if (distance_to_player >= m_SafeVisibilityDistance)
-            {
-                LogHunterMessage("[Hunter] Tring to Enter Limbo - Far enough away to enter limbo");
-                GoBackstage();
-                break;
-            }
-            else
-            {
-                LogHunterMessage($"[Hunter] Tring to Enter Limbo - Too close to player to enter limbo. Distance: {distance_to_player: #.##}");
-                //Flee from the player
-                Vector3 flee_direction = -(to_player / distance_to_player);
-
-                //Y must be positive
-                if (flee_direction.y < 0.3f)
-                {
-                    flee_direction.y = 0.3f;
-                    flee_direction.Normalize();
-                }
-
-                m_MoveTarget = transform.position + flee_direction * 1000f;
-            }
-        }
-    }
 
     private IEnumerator FrontstageIdle()
     {
@@ -573,7 +537,6 @@ public class HunterBehaviour : MonoBehaviour
     {
         EnterLimbo();
         transform.position = m_BackstagePosition;
-        m_PlayerAggro = 0f;
     }
 
     private void EnterLimbo()
