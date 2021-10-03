@@ -24,5 +24,12 @@ MonoBehaviour:
   _BasinSteepness: 7
   _BasinDamping: 4
   _BasinOffset: 0.4
+  _FloraPerTile: 50
   _TilePrefab: {fileID: -6482972591216050592, guid: a36e9ce48ef9dab4988ad8a02bd30062, type: 3}
   _TileMaterial: {fileID: 2100000, guid: c2c209fc186362748984a7b1a357782b, type: 2}
+  _TreePrototypes:
+  - {fileID: 5261380411383273195, guid: d712457352be9f2469b7b513db228c4e, type: 3}
+  - {fileID: 3079019601704881931, guid: 9111e0cfbce4e48488402c573af73a0c, type: 3}
+  - {fileID: 8910140872481409987, guid: 16be5119a7e26d84bac5d0e1c01e34eb, type: 3}
+  - {fileID: 4214869636825755520, guid: bc427e68acd10dc41988068fc967a945, type: 3}
+  - {fileID: 7570695502418762891, guid: 5083f58c21760aa479eb9a544ef21ede, type: 3}

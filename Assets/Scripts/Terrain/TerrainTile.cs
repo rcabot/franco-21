@@ -17,6 +17,32 @@ public class TerrainTile : MonoBehaviour
         return _TerrainComponent.terrainData.GetInterpolatedHeight(position.x, position.y);
     }
 
+    public void GenerateFlora(TerrainDefinition definition)
+    {
+        List<TreePrototype> prototypeList = new List<TreePrototype>();
+        foreach(GameObject treeProtoPrefab in definition.TreePrototypes)
+        {
+            TreePrototype newTreeProto = new TreePrototype();
+            newTreeProto.prefab = treeProtoPrefab;
+            prototypeList.Add(newTreeProto);
+        }
+
+        _TerrainComponent.terrainData.treePrototypes = prototypeList.ToArray();
+        _TerrainComponent.terrainData.RefreshPrototypes();
+
+        for(int treeCount = 0; treeCount < definition.FloraPerTile; ++treeCount)
+        {
+            TreeInstance newTreeInstance = new TreeInstance();
+            newTreeInstance.prototypeIndex = Random.Range(0, definition.TreePrototypes.Length);
+            newTreeInstance.position = new Vector3(Random.Range(0.0f, 1.0f), 0, Random.Range(0.0f, 1.0f));
+            newTreeInstance.heightScale = Random.Range(0.6f, 1.0f);
+            newTreeInstance.widthScale = Random.Range(0.6f, 1.0f);
+            _TerrainComponent.AddTreeInstance(newTreeInstance);
+        }
+
+        TerrainComponent.Flush();
+    }
+
     public void Init(TerrainDefinition definition, float[,] baseHeightmap, Vector2Int tileIndex)
     {
         _TileIndex = tileIndex;

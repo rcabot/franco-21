@@ -189,6 +189,24 @@ public class TerrainManager : MonoBehaviour
         }
     }
 
+    private void GenerateFlora()
+    {
+        if (Definition.TreePrototypes.Length == 0)
+        {
+            return;
+        }
+
+        // Generate flora only on the playable area tiles
+        for(int currentRow = 0; currentRow < Definition.EdgeTileCount; ++currentRow)
+        {
+            for(int currentCol = 0; currentCol < Definition.EdgeTileCount; ++currentCol)
+            {
+                TerrainTile currentTile = Tiles[((currentRow + 1) * Definition.EdgeTileCount) + (currentCol + 1)];
+                currentTile.GenerateFlora(Definition);
+            }
+        }
+    }
+
     float GetBasinGradient(float value)
     {
         float result = (Mathf.Exp(value * Definition.BasinSteepness) / Definition.BasinDamping) - Definition.BasinOffset;
@@ -399,6 +417,7 @@ public class TerrainManager : MonoBehaviour
         }
 
         ConnectTiles();
+        GenerateFlora();
     }
 
     // Update is called once per frame
