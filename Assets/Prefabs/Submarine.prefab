@@ -9940,20 +9940,38 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 0.6747542
-      outSlope: 0.6747542
+      inSlope: 0.25345385
+      outSlope: 0.25345385
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.065088764
+      outWeight: 0.11478046
     - serializedVersion: 3
-      time: 5
-      value: 10
-      inSlope: 6.664926
-      outSlope: 6.664926
+      time: 4.968469
+      value: 4.8899484
+      inSlope: 1.748184
+      outSlope: 1.748184
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.072485164
+      inWeight: 0.33333334
+      outWeight: 0.048808318
+    - serializedVersion: 3
+      time: 9.866491
+      value: 19.39286
+      inSlope: 4.4570594
+      outSlope: 4.4570594
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 10
+      value: 20
+      inSlope: 4.6394315
+      outSlope: 4.6394315
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.04527569
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -9963,13 +9981,13 @@ MonoBehaviour:
   currentSpeed: {x: 0, y: 0, z: 0}
   smallBonk: {fileID: 8300000, guid: 1e4afdd629049d241b25ff949a95fae4, type: 3}
   bigBonk: {fileID: 8300000, guid: 8f82486f1aef8fa4192d9e38717c0350, type: 3}
-  collisionElasticity: 0.5
-  collisionHardThreshold: 12
+  collisionElasticity: 1.5
+  collisionHardThreshold: 4
   currentGear: 0
   gearSpeeds:
   - 2
   - 5
-  - 10
+  - 30
 --- !u!135 &1880942715
 SphereCollider:
   m_ObjectHideFlags: 0

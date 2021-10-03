@@ -187,13 +187,22 @@ public class SubmarineController : MonoBehaviour
         Debug.Log("Player Hit");
     }
 
+    private void OnCollisionStay(Collision collision)
+    {
+        /*Vector3 contact_normal = collision.contacts[0].normal;
+        float speed_magnitude = currentSpeed.magnitude;
+        currentSpeed.x = contact_normal.x * currentSpeed.x * speed_magnitude;
+        currentSpeed.y = contact_normal.y * currentSpeed.y * speed_magnitude;
+        currentSpeed.z = contact_normal.z * currentSpeed.z * speed_magnitude;*/
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
         scraping = true;
         if (hasCollidedThisFrame == false)
         {
             hasCollidedThisFrame = true;
-            float collision_intensity = Mathf.Abs(Vector3.Dot(collision.contacts[0].normal, currentSpeed) * currentSpeed.magnitude);
+            float collision_intensity = Mathf.Clamp(-Vector3.Dot(collision.contacts[0].normal, currentSpeed.normalized), 0.0f, 1.0f) * currentSpeed.magnitude;
             if (collision_intensity > collisionHardThreshold)
             {
                 shipAudioSource.clip = bigBonk;
@@ -205,7 +214,9 @@ public class SubmarineController : MonoBehaviour
                 HunterBehaviour.Instance?.OnTerrainBump(false);
             }
 
-            AddImpulse((collision_intensity * collisionElasticity) * collision.contacts[0].normal);
+            var addedVelocity = (collision_intensity * collisionElasticity) * collision.contacts[0].normal;
+            //currentSpeed *= (currentSpeed.magnitude / addedVelocity.magnitude);
+            AddImpulse(addedVelocity);
 
             shipAudioSource.Play();
         }
