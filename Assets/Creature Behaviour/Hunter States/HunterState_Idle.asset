@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: HunterState_Idle
   m_EditorClassIdentifier: 
   m_default_state: 0
-  m_MinimumAttention: 0
+  m_MinimumAttention: 10
   m_FollowState: 1
   m_StartSounds: {fileID: 0}
   m_StartVolumeScale: 1

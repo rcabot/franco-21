@@ -9337,7 +9337,7 @@ GameObject:
   - component: {fileID: 7626430705779275367}
   - component: {fileID: 1880942715}
   - component: {fileID: 3487051285311501461}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Submarine
   m_TagString: Untagged
   m_Icon: {fileID: 0}

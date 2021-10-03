@@ -15,6 +15,7 @@ class DebugTools : EditorWindow
     bool m_ShowCreatureTest = false;
     HunterState m_OverrideState = null;
     HunterBehaviour m_HunterBehaviour = null;
+    Vector3 m_HunterTeleportPosition = Vector3.zero;
 
     [MenuItem("Franco Jam/Debug Tools")]
     public static void ShowWindow()
@@ -22,15 +23,25 @@ class DebugTools : EditorWindow
         EditorWindow.GetWindow<DebugTools>();
     }
 
-    private void OnEnable()
+    private void Update()
     {
-        m_HunterBehaviour = FindObjectOfType<HunterBehaviour>();
+        if (m_HunterBehaviour == null)
+        {
+            m_HunterBehaviour = FindObjectOfType<HunterBehaviour>();
+        }
     }
 
     void OnGUI()
     {
-        CameraShakeUI();
-        CreatureUI();
+        if (Application.isPlaying)
+        {
+            CameraShakeUI();
+            CreatureUI();
+        }
+        else
+        {
+            EditorGUILayout.LabelField("Waiting for game to start...");
+        }
     }
 
     private void CreatureUI()
@@ -40,14 +51,32 @@ class DebugTools : EditorWindow
             m_ShowCreatureTest = EditorGUILayout.Foldout(m_ShowCreatureTest, "Creature Test");
             if (m_ShowCreatureTest)
             {
+                HunterBehaviour.EnableLogging = EditorGUILayout.Toggle("Enable Logging", HunterBehaviour.EnableLogging);
+                EditorGUILayout.LabelField("Current Follow State:", m_HunterBehaviour.FollowState.ToString());
+                EditorGUILayout.LabelField("Current State:", m_HunterBehaviour.CurrentState?.name ?? "None");
                 m_HunterBehaviour.PlayerAttention = EditorGUILayout.IntSlider("Player Aggro", m_HunterBehaviour.PlayerAttention, 0, 100);
-                m_OverrideState = EditorGUILayout.ObjectField("Override State", m_OverrideState, typeof(HunterBehaviour), false) as HunterState;
 
+                m_OverrideState = EditorGUILayout.ObjectField("Override State", m_OverrideState, typeof(HunterBehaviour), false) as HunterState;
                 if (m_OverrideState != null && GUILayout.Button("Appply State Override"))
                 {
                     m_HunterBehaviour.ForceSetState(m_OverrideState);
                 }
+
+                if (GUILayout.Button("Force Backstage"))
+                {
+                    m_HunterBehaviour.DebugForceBackstage();
+                }
+
+                m_HunterTeleportPosition = EditorGUILayout.Vector3Field("Teleport Position", m_HunterTeleportPosition);
+                if (GUILayout.Button("Teleport"))
+                {
+                    m_HunterBehaviour.DebugTeleport(m_HunterTeleportPosition);
+                }
             }
+        }
+        else
+        {
+            EditorGUILayout.LabelField("- No Creature Found -");
         }
     }
 

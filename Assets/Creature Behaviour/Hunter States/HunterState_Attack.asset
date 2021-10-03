@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: HunterState_Attack
   m_EditorClassIdentifier: 
   m_default_state: 0
-  m_MinimumAttention: 0
+  m_MinimumAttention: 90
   m_FollowState: 5
   m_StartSounds: {fileID: 0}
   m_StartVolumeScale: 1

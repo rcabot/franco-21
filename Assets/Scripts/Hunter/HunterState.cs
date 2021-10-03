@@ -9,14 +9,16 @@ public enum HunterFollowState
     FrontstageDistant,
     Suspicious,
     FrontstageClose,
-    Attacking
+    Attacking,
+    Retreat
 }
 
 [CreateAssetMenu(menuName = "Franco Jam/Hunter State")]
 public class HunterState : ScriptableObject
 {
     [Header("General")]
-    [SerializeField] private bool                  m_default_state = false;
+    [SerializeField]
+    private bool                                   m_default_state = false;
 
     [SerializeField, Tooltip("Minimum attention required for the hunter to enter this state")]
     private int                                    m_MinimumAttention = 0;
@@ -45,7 +47,7 @@ public class HunterState : ScriptableObject
     public HunterFollowState FollowState                  => m_FollowState;
 
     public SoundBank         StateStartSounds             => m_StartSounds;
-    public float             StartSoundVolume        => m_StartVolumeScale;
+    public float             StartSoundVolume             => m_StartVolumeScale;
     public float             StartScreenShakeMagnitude    => m_StartScreenShakeMagnitude;
     public float             StartScreenShakeDuration     => m_StartScreenShakeDuration;
 

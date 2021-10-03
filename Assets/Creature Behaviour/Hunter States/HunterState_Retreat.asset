@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7364c478ff2e1974aae1ff55711d06a4, type: 3}
-  m_Name: HunterState_StalkClose
+  m_Name: HunterState_Retreat
   m_EditorClassIdentifier: 
   m_default_state: 0
-  m_MinimumAttention: 60
-  m_FollowState: 4
+  m_MinimumAttention: 5
+  m_FollowState: 3
   m_StartSounds: {fileID: 0}
   m_StartVolumeScale: 1
   m_StartScreenShakeMagnitude: 0
