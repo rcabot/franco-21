@@ -105,6 +105,11 @@ public static class Vector2Extensions
         return new Vector3(v.x, v.y);
     }
 
+    public static Vector3 XZ(this Vector2 v)
+    {
+        return new Vector3(v.x, 0, v.y);
+    }
+
     public static bool Approximately(this Vector2 lhs, Vector2 rhs)
     {
         return Mathf.Approximately(lhs.x, rhs.x) && Mathf.Approximately(lhs.y, rhs.y);
