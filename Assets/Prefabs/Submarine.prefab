@@ -9491,8 +9491,8 @@ MonoBehaviour:
   currentSpeed: {x: 0, y: 0, z: 0}
   smallBonk: {fileID: 8300000, guid: 8ef8f2981986e1847bb3eec8c7ad0471, type: 3}
   bigBonk: {fileID: 8300000, guid: 8f82486f1aef8fa4192d9e38717c0350, type: 3}
-  collisionElasticity: 1
-  collisionHardThreshold: 10
+  collisionElasticity: 0.5
+  collisionHardThreshold: 12
   currentGear: 0
   gearSpeeds:
   - 2
