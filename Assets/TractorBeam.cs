@@ -12,7 +12,7 @@ public class TractorBeam : MonoBehaviour
         {
             //Debug.Log("collectable in tractor beam!");
             var pullDir = (m_pullTo.position - other.transform.position).normalized;
-            other.GetComponent<Rigidbody>().AddForce(pullDir * m_pullForce);
+            other.attachedRigidbody?.AddForce(pullDir * m_pullForce);
         }
     }
 }

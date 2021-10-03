@@ -70,7 +70,7 @@ class DebugTools : EditorWindow
                     hunter.ForceSetState(new_state);
                 }
 
-                hunter.PlayerAggro = EditorGUILayout.IntSlider("Player Aggro", hunter.PlayerAggro, 0, 100);
+                hunter.PlayerAggro = EditorGUILayout.Slider("Player Aggro", hunter.PlayerAggro, 0, 100);
 
                 if (GUILayout.Button("Force Backstage"))
                 {

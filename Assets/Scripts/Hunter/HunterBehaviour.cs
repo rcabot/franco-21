@@ -9,7 +9,7 @@ using UnityRandom = UnityEngine.Random;
 public class HunterBehaviour : MonoBehaviour
 {
     //Members
-    private int                                m_PlayerAggro = 0;
+    private float                              m_PlayerAggro = 0f;
     private float                              m_TimeUntilPeriodEffect = 0f;
     private AudioSource                        m_AudioSource;
     private Rigidbody                          m_RigidBody;
@@ -46,16 +46,19 @@ public class HunterBehaviour : MonoBehaviour
     [SerializeField] private HunterStateSettings m_AttackingSettings            = new HunterStateSettings();
     [SerializeField] private HunterStateSettings m_RetreatSettings              = new HunterStateSettings();
 
+    [SerializeField] private HunterAggroSettings m_CreatureAggroSettings                = new HunterAggroSettings();
+
+
     //Populated in awake. /!\ REMEMBER TO UPDATE THIS IF YOU ADD A NEW STATE /!\ 
     List<HunterStateSettings>                    m_AllStateSettings = new List<HunterStateSettings>();
 
     //Events
-    public event EventHandler<int>                                            OnAggroChanged;
+    public event EventHandler<float>                                          OnAggroChanged;
     public event EventHandler<KeyValuePair<HunterState, HunterStateSettings>> OnStateChanged;
 
     //Properties
     public static HunterBehaviour Instance { get; private set; }
-    public int PlayerAggro
+    public float PlayerAggro
     {
         get => m_PlayerAggro;
         set { if (m_PlayerAggro != value) { m_PlayerAggro = value; HandleAggroChanged(); } }
@@ -67,6 +70,7 @@ public class HunterBehaviour : MonoBehaviour
     public HunterState         CurrentState => m_CurrentState;
 
     public bool                AttackEnabled { get; set; }
+    public HunterAggroSettings         Aggro => m_CreatureAggroSettings;
 
     //Methods
     public void ForceSetState(HunterState state)
@@ -89,9 +93,9 @@ public class HunterBehaviour : MonoBehaviour
                 return;
         }
 
-        int TriggerAggroForStateIfValid(HunterStateSettings state_settings)
+        float TriggerAggroForStateIfValid(HunterStateSettings state_settings)
         {
-            return state_settings.ActivationAggro <= m_PlayerAggro ? state_settings.ActivationAggro : int.MinValue;
+            return state_settings.ActivationAggro <= m_PlayerAggro ? state_settings.ActivationAggro : float.NegativeInfinity;
         }
 
         //Test if a new state should be activated
@@ -552,7 +556,7 @@ public class HunterBehaviour : MonoBehaviour
     {
         EnterLimbo();
         transform.position = m_BackstagePosition;
-        m_PlayerAggro = 0;
+        m_PlayerAggro = 0f;
     }
 
     private void EnterLimbo()
@@ -577,6 +581,65 @@ public class HunterBehaviour : MonoBehaviour
             position.y = hit_info.point.y + surface_offset;
         }
         transform.position = position;
+    }
+
+    void ApplyRegularAggro(float delta_time)
+    {
+        float passive_decay = -m_CreatureAggroSettings.PassiveDecay;
+
+        float light_aggro = 0f;
+        if (m_PlayerSubmarine.LightsOn)
+        {
+            light_aggro = m_CreatureAggroSettings.LightAggro;
+        }
+
+        float speed_aggro = 0f;
+        float min_speed_for_aggro = m_CreatureAggroSettings.MinMovementForSpeedAgro;
+        if (m_PlayerSubmarine.currentSpeed.sqrMagnitude >= (min_speed_for_aggro * min_speed_for_aggro))
+        {
+            switch (m_PlayerSubmarine.currentGear)
+            {
+                case SubmarineController.MovementGear.SLOW:
+                    speed_aggro = m_CreatureAggroSettings.LowSpeedAggro;
+                    break;
+                case SubmarineController.MovementGear.NORMAL:
+                    speed_aggro = m_CreatureAggroSettings.MidSpeedAggro;
+                    break;
+                case SubmarineController.MovementGear.FAST:
+                    speed_aggro = m_CreatureAggroSettings.HighSpeedAggro;
+                    break;
+            }
+        }
+
+        float height_aggro = 0f;
+        float player_height = m_PlayerSubmarine.transform.position.y;
+        if (player_height >= m_CreatureAggroSettings.MinHeightForAggro)
+        {
+            height_aggro = m_CreatureAggroSettings.HeightAggroPerMeter * (player_height - m_CreatureAggroSettings.MinHeightForAggro);
+        }
+
+        float tractor_aggro = m_PlayerSubmarine.TractorBeamOn ? m_CreatureAggroSettings.TractorBeamAggro : 0f;
+
+#if UNITY_EDITOR
+        LogHunterMessage($"[Hunter] Threat Tick. Decay: {passive_decay : #.##} | Lights: {light_aggro : #.##} | Speed: {speed_aggro : #.##} | Height: {height_aggro: #.##} | Tractor Beam: {tractor_aggro : #.##}");
+#endif
+
+        PlayerAggro += (passive_decay + light_aggro + height_aggro + speed_aggro + tractor_aggro) * delta_time;
+    }
+
+    public void OnPlayerPickup()
+    {
+        PlayerAggro += m_CreatureAggroSettings.PickupCollectedAggro;
+    }
+
+    public void OnTerrainBump()
+    {
+        PlayerAggro += m_CreatureAggroSettings.TerrainBumpAggro;
+    }
+
+    public void OnCreatureBump()
+    {
+        PlayerAggro += m_CreatureAggroSettings.SeaCreatureBumpAggro;
     }
 
     #region Unity Methods
@@ -634,6 +697,7 @@ public class HunterBehaviour : MonoBehaviour
     {
         UpdatePeriodicEffects();
         MoveTowardsTarget();
+        ApplyRegularAggro(Time.fixedDeltaTime);
     }
 
     private void OnTriggerEnter(Collider other_collider)

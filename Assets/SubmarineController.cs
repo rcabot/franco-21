@@ -7,6 +7,8 @@ using UnityEngine;
 
 public class SubmarineController : MonoBehaviour
 {
+    private LightActivator lights;
+    private TractorBeamActivator tractor_beam;
     float acceleration = 7.5f;
     public Camera playerCamera;
     public Transform submarineCockpit;
@@ -52,6 +54,15 @@ public class SubmarineController : MonoBehaviour
     int num_gears = Enum.GetNames(typeof(MovementGear)).Length;
     public float[] gearSpeeds = { 2, 5, 10 };
 
+    public bool LightsOn => lights?.LightsEnabled ?? false;
+
+    public bool TractorBeamOn => tractor_beam?.TractorActive ?? false;
+
+    private void Awake()
+    {
+        lights = GetComponent<LightActivator>();
+        tractor_beam = GetComponentInChildren<TractorBeamActivator>();
+    }
 
     void Start()
     {

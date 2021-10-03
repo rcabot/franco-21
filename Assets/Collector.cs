@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,7 +16,8 @@ public class Collector : MonoBehaviour
         if (other.CompareTag("Collectable"))
         {
             Destroy(other.gameObject);
-            m_playerState.Collected++;
+            HunterBehaviour.Instance?.OnPlayerPickup();
+            ++m_playerState.Collected;
         }
 
     }
