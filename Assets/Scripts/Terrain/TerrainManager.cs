@@ -18,7 +18,7 @@ public class TerrainManager : MonoBehaviour
         public float Radius;
     }
 
-    private int GetEdgeTileCount()
+    public int GetEdgeTileCount()
     {
         return (Definition.EdgeTileCount + 2);
     }
