@@ -695,14 +695,42 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_MoveTarget: {x: 0, y: 0, z: 0}
-  m_Acceleration: 0
-  m_TurnSpeed: 0
+  m_Acceleration: 7
+  m_TurnSpeed: 20
   m_BiteKnockbackForce: 30
+  m_FrictionCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0.6747542
+      outSlope: 0.6747542
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.065088764
+    - serializedVersion: 3
+      time: 5
+      value: 10
+      inSlope: 6.664926
+      outSlope: 6.664926
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.072485164
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   m_MaxPlayerAggro: 100
   m_BackstagePosition: {x: 0, y: 0, z: -10000}
-  m_SafeVisibilityDistance: 10
+  m_SafeVisibilityDistance: 30
   m_BackstageSettings:
     m_ActivationAggro: 0
+    m_PlayerDistance: 0
+    m_PlayerHeightOffset:
+      start: -1
+      length: 1
     m_StartSounds: {fileID: 0}
     m_StartVolumeScale: 1
     m_StartScreenShakeMagnitude: 0
@@ -716,6 +744,10 @@ MonoBehaviour:
       length: 0
   m_FrontstageIdleSettings:
     m_ActivationAggro: 10
+    m_PlayerDistance: 100
+    m_PlayerHeightOffset:
+      start: -5
+      length: 10
     m_StartSounds: {fileID: 0}
     m_StartVolumeScale: 1
     m_StartScreenShakeMagnitude: 0
@@ -729,6 +761,10 @@ MonoBehaviour:
       length: 0
   m_FrontstageDistantSettings:
     m_ActivationAggro: 20
+    m_PlayerDistance: 10
+    m_PlayerHeightOffset:
+      start: -1
+      length: 1
     m_StartSounds: {fileID: 0}
     m_StartVolumeScale: 1
     m_StartScreenShakeMagnitude: 0
@@ -742,6 +778,10 @@ MonoBehaviour:
       length: 0
   m_FrontstageSuspiciousSettings:
     m_ActivationAggro: 30
+    m_PlayerDistance: 10
+    m_PlayerHeightOffset:
+      start: -1
+      length: 1
     m_StartSounds: {fileID: 0}
     m_StartVolumeScale: 1
     m_StartScreenShakeMagnitude: 0
@@ -755,6 +795,10 @@ MonoBehaviour:
       length: 0
   m_FrontstageCloseSettings:
     m_ActivationAggro: 40
+    m_PlayerDistance: 10
+    m_PlayerHeightOffset:
+      start: -1
+      length: 1
     m_StartSounds: {fileID: 0}
     m_StartVolumeScale: 1
     m_StartScreenShakeMagnitude: 0
@@ -768,6 +812,10 @@ MonoBehaviour:
       length: 0
   m_AttackingSettings:
     m_ActivationAggro: 50
+    m_PlayerDistance: 10
+    m_PlayerHeightOffset:
+      start: -1
+      length: 1
     m_StartSounds: {fileID: 0}
     m_StartVolumeScale: 1
     m_StartScreenShakeMagnitude: 0
@@ -781,6 +829,10 @@ MonoBehaviour:
       length: 0
   m_RetreatSettings:
     m_ActivationAggro: 0
+    m_PlayerDistance: 10
+    m_PlayerHeightOffset:
+      start: -1
+      length: 1
     m_StartSounds: {fileID: 0}
     m_StartVolumeScale: 1
     m_StartScreenShakeMagnitude: 0

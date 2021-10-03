@@ -17,7 +17,15 @@ public enum HunterState
 [Serializable]
 public class HunterStateSettings
 {
-    [Range(0, 100), SerializeField] private int    m_ActivationAggro = 0;
+
+    [Range(0, 100), SerializeField, Tooltip("Minimum aggro the player must achieve to enter this state")]
+    private int                                    m_ActivationAggro = 0;
+
+    [Range(0, 100), SerializeField, Tooltip("Distance at which the creature will try to act in this state")]
+    private float                                  m_PlayerDistance = 10;
+
+    [SerializeField, RangeBeginEndAttribute(-100f, 100f), Tooltip("Height offset range that the creature may appear at when spawning near the player")]
+    private RangeFloat                             m_PlayerHeightOffset = new RangeFloat(-1f, 1f);
 
     [Header("Start Effects")]
     [SerializeField] private SoundBank             m_StartSounds = null;
@@ -35,6 +43,8 @@ public class HunterStateSettings
     private RangeFloat                             m_PeriodTimeRange = new RangeFloat(0f, 0f);
 
     public int               ActivationAggro              => m_ActivationAggro;
+    public float             PlayerDistance               => m_PlayerDistance;
+    public RangeFloat        PlayerHeightOffset           => m_PlayerHeightOffset;
 
     public SoundBank         StateStartSounds             => m_StartSounds;
     public float             StartSoundVolume             => m_StartVolumeScale;

@@ -95,7 +95,7 @@ public static class Vector2Extensions
     {
         Vector2 result = v;
         result.x = v.x * Mathf.Cos(radians) - v.y * Mathf.Sin(radians);
-        result.y = v.y * Mathf.Sin(radians) + v.y * Mathf.Cos(radians);
+        result.y = v.x * Mathf.Sin(radians) + v.y * Mathf.Cos(radians);
 
         return result;
     }
@@ -131,6 +131,11 @@ public static class Vector3Extensions
     public static Vector2 XY(this Vector3 v)
     {
         return new Vector2(v.x, v.y);
+    }
+
+    public static Vector2 XZ(this Vector3 v)
+    {
+        return new Vector2(v.x, v.z);
     }
 
     public static Vector3 Translated(this Vector3 v, float x, float y, float z)

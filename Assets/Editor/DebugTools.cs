@@ -15,10 +15,29 @@ class DebugTools : EditorWindow
     bool m_ShowCreatureTest = false;
     Vector3 m_HunterTeleportPosition = Vector3.zero;
 
+    bool m_ShowTerrainTest = false;
+    bool m_DrawTerrainBounds = false;
+
     [MenuItem("Franco Jam/Debug Tools")]
     public static void ShowWindow()
     {
         EditorWindow.GetWindow<DebugTools>();
+    }
+
+    private void Update()
+    {
+        if (m_DrawTerrainBounds)
+        {
+            TerrainManager terrain = TerrainManager.Instance;
+
+            if (terrain != null)
+            {
+                Rect bounds = TerrainManager.Instance.PlayableTerrainArea;
+
+                Debug.DrawLine(bounds.min.XZ(), bounds.min.XZ() + Vector3.up * 100f, Color.magenta, 1f, false);
+                Debug.DrawLine(bounds.max.XZ(), bounds.max.XZ() + Vector3.up * 100f, Color.cyan, 1f, false);
+            }
+        }
     }
 
     void OnGUI()
@@ -27,6 +46,7 @@ class DebugTools : EditorWindow
         {
             CameraShakeUI();
             CreatureUI();
+            TerrainUI();
         }
         else
         {
@@ -85,6 +105,15 @@ class DebugTools : EditorWindow
             {
                 WorldShakeManager.Instance?.StopShake();
             }
+        }
+    }
+
+    private void TerrainUI()
+    {
+        m_ShowTerrainTest = EditorGUILayout.Foldout(m_ShowTerrainTest, "Terrain"); ;
+        if (m_ShowTerrainTest)
+        {
+            m_DrawTerrainBounds = EditorGUILayout.Toggle("Draw Terrain Bounds: ", m_DrawTerrainBounds);
         }
     }
 }

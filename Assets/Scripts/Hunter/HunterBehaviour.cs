@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityRandom = UnityEngine.Random;
 
 [RequireComponent(typeof(AudioSource), typeof(Rigidbody))]
 public class HunterBehaviour : MonoBehaviour
@@ -16,14 +17,16 @@ public class HunterBehaviour : MonoBehaviour
     private SkinnedMeshRenderer                m_MeshRenderer;
     private HunterStateSettings                m_CurrentStateSettings;
     private HunterState                        m_CurrentState;
+    private SubmarineController                m_PlayerSubmarine;
 
     private Vector3                            m_Velocity;
     [SerializeField] private Vector3           m_MoveTarget;
 
     [Header("Physics")]
-    [SerializeField] private float             m_Acceleration;
-    [SerializeField] private float             m_TurnSpeed;
+    [SerializeField] private float             m_Acceleration = 2f;
+    [SerializeField] private float             m_TurnSpeed = 4f;
     [SerializeField] private float             m_BiteKnockbackForce = 40f;
+    [SerializeField] private AnimationCurve    m_FrictionCurve = new AnimationCurve();
 
     [Header("Behaviour")]
     [SerializeField] private int               m_MaxPlayerAggro = 100;
@@ -31,7 +34,7 @@ public class HunterBehaviour : MonoBehaviour
 
     [SerializeField, Range(1f, 100f), Tooltip("Distance that it's safe for the creature to appear/disappear at even if infront of the player camera")]
     private float                              m_SafeVisibilityDistance = 10f;
-
+    
     //Custom inspector would be nice here. I'm restraining myself by not writing one
     [SerializeField] private HunterStateSettings m_BackstageSettings            = new HunterStateSettings();
     [SerializeField] private HunterStateSettings m_FrontstageIdleSettings       = new HunterStateSettings();
@@ -191,13 +194,127 @@ public class HunterBehaviour : MonoBehaviour
         EnterState(HunterState.Retreat);
     }
 
+    private bool FindPositionInPlayerRange(float distance, out Vector3 result)
+    {
+        const int max_tries = 20;
+        const float half_pi = Mathf.PI * 0.5f;
+
+        result = Vector3.zero;
+
+        TerrainManager terrain_manager = TerrainManager.Instance;
+        Rect playable_area = terrain_manager.PlayableTerrainArea;
+        Vector3 player_position = m_PlayerSubmarine.transform.position;
+        Vector2 player_position_2d = player_position.XZ();
+        Vector2 base_direction = Vector2.up;
+
+        float min_angle = 0f;
+        float max_angle = Mathf.PI * 2;
+
+        //We're spwaning close to the player so only spawn in a wedge to their back direction (on the XZ plane)
+        if (distance < m_SafeVisibilityDistance)
+        {
+            base_direction = -m_PlayerSubmarine.submarineCockpit.forward.XZ().normalized;
+            min_angle = -half_pi;
+            max_angle = half_pi;
+        }
+
+        bool GetSpawnPointOnTerrain(Vector2 position_2d, out Vector3 out_position)
+        {
+            if (playable_area.Contains(position_2d))
+            {
+                float potential_location_height = Mathf.Max(player_position.y + m_CurrentStateSettings.PlayerHeightOffset.RandomValue, terrain_manager.GetTerrainElevation(position_2d.XZ()));
+                
+
+                //Height distance can't be greater than the required distance
+                if (Math.Abs(player_position.y - potential_location_height) < distance)
+                {
+                    out_position = position_2d.XZ() + Vector3.up * potential_location_height;
+                    return true;
+                }
+
+            }
+
+            out_position = Vector3.zero;
+            return false;
+        }
+
+        //Attempt to position randomly around the player
+        for (int i = 0; i < max_tries; ++i)
+        {
+            Vector2 direction = base_direction.RotateCw(UnityRandom.Range(min_angle, max_angle));
+            Vector2 potential_spawn_location = player_position_2d + direction * distance;
+
+            if (GetSpawnPointOnTerrain(potential_spawn_location, out result))
+            {
+                LogHunterMessage($"[Hunter] Spawn Position Found: {result}. | Distance: {(result - player_position).magnitude} | Angle: {Vector2.Angle(m_PlayerSubmarine.submarineCockpit.forward.XZ().normalized, (result - player_position).XZ().normalized)}");
+                return true;
+            }
+        }
+
+        //Last ditch attempt to go straight behind the player
+        if (GetSpawnPointOnTerrain(player_position_2d - base_direction * distance, out result))
+        {
+            LogHunterMessage($"[Hunter] Spawn Position Found: {result}. | Distance: {(result - player_position).magnitude} | Angle: {Vector2.Angle(m_PlayerSubmarine.submarineCockpit.forward.XZ().normalized, (result - player_position).XZ().normalized)}");
+            return true;
+        }
+
+        LogHunterMessage("[Hunter] Failed to find spawn position");
+        return false;
+    }
+
+    private void MoveTowardsTarget()
+    {
+        Vector3 position = m_RigidBody.position;
+        Vector3 target = m_MoveTarget != Vector3.zero ? m_MoveTarget : position;
+
+        Vector3 target_direction = target - position;
+        float target_distance = target_direction.magnitude;
+
+        if (!Mathf.Approximately(0f, target_distance))
+        {
+            target_direction /= target_distance; //normalise the direction
+            m_Velocity += m_Acceleration * target_direction * Time.fixedDeltaTime;
+        }
+        else
+        {
+            target_direction = transform.forward;
+        }
+
+        // apply friction
+        float current_speed = m_Velocity.magnitude;
+        Vector3 velocity_direction = Vector3.zero;
+
+        if (current_speed > 0f)
+        {
+            velocity_direction = m_Velocity / current_speed;
+
+            float friction = m_FrictionCurve.Evaluate(current_speed);
+            m_Velocity = velocity_direction * Mathf.Max(0f, current_speed - friction);
+        }
+
+        //Apply move
+        m_RigidBody.MovePosition(position + m_Velocity);
+
+        //Rotate towards velocity
+        Quaternion target_rotation = m_RigidBody.rotation;
+        if (current_speed > 0f)
+        {
+            //Remove Y component from rotation
+            velocity_direction.y = 0f;
+            velocity_direction.Normalize();
+            target_rotation = Quaternion.FromToRotation(Vector3.forward, velocity_direction);
+        }
+
+        m_RigidBody.MoveRotation(Quaternion.RotateTowards(m_RigidBody.rotation, target_rotation, m_TurnSpeed));
+    }
+
     //Woo coroutines
     private void StartStateBehaviour()
     {
         switch (CurrentState)
         {
             case HunterState.Backstage:
-                GoBackstage();
+                StartCoroutine(MoveTowardsBackstage());
                 break;
             case HunterState.FrontstageIdle:
                 StartCoroutine(FrontstageIdle());
@@ -223,8 +340,63 @@ public class HunterBehaviour : MonoBehaviour
         }
     }
 
+    #region Behaviour Coroutines
+    private IEnumerator MoveTowardsBackstage()
+    {
+        while (true)
+        {
+            yield return new WaitForFixedUpdate();
+
+            if (m_CurrentState != HunterState.Backstage)
+            {
+                break;
+            }
+
+            //Despawn if far enough away from the player
+            Vector3 player_pos = m_PlayerSubmarine.transform.position;
+            Vector3 to_player = player_pos - transform.position;
+            float distance_to_player = to_player.magnitude;
+
+            if (distance_to_player >= m_SafeVisibilityDistance)
+            {
+                LogHunterMessage("[Hunter] Tring to Enter Limbo - Far enough away to enter limbo");
+                GoBackstage();
+                break;
+            }
+            else
+            {
+                LogHunterMessage($"[Hunter] Tring to Enter Limbo - Too close to player to enter limbo. Distance: {distance_to_player: #.##}");
+                //Flee from the player
+                Vector3 flee_direction = -(to_player / distance_to_player);
+
+                //Y must be positive
+                if (flee_direction.y < 0.3f)
+                {
+                    flee_direction.y = 0.3f;
+                    flee_direction.Normalize();
+                }
+
+                m_MoveTarget = transform.position + flee_direction * 1000f;
+            }
+        }
+    }
+
     private IEnumerator FrontstageIdle()
     {
+        yield return new WaitForFixedUpdate();
+
+        //Go frontstage if not already
+        bool exited_limbo = false;
+        while (!exited_limbo)
+        {
+            LogHunterMessage("[Hunter] Trying to leave limbo");
+            if (FindPositionInPlayerRange(m_CurrentStateSettings.PlayerDistance, out Vector3 spawn_position))
+            {
+                LeaveLimbo(spawn_position);
+                exited_limbo = true;
+            }
+        }
+
         while (true)
         {
             yield return new WaitForFixedUpdate();
@@ -235,6 +407,8 @@ public class HunterBehaviour : MonoBehaviour
             }
 
             //Idle behaviour per-tick
+
+            //TODO: Flee. Go backstage again, etc.
         }
     }
 
@@ -313,6 +487,8 @@ public class HunterBehaviour : MonoBehaviour
         }
     }
 
+    #endregion
+
     private void GoBackstage()
     {
         EnterLimbo();
@@ -324,6 +500,7 @@ public class HunterBehaviour : MonoBehaviour
     {
         m_RigidBody.isKinematic = true;
         m_MeshRenderer.enabled = false;
+        m_MoveTarget = Vector3.zero;
     }
 
     private void LeaveLimbo(Vector3 position)
@@ -343,6 +520,7 @@ public class HunterBehaviour : MonoBehaviour
         transform.position = position;
     }
 
+    #region Unity Methods
     //Unity Methods
     private void Awake()
     {
@@ -369,12 +547,19 @@ public class HunterBehaviour : MonoBehaviour
 
 
             EnterState(HunterState.Backstage);
+            GoBackstage();
         }
         else
         {
             Debug.LogError($"Error: More than one hunter behaviour exists. Objects: {Instance.name} | {name}");
             Destroy(this);
         }
+    }
+
+    private void Start()
+    {
+        //Find the player
+        m_PlayerSubmarine = FindObjectOfType<SubmarineController>();
     }
 
     private void OnDestroy()
@@ -388,19 +573,21 @@ public class HunterBehaviour : MonoBehaviour
     private void FixedUpdate()
     {
         UpdatePeriodicEffects();
+        MoveTowardsTarget();
     }
 
     private void OnTriggerEnter(Collider other_collider)
     {
         if (m_CurrentState == HunterState.Attacking)
         {
-            SubmarineController player_sub = other_collider.GetComponent<SubmarineController>();
-            if (player_sub != null)
+            if (other_collider.gameObject == m_PlayerSubmarine.gameObject)
             {
-                PlayerBitten(player_sub);
+                PlayerBitten(m_PlayerSubmarine);
             }
         }
     }
+
+    #endregion
 
     #region Debug
     public static bool EnableLogging = false;

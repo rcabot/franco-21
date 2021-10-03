@@ -60,7 +60,7 @@ public class TerrainManager : MonoBehaviour
             // Get the tile-local coordinates, use the interpolation function
             TerrainTile hashedTile = GetTile(tileIndex);
             Vector2 localNormCoords = new Vector2((offset.x / tileSize) - tileIndex.x, (offset.y / tileSize) - tileIndex.y);
-            return hashedTile.GetTerrainElevation(localNormCoords);
+            return hashedTile.GetTerrainElevation(localNormCoords) + hashedTile.TerrainComponent.transform.position.y;
         }
         else
         {
