@@ -37,6 +37,7 @@ public class SubmarineController : MonoBehaviour
     AudioSource shipAudioSource;
     public AudioClip smallBonk;
     public AudioClip bigBonk;
+    public AudioClip damageBonk;
 
 
     public float collisionElasticity = 0.5f;
@@ -184,6 +185,9 @@ public class SubmarineController : MonoBehaviour
     {
         WorldShakeManager.Instance.Shake(1.0f, 1.0f);
         PlayerState.Instance.Health--;
+        shipAudioSource.clip = damageBonk;
+        shipAudioSource.Play();
+
         Debug.Log("Player Hit");
     }
 

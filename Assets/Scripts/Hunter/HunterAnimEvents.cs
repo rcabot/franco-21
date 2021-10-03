@@ -12,6 +12,7 @@ class HunterAnimEvents : MonoBehaviour
     private Animator m_Animator;
     public AudioSource biteAudioSource;
     public AudioClip biteAudio;
+    public AudioClip preBiteAudio;
 
     private void Awake()
     {
@@ -21,6 +22,12 @@ class HunterAnimEvents : MonoBehaviour
     public void TriggerBiteAudio()
     {
         biteAudioSource.clip = biteAudio;
+        biteAudioSource.Play();
+    }
+
+    public void TriggerPreBiteAudio()
+    {
+        biteAudioSource.clip = preBiteAudio;
         biteAudioSource.Play();
     }
 

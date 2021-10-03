@@ -10056,13 +10056,14 @@ MonoBehaviour:
   currentSpeed: {x: 0, y: 0, z: 0}
   smallBonk: {fileID: 8300000, guid: 1e4afdd629049d241b25ff949a95fae4, type: 3}
   bigBonk: {fileID: 8300000, guid: 8f82486f1aef8fa4192d9e38717c0350, type: 3}
+  damageBonk: {fileID: 8300000, guid: 4d0e668d7a6d06046a1d001051944aae, type: 3}
   collisionElasticity: 1.5
   collisionHardThreshold: 4
   currentGear: 0
   gearSpeeds:
   - 2
   - 5
-  - 30
+  - 10
 --- !u!135 &1880942715
 SphereCollider:
   m_ObjectHideFlags: 0

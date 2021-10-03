@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e0ad07c92affd341943f86bc684b531, type: 3}
   m_Name: monster_roar
   m_EditorClassIdentifier: 
-  m_AudioClips: []
+  m_AudioClips:
+  - {fileID: 8300000, guid: 0434ff366e502304bae8da12bdb2f126, type: 3}
