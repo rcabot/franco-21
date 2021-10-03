@@ -20,6 +20,7 @@ public class WildlifeSpawner : MonoBehaviour
     public float WildlifeHeightAboveTerrain=5.0f;
 
     public CollectablesDistributor CollectablesRegistry { get; private set; }
+    private GameObject Submarine;
 
     void Awake()
     {
@@ -46,6 +47,7 @@ public class WildlifeSpawner : MonoBehaviour
             }
         }
         CollectablesRegistry = FindObjectOfType<CollectablesDistributor>();
+        Submarine = FindObjectOfType<SubmarineController>().gameObject;
     }
 
     private void HashSectorPosition(Vector3 p, out int x, out int z)
@@ -102,7 +104,8 @@ public class WildlifeSpawner : MonoBehaviour
         {
             if(sector.CollectablesAmount < CollectablesAmountInSectorToPreventWildlifeSpawning 
                 && sector.WildlifeAmount < WildlifeAmountPerSector
-                && m_spawnedWildLife.Count < MaxWildlife)
+                && m_spawnedWildLife.Count < MaxWildlife
+                && !sector.bounds.Contains(Submarine.transform.position))
             {
                 sector.SpawnTimer -= Time.deltaTime;
                 if (sector.SpawnTimer < 0)
