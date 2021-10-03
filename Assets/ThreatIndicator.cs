@@ -5,14 +5,14 @@ using UnityEngine.UI;
 
 public class ThreatIndicator : MonoBehaviour
 {
-    [SerializeField, Tooltip("Submarine transform")] private Transform SubTransform = null;
-    [SerializeField, Tooltip("Range at which the indicator starts up")] private float RangeThreshold = 1.0f;
     //[SerializeField, Tooltip("Sound made by the indicator when the creature is near")] private AudioSou _AlertSound = null;
 
     [SerializeField] GameObject[] Indicators = null;
     [SerializeField] Texture[] IndicatorTextures = null;
 
     private int AlertLevel = 0;
+
+    int GetIndicatorCellCount() { return IndicatorTextures.Length; }
 
     // Start is called before the first frame update
     void Start()
@@ -22,33 +22,41 @@ public class ThreatIndicator : MonoBehaviour
 
     void UpdateAlertLevel()
     {
-        foreach(GameObject currentIndicator in Indicators)
+        int prevAlertLevel = AlertLevel;
+        float normAlertLevel = HunterBehaviour.Instance.PlayerAggro / HunterBehaviour.Instance.MaxPlayerAggro;
+        int indicatorCellCount = GetIndicatorCellCount();
+
+        AlertLevel = Mathf.FloorToInt(normAlertLevel * indicatorCellCount);
+        if (prevAlertLevel != AlertLevel)
         {
-            RawImage rawImage = currentIndicator.GetComponent<RawImage>();
-            rawImage.texture = IndicatorTextures[AlertLevel];
+            Color indicatorColor = new Color(0, 0, 0);
+            float alertLevelNorm = AlertLevel / ((float)indicatorCellCount);
+            if (alertLevelNorm < (1.0f / 3.0f))
+            {
+                indicatorColor.g = 1.0f;
+            }
+            else if (alertLevelNorm < (2.0f / 3.0f))
+            {
+                indicatorColor.g = 1.0f;
+                indicatorColor.r = 1.0f;
+            }
+            else
+            {
+                indicatorColor.r = 1.0f;
+            }
+
+            foreach (GameObject currentIndicator in Indicators)
+            {
+                RawImage rawImage = currentIndicator.GetComponent<RawImage>();
+                rawImage.texture = IndicatorTextures[AlertLevel];
+                rawImage.color = indicatorColor;
+            }
         }
     }
 
     // Update is called once per frame
     void Update()
     {
-        int prevAlertLevel = AlertLevel;
-
-        Vector3 creaturePosition = HunterBehaviour.Instance.transform.position;
-        float creatureDistance = Vector3.Distance(creaturePosition, SubTransform.position);
-        if (creatureDistance < RangeThreshold)
-        {
-            float stepSize = RangeThreshold / IndicatorTextures.Length;
-            AlertLevel = IndicatorTextures.Length - Mathf.FloorToInt(creatureDistance / stepSize);
-        }
-        else
-        {
-            AlertLevel = 0;
-        }
-
-        if(prevAlertLevel != AlertLevel)
-        {
-            UpdateAlertLevel();
-        }
+        UpdateAlertLevel();
     }
 }
