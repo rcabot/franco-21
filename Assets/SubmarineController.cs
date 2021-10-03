@@ -38,6 +38,7 @@ public class SubmarineController : MonoBehaviour
 
     public float collisionElasticity = 0.5f;
     public float collisionHardThreshold = 12.0f;
+    private bool hasCollidedThisFrame = false;
 
     public enum MovementGear
     {
@@ -79,6 +80,7 @@ public class SubmarineController : MonoBehaviour
     private void FixedUpdate()
     {
         UpdateMovement();
+        hasCollidedThisFrame = false;
     }
 
 
@@ -158,18 +160,22 @@ public class SubmarineController : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        float collision_intensity = Mathf.Abs(Vector3.Dot(collision.contacts[0].normal, currentSpeed) * currentSpeed.magnitude);
-        if(collision_intensity > collisionHardThreshold)
+        if (hasCollidedThisFrame == false)
         {
-            shipAudioSource.clip = bigBonk; 
-        }
-        else
-        {
-            shipAudioSource.clip = smallBonk;
-        }
+            hasCollidedThisFrame = true;
+            float collision_intensity = Mathf.Abs(Vector3.Dot(collision.contacts[0].normal, currentSpeed) * currentSpeed.magnitude);
+            if (collision_intensity > collisionHardThreshold)
+            {
+                shipAudioSource.clip = bigBonk;
+            }
+            else
+            {
+                shipAudioSource.clip = smallBonk;
+            }
 
-        AddImpulse((collision_intensity * collisionElasticity) * collision.contacts[0].normal);
+            AddImpulse((collision_intensity * collisionElasticity) * collision.contacts[0].normal);
 
-        shipAudioSource.Play();
+            shipAudioSource.Play();
+        }
     }
 }
