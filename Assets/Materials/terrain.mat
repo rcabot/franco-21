@@ -64,19 +64,19 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - albedo_1:
-        m_Texture: {fileID: 2800000, guid: 728f1428ae6a51f4c9c618f80375ac48, type: 3}
+        m_Texture: {fileID: 2800000, guid: 6a157f3966c6848458543d2d06991766, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - albedo_2:
-        m_Texture: {fileID: 2800000, guid: d417ab19f254023478ebca25e7ac05c1, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - albedo_3:
         m_Texture: {fileID: 2800000, guid: 26f349598318fe94f88ba5d0eec7dc6c, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - albedo_3:
+        m_Texture: {fileID: 2800000, guid: d417ab19f254023478ebca25e7ac05c1, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - albedo_4:
-        m_Texture: {fileID: 2800000, guid: 6a157f3966c6848458543d2d06991766, type: 3}
+        m_Texture: {fileID: 2800000, guid: 728f1428ae6a51f4c9c618f80375ac48, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - breakup_tex:
@@ -123,9 +123,9 @@ Material:
     - _Surface: 0
     - _WorkflowMode: 1
     - _ZWrite: 1
-    - b0: 3
+    - b0: 5
     - b1: 8
-    - b2: 15
+    - b2: 17
     - b3: 20
     - b4: 30
     - blend_width: 1
