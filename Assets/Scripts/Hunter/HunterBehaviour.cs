@@ -61,7 +61,14 @@ public class HunterBehaviour : MonoBehaviour
     public float PlayerAggro
     {
         get => m_PlayerAggro;
-        set { if (m_PlayerAggro != value) { m_PlayerAggro = value; HandleAggroChanged(); } }
+        set
+        {
+            float clamped_value = Mathf.Clamp(value, 0f, MaxPlayerAggro);
+            if (!Mathf.Approximately(m_PlayerAggro, clamped_value))
+            {
+                m_PlayerAggro = clamped_value; HandleAggroChanged();
+            }
+        }
     }
 
     public int MaxPlayerAggro => m_MaxPlayerAggro;
@@ -307,10 +314,11 @@ public class HunterBehaviour : MonoBehaviour
         Quaternion target_rotation = m_RigidBody.rotation;
         if (current_speed > 0f)
         {
-            //Remove Y component from rotation
-            velocity_direction.y = 0f;
-            velocity_direction.Normalize();
-            target_rotation = Quaternion.FromToRotation(Vector3.forward, velocity_direction);
+            target_rotation = Quaternion.LookRotation(velocity_direction, Vector3.up);
+        }
+        else if (m_MoveTarget  != Vector3.zero)
+        {
+            target_rotation = Quaternion.LookRotation(target_direction, Vector3.up);
         }
 
         m_RigidBody.MoveRotation(Quaternion.RotateTowards(m_RigidBody.rotation, target_rotation, m_TurnSpeed));
@@ -615,16 +623,18 @@ public class HunterBehaviour : MonoBehaviour
         float player_height = m_PlayerSubmarine.transform.position.y;
         if (player_height >= m_CreatureAggroSettings.MinHeightForAggro)
         {
-            height_aggro = m_CreatureAggroSettings.HeightAggroPerMeter * (player_height - m_CreatureAggroSettings.MinHeightForAggro);
+            height_aggro = Mathf.Min(m_CreatureAggroSettings.HeightAggroPerMeter * (player_height - m_CreatureAggroSettings.MinHeightForAggro), m_CreatureAggroSettings.MaxHeightAggro);
         }
 
         float tractor_aggro = m_PlayerSubmarine.TractorBeamOn ? m_CreatureAggroSettings.TractorBeamAggro : 0f;
 
+        float scrape_aggro = m_PlayerSubmarine.Scraping ? m_CreatureAggroSettings.TerrainScrapeAggro : 0f;
+
 #if UNITY_EDITOR
-        LogHunterMessage($"[Hunter] Threat Tick. Decay: {passive_decay : #.##} | Lights: {light_aggro : #.##} | Speed: {speed_aggro : #.##} | Height: {height_aggro: #.##} | Tractor Beam: {tractor_aggro : #.##}");
+        LogHunterMessage($"[Hunter] Threat Tick. Decay: {passive_decay : #.##} | Lights: {light_aggro : #.##} | Speed: {speed_aggro : #.##} | Height: {height_aggro: #.##} | Tractor Beam: {tractor_aggro : #.##} | Scrape Aggro: {scrape_aggro : #.##}");
 #endif
 
-        PlayerAggro += (passive_decay + light_aggro + height_aggro + speed_aggro + tractor_aggro) * delta_time;
+        PlayerAggro += (passive_decay + light_aggro + height_aggro + speed_aggro + tractor_aggro + scrape_aggro) * delta_time;
     }
 
     public void OnPlayerPickup()
@@ -632,9 +642,9 @@ public class HunterBehaviour : MonoBehaviour
         PlayerAggro += m_CreatureAggroSettings.PickupCollectedAggro;
     }
 
-    public void OnTerrainBump()
+    public void OnTerrainBump(bool isBig)
     {
-        PlayerAggro += m_CreatureAggroSettings.TerrainBumpAggro;
+        PlayerAggro += isBig ? m_CreatureAggroSettings.BigTerrainBumpAggro : m_CreatureAggroSettings.TerrainBumpAggro;
     }
 
     public void OnCreatureBump()

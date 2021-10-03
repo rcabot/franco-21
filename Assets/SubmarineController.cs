@@ -58,6 +58,8 @@ public class SubmarineController : MonoBehaviour
 
     public bool TractorBeamOn => tractor_beam?.TractorActive ?? false;
 
+    public bool Scraping => scraping;
+
     private void Awake()
     {
         lights = GetComponent<LightActivator>();
@@ -195,10 +197,12 @@ public class SubmarineController : MonoBehaviour
             if (collision_intensity > collisionHardThreshold)
             {
                 shipAudioSource.clip = bigBonk;
+                HunterBehaviour.Instance?.OnTerrainBump(true);
             }
             else
             {
                 shipAudioSource.clip = smallBonk;
+                HunterBehaviour.Instance?.OnTerrainBump(false);
             }
 
             AddImpulse((collision_intensity * collisionElasticity) * collision.contacts[0].normal);

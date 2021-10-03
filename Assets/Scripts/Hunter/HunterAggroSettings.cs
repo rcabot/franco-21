@@ -18,9 +18,12 @@ public class HunterAggroSettings
     [SerializeField] private float m_PickupCollectedAggro = 1f;
     [SerializeField] private float m_LightOnCreatureAggro = 1f;
     [SerializeField] private float m_TerrainBumpAggro = 1f;
+    [SerializeField] private float m_BigTerrainBumpAggro = 2f;
+    [SerializeField] private float m_TerrainScrapeAggro = 0.2f;
     [SerializeField] private float m_SeaCreatureBumpAggro = 1f;
     [SerializeField] private float m_HeightAggroStart = 100f;
     [SerializeField] private float m_HeightAggroPerMeter = 1f;
+    [SerializeField] private float m_MaxHeightAggro = 2f;
 
     public float PassiveDecay => m_PassiveDecay;
     public float LightAggro => m_LightAggro;
@@ -32,7 +35,10 @@ public class HunterAggroSettings
     public float PickupCollectedAggro => m_PickupCollectedAggro;
     public float LightOnCreatureAggro => m_LightOnCreatureAggro;
     public float TerrainBumpAggro => m_TerrainBumpAggro;
+    public float BigTerrainBumpAggro => m_BigTerrainBumpAggro;
+    public float TerrainScrapeAggro => m_TerrainScrapeAggro;
     public float SeaCreatureBumpAggro => m_SeaCreatureBumpAggro;
     public float MinHeightForAggro => m_HeightAggroStart;
     public float HeightAggroPerMeter => m_HeightAggroPerMeter;
+    public float MaxHeightAggro => m_MaxHeightAggro;
 }
