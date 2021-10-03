@@ -60,6 +60,10 @@ public class SubmarineController : MonoBehaviour
         {
             ToggleCurrentGear();
         }
+        if (Input.GetKeyDown(KeyCode.F2))
+        {
+            TakeHit();
+        }
     }
 
     private void FixedUpdate()
