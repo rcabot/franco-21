@@ -84,6 +84,10 @@ Material:
         m_Texture: {fileID: 2800000, guid: b6c29bd74d43ef34c9a5f160f39ef488, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - emissive_texture:
+        m_Texture: {fileID: 2800000, guid: 29e1d52221f034e41805ecb62c4404b2, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -128,11 +132,13 @@ Material:
     - anim_freq: 2
     - anim_speed: 2
     - emissive_fade_range: 5
+    - emissive_fresnel_strength: 1
     - emissive_start_range: 1
-    - emissive_strength: 0
+    - emissive_strength: 2
     - pulse_anim_amount: 0
     - pulse_anim_speed: 0
     - smoothness: 0.1
+    - use_emissive_fresnel: 0.5
     - use_vertex_alpha: 1
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
@@ -140,8 +146,9 @@ Material:
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
     - _specular: {r: 0, g: 0, b: 0, a: 0}
+    - albedo_tiling: {r: 1, g: 1, b: 0, a: 0}
     - anim_axis: {r: 0, g: 0, b: 1, a: 0}
     - anim_offset_axis: {r: 0, g: 0, b: 0.4, a: 0}
     - anim_spine_axis: {r: 0, g: 1, b: 0, a: 0}
-    - emissive_colour: {r: 0.4103774, g: 0.9702372, b: 1, a: 0}
+    - emissive_colour: {r: 0.23113209, g: 0.95899373, b: 1, a: 0}
   m_BuildTextureStacks: []
