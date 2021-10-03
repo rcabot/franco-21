@@ -32,7 +32,7 @@ public class PlayerState : MonoBehaviour
     {
         foreach (var distributor in FindObjectsOfType<CollectablesDistributor>())
         {
-            m_totalCollectables += distributor.AmountToDistribute;
+            m_totalCollectables += distributor.AmountToDistribute * distributor.TilesToLitter;
         }
         m_victoryPortal = FindObjectOfType<VictoryPortal>(true);
     }

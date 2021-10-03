@@ -8,17 +8,21 @@ public class RadarUI : MonoBehaviour
 {
     public GameObject[] CollectablesBlips;
     public GameObject[] WildlifeBlips;
+    public GameObject PortalBlip;
     public Transform CentreWaypoint;
     public Transform RotationWaypoint;
     public RectTransform Background;
     private WildlifeSpawner WildlifeRegistry;
     private CollectablesDistributor CollectablesRegistry;
+    private VictoryPortal VictoryPortal;
+
     public float RadarDistance = 100f;
 
     private void Awake()
     {
         WildlifeRegistry = FindObjectOfType<WildlifeSpawner>();
         CollectablesRegistry = FindObjectOfType<CollectablesDistributor>();
+        VictoryPortal = FindObjectOfType<VictoryPortal>();
     }
 
     // Update is called once per frame
@@ -43,6 +47,13 @@ public class RadarUI : MonoBehaviour
             {
                 PositionBlip(CollectablesBlips[i], collectables[i]);
             }
+        }
+
+        bool portalActive = PlayerState.Instance.GameState == PlayerState.State.ObjectiveComplete;
+        PortalBlip.SetActive(portalActive);
+        if (portalActive)
+        {
+            PositionBlip(PortalBlip, VictoryPortal.gameObject);
         }
         var radarRotation = Background.eulerAngles;
         radarRotation.z = RotationWaypoint.eulerAngles.y;
