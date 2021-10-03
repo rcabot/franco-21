@@ -10,21 +10,21 @@ using UnityEngine;
 class HunterAnimEvents : MonoBehaviour
 {
     private Animator m_Animator;
-    private Collider m_BiteCollider;
 
     private void Awake()
     {
         m_Animator = GetComponent<Animator>();
-        m_BiteCollider = GetComponentInChildren<SphereCollider>();
     }
 
     public void EnableBiteCollider()
     {
-        m_BiteCollider.enabled = true;
+        if (HunterBehaviour.Instance != null)
+            HunterBehaviour.Instance.AttackEnabled = true;
     }
 
     public void DisableBiteCollider()
     {
-        m_BiteCollider.enabled = false;
+        if (HunterBehaviour.Instance != null)
+            HunterBehaviour.Instance.AttackEnabled = false;
     }
 }

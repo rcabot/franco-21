@@ -18,6 +18,8 @@ public class HunterBehaviour : MonoBehaviour
     private HunterStateSettings                m_CurrentStateSettings;
     private HunterState                        m_CurrentState;
     private SubmarineController                m_PlayerSubmarine;
+    private Animator                           m_Animator;
+    private static readonly int                m_AttackTriggerID = Animator.StringToHash("AttackTrigger");
 
     private Vector3                            m_Velocity;
     [SerializeField] private Vector3           m_MoveTarget;
@@ -63,6 +65,8 @@ public class HunterBehaviour : MonoBehaviour
 
     public HunterStateSettings CurrentStateSettings => m_CurrentStateSettings;
     public HunterState         CurrentState => m_CurrentState;
+
+    public bool                AttackEnabled { get; set; }
 
     //Methods
     public void ForceSetState(HunterState state)
@@ -469,7 +473,37 @@ public class HunterBehaviour : MonoBehaviour
             }
 
             //Attacking behaviour per-tick
+
+            //Seek the player
+            Vector3 position = m_RigidBody.position;
+
+            //We want to line up the bite sphere with the player. So offset the player position to account for it
+            Vector3 bite_sphere_position = m_BiteTriggerSphere.bounds.center;
+            Vector3 bite_sphere_offset = bite_sphere_position - position;
+            Vector3 player_position = m_PlayerSubmarine.transform.position - bite_sphere_offset;
+            m_MoveTarget = player_position;
+
+            Vector3 to_attack_position = player_position - position;
+            float sqr_distance_to_attack_position = to_attack_position.sqrMagnitude;
+            float sqr_player_distance = m_CurrentStateSettings.PlayerDistance * m_CurrentStateSettings.PlayerDistance;
+
+#if UNITY_EDITOR
+            LogHunterMessage($"[Hunter] Distance to attack: {Mathf.Sqrt(sqr_distance_to_attack_position):#.##}");
+#endif
+
+            if (sqr_distance_to_attack_position < sqr_player_distance && m_CurrentStateSettings.PlayerHeightOffset.InRange(Mathf.Abs(to_attack_position.y)))
+            {
+                //Trigger an attack
+                m_Animator.SetTrigger(m_AttackTriggerID);
+            }
+            else
+            {
+                m_Animator.ResetTrigger(m_AttackTriggerID);
+            }
         }
+
+        //Make sure attack gets reset
+        m_Animator.ResetTrigger(m_AttackTriggerID);
     }
 
     private IEnumerator Retreat()
@@ -478,12 +512,37 @@ public class HunterBehaviour : MonoBehaviour
         {
             yield return new WaitForFixedUpdate();
 
-            if (CurrentState != HunterState.Retreat)
+            if (m_CurrentState != HunterState.Retreat)
             {
                 break;
             }
 
-            //Retreating behaviour per-tick
+            //Despawn if far enough away from the player
+            Vector3 player_pos = m_PlayerSubmarine.transform.position;
+            Vector3 to_player = player_pos - transform.position;
+            float distance_to_player = to_player.magnitude;
+
+            if (distance_to_player >= m_SafeVisibilityDistance)
+            {
+                LogHunterMessage("[Hunter] Tring to Enter Limbo - Far enough away to enter limbo");
+                EnterState(HunterState.Backstage);
+                break;
+            }
+            else
+            {
+                LogHunterMessage($"[Hunter] Tring to Enter Limbo - Too close to player to enter limbo. Distance: {distance_to_player: #.##}");
+                //Flee from the player
+                Vector3 flee_direction = -(to_player / distance_to_player);
+
+                //Y must be positive
+                if (flee_direction.y < 0.3f)
+                {
+                    flee_direction.y = 0.3f;
+                    flee_direction.Normalize();
+                }
+
+                m_MoveTarget = transform.position + flee_direction * 1000f;
+            }
         }
     }
 
@@ -532,6 +591,7 @@ public class HunterBehaviour : MonoBehaviour
             m_RigidBody = GetComponent<Rigidbody>();
             m_BiteTriggerSphere = GetComponentInChildren<SphereCollider>();
             m_MeshRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
+            m_Animator = GetComponentInChildren<Animator>();
 
             //Initialise the state settings collection
             int num_states = Enum.GetValues(typeof(HunterState)).Length;
@@ -578,11 +638,13 @@ public class HunterBehaviour : MonoBehaviour
 
     private void OnTriggerEnter(Collider other_collider)
     {
-        if (m_CurrentState == HunterState.Attacking)
+        if (m_CurrentState == HunterState.Attacking && AttackEnabled)
         {
             if (other_collider.gameObject == m_PlayerSubmarine.gameObject)
             {
                 PlayerBitten(m_PlayerSubmarine);
+
+                //Force the creature to retreat
             }
         }
     }

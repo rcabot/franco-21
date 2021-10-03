@@ -500,7 +500,7 @@ SphereCollider:
   m_GameObject: {fileID: 6577168359390643647}
   m_Material: {fileID: 0}
   m_IsTrigger: 1
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 2
   m_Radius: 2
   m_Center: {x: -0.6, y: -1.5, z: 0}
@@ -812,10 +812,10 @@ MonoBehaviour:
       length: 0
   m_AttackingSettings:
     m_ActivationAggro: 50
-    m_PlayerDistance: 10
+    m_PlayerDistance: 8
     m_PlayerHeightOffset:
-      start: -1
-      length: 1
+      start: -4
+      length: 8
     m_StartSounds: {fileID: 0}
     m_StartVolumeScale: 1
     m_StartScreenShakeMagnitude: 0
