@@ -22,4 +22,4 @@ MonoBehaviour:
   _MountainAreaFactor: 0.5
   _MountainCount: 0
   _TilePrefab: {fileID: -6482972591216050592, guid: a36e9ce48ef9dab4988ad8a02bd30062, type: 3}
-  _TileMaterial: {fileID: 2100000, guid: c2c209fc186362748984a7b1a357782b, type: 2}
+  _TileMaterial: {fileID: 2100000, guid: ce567f6f68fc0ce4ea377340ba5872e2, type: 2}
