@@ -191,8 +191,11 @@ public class TerrainManager : MonoBehaviour
 
     private void GenerateFlora()
     {
-        if (Definition.TreePrototypes.Length == 0)
+        if ((Definition.TreePrototypes.Length <= 0)
+            || (Definition.FloraPatchPerTile <= 0)
+            || (Definition.FloraPatchDensity <= 0))
         {
+            Debug.LogWarning("Flora generation error: incorrect parameter(s)!");
             return;
         }
 

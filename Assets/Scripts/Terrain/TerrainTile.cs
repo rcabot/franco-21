@@ -30,14 +30,20 @@ public class TerrainTile : MonoBehaviour
         _TerrainComponent.terrainData.treePrototypes = prototypeList.ToArray();
         _TerrainComponent.terrainData.RefreshPrototypes();
 
-        for(int treeCount = 0; treeCount < definition.FloraPerTile; ++treeCount)
+        float patchRadius = Mathf.Clamp(1.0f / definition.FloraPatchPerTile, 0.1f, 0.4f);
+        for (int patchCount = 0; patchCount < definition.FloraPatchPerTile; ++patchCount)
         {
-            TreeInstance newTreeInstance = new TreeInstance();
-            newTreeInstance.prototypeIndex = Random.Range(0, definition.TreePrototypes.Length);
-            newTreeInstance.position = new Vector3(Random.Range(0.0f, 1.0f), 0, Random.Range(0.0f, 1.0f));
-            newTreeInstance.heightScale = Random.Range(0.6f, 1.0f);
-            newTreeInstance.widthScale = Random.Range(0.6f, 1.0f);
-            _TerrainComponent.AddTreeInstance(newTreeInstance);
+            Vector2 patchOrigin = new Vector2(Random.Range(patchRadius, 1.0f - patchRadius), Random.Range(patchRadius, 1.0f - patchRadius));
+
+            for (int floraCount = 0; floraCount < definition.FloraPatchDensity; ++floraCount)
+            {
+                TreeInstance newTreeInstance = new TreeInstance();
+                newTreeInstance.prototypeIndex = Random.Range(0, definition.TreePrototypes.Length);
+                newTreeInstance.position = new Vector3(patchOrigin.x + Random.Range(-patchRadius, patchRadius), 0, patchOrigin.y + Random.Range(-patchRadius, patchRadius));
+                newTreeInstance.heightScale = Random.Range(0.6f, 1.0f);
+                newTreeInstance.widthScale = Random.Range(0.6f, 1.0f);
+                _TerrainComponent.AddTreeInstance(newTreeInstance);
+            }
         }
 
         TerrainComponent.Flush();

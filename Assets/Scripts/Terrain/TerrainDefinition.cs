@@ -21,7 +21,8 @@ public class TerrainDefinition : ScriptableObject
     [SerializeField, Tooltip("Basin wall gradient damping")] private float _BasinDamping = 1.0f;
     [SerializeField, Tooltip("Basin wall gradient offset")] private float _BasinOffset = 0.0f;
 
-    [SerializeField, Tooltip("Number of flora objects to spawn per tile")] private int _FloraPerTile = 0;
+    [SerializeField, Tooltip("Number of flora patches to spawn per tile")] private int _FloraPatchPerTile = 0;
+    [SerializeField, Tooltip("Number of flora objects in a patch")] private int _FloraPatchDensity = 0;
 
     [SerializeField] private TerrainTile _TilePrefab = null;
     [SerializeField] private Material _TileMaterial = null;
@@ -43,7 +44,8 @@ public class TerrainDefinition : ScriptableObject
     public float BasinDamping => _BasinDamping;
     public float BasinOffset => _BasinOffset;
 
-    public int FloraPerTile => _FloraPerTile;
+    public int FloraPatchPerTile => _FloraPatchPerTile;
+    public int FloraPatchDensity => _FloraPatchDensity;
 
     public TerrainTile TilePrefab => _TilePrefab;
     public Material TileMaterial => _TileMaterial;
