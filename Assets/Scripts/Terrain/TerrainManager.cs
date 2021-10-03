@@ -6,9 +6,11 @@ public class TerrainManager : MonoBehaviour
 {
     public static TerrainManager Instance = null;
 
-    [SerializeField] TerrainDefinition Definition = null;
+    [SerializeField] private TerrainDefinition _Definition = null;
     private GameObject TerrainRoot;
     private List<TerrainTile> Tiles;
+
+    public TerrainDefinition Definition => _Definition;
 
     public Rect PlayableTerrainArea => new Rect(-Vector2.one * Definition.TerrainSize * 0.5f,  Vector2.one * Definition.TerrainSize);
 

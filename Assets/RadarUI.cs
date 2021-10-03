@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using System;
+using UnityEngine.UI;
 
 public class RadarUI : MonoBehaviour
 {
@@ -15,6 +16,8 @@ public class RadarUI : MonoBehaviour
     private WildlifeSpawner WildlifeRegistry;
     private CollectablesDistributor CollectablesRegistry;
     private VictoryPortal VictoryPortal;
+
+    public Image Altimeter = null;
 
     public float RadarDistance = 100f;
 
@@ -58,6 +61,10 @@ public class RadarUI : MonoBehaviour
         var radarRotation = Background.eulerAngles;
         radarRotation.z = RotationWaypoint.eulerAngles.y;
         Background.eulerAngles = radarRotation;
+
+        // Altimeter
+        float normAltitude = Mathf.Clamp(transform.position.y / TerrainManager.Instance.Definition.MaxHeight, 0.0f, 1.0f);
+        Altimeter.fillAmount = normAltitude;
     }
 
     private void PositionBlip(GameObject blip, GameObject inWorldObject)
