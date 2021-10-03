@@ -14,7 +14,7 @@ public class WildlifeSpawner : MonoBehaviour
     public int CollectablesAmountInSectorToPreventWildlifeSpawning = 1;
     public float SpawnFrequency;
 
-    private List<GameObject> m_spawnedWildLife = new List<GameObject>();
+    public List<GameObject> m_spawnedWildLife = new List<GameObject>();
     public int MaxWildlife;
     public float EntityTravelSpeed = 5.0f;
 

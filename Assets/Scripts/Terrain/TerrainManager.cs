@@ -163,14 +163,19 @@ public class TerrainManager : MonoBehaviour
         }
     }
 
-
     void CalculateBasinTile(float[,] heightmap, Vector2Int tileIndex, TerrainData terrainData)
     {
-#if false
         // Loop over the texels in the tile and modify them to create a basin
-        float terrainMinOffset = -(GetTerrainSize() * 0.5f);
-        int resolution = terrainData.heightmapResolution * GetEdgeTileCount();
+        float terrainSize = GetTerrainSize();
+        int edgeTileCount = GetEdgeTileCount();
+
+        float terrainMinOffset = -(terrainSize * 0.5f);
+        int resolution = terrainData.heightmapResolution * edgeTileCount;
+
         float texelStepSize = GetTerrainSize() / resolution;
+        float tileSize = GetTileSize();
+
+        Bounds bounds = new Bounds(new Vector3(0, 0, 0), new Vector3(Definition.TerrainSize, 0.5f, Definition.TerrainSize));
 
         Vector2Int baseIndexOffset = new Vector2Int(tileIndex.x * terrainData.heightmapResolution, tileIndex.y * terrainData.heightmapResolution);
         for (int currentRow = 0; currentRow < terrainData.heightmapResolution; ++currentRow)
@@ -182,11 +187,13 @@ public class TerrainManager : MonoBehaviour
                 int baseColumn = baseIndexOffset.y + currentCol;
                 float texelXCoord = terrainMinOffset + (texelStepSize * baseColumn);
 
-                Vector2 texelPos = new Vector2(texelXCoord, texelYCoord);
-                float mountainDistance = Vector2.Distance(texelPos, mountainData.Position);
+                float distanceToBounds = Mathf.Sqrt(bounds.SqrDistance(new Vector3(texelXCoord, 0, texelYCoord)));
+                float factor = Mathf.Min(distanceToBounds / tileSize, 1.0f);
+                float baseValue = heightmap[baseRow, baseColumn];
+
+                heightmap[baseRow, baseColumn] = factor + baseValue * (1.0f - factor);
             }
         }
-#endif
     }    
 
     void GenerateBasin(float[,] heightmap, TerrainData terrainData)
