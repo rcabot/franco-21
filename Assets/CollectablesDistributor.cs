@@ -42,17 +42,24 @@ public class CollectablesDistributor : MonoBehaviour
             Random.Range(bounds.min.y, bounds.max.y),
             Random.Range(bounds.min.z, bounds.max.z)
         );
+        p = PlaceOnTerrain(p);
+        //else
+        //{
+        //    Debug.Log("miss!");
+        //}
+        return p;
+    }
+
+    private static Vector3 PlaceOnTerrain(Vector3 p)
+    {
         var hits = Physics.RaycastAll(p + Vector3.up * 1000, Vector3.down, maxDistance: 2000,
-            layerMask: LayerMask.GetMask("Terrain"));
+                    layerMask: LayerMask.GetMask("Terrain"));
         if (hits.Any())
         {
             p.y = hits.First().point.y + 2.0f;
             //Debug.Log("hit!");
         }
-        //else
-        //{
-        //    Debug.Log("miss!");
-        //}
+
         return p;
     }
 }
