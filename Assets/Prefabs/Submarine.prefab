@@ -208,8 +208,8 @@ Light:
   m_Type: 0
   m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 30
-  m_Range: 302.9
+  m_Intensity: 100
+  m_Range: 100
   m_SpotAngle: 81.00981
   m_InnerSpotAngle: 25.80344
   m_CookieSize: 10
@@ -5488,7 +5488,7 @@ RectTransform:
   - {fileID: 568114596}
   - {fileID: 2087247758848671120}
   m_Father: {fileID: 7952300513222641857}
-  m_RootOrder: 4
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: -55.93, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
