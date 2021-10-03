@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78a54a9172c074745902efd17b87242b, type: 3}
   m_Name: Game Scene Terrain Def
   m_EditorClassIdentifier: 
-  _TerrainSize: 1024
+  _TerrainSize: 128
   _EdgeTileCount: 4
   _Resolution: {x: 1024, y: 512}
   _MaxHeight: 100
@@ -20,6 +20,9 @@ MonoBehaviour:
   _BaseFactor: 0.3
   _MountainNoiseScale: 0.123
   _MountainAreaFactor: 0.5
-  _MountainCount: 0
+  _MountainCount: 5
+  _BasinSteepness: 7
+  _BasinDamping: 4
+  _BasinOffset: 0.4
   _TilePrefab: {fileID: -6482972591216050592, guid: a36e9ce48ef9dab4988ad8a02bd30062, type: 3}
   _TileMaterial: {fileID: 2100000, guid: ce567f6f68fc0ce4ea377340ba5872e2, type: 2}
