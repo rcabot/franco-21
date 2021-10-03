@@ -139,5 +139,5 @@ Material:
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
     - _specular: {r: 0, g: 0, b: 0, a: 0}
     - albedo_tiling: {r: 1, g: 1, b: 0, a: 0}
-    - emissive_colour: {r: 1, g: 0.11372549, b: 0.09019608, a: 0}
+    - emissive_colour: {r: 1, g: 0.78039217, b: 0, a: 0}
   m_BuildTextureStacks: []
