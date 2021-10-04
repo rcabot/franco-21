@@ -919,7 +919,7 @@ MonoBehaviour:
       start: 5
       length: 3
   m_AttackingSettings:
-    m_ActivationAggro: 50
+    m_ActivationAggro: 90
     m_PlayerDistance: 8
     m_PlayerHeightOffset:
       start: -4
