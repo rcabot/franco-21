@@ -235,7 +235,7 @@ public class SubmarineController : MonoBehaviour
         --PlayerState.Instance.Health;
         shipAudioSource.clip = damageBonk;
         shipAudioSource.Play();
-
+        lights.ToggleLights(false);
         if (currentGear != MovementGear.STOP)
         {
             currentGear = MovementGear.STOP;

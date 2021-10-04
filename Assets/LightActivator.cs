@@ -11,7 +11,7 @@ public class LightActivator : MonoBehaviour
 
     public bool LightsEnabled => m_Lights.Length > 0 && m_Lights[0].enabled;
 
-    void ToggleLights(bool toggle)
+    public void ToggleLights(bool toggle)
     {
         bool lights_enabled = !m_Lights[0].enabled;
         foreach (Light l in m_Lights)
