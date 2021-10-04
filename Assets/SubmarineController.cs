@@ -30,9 +30,12 @@ public class SubmarineController : MonoBehaviour
     public Vector3 currentSpeed = Vector3.zero;
     Vector2 currentLookVelocity;
     AudioSource engineSound;
+    AudioSource cabinAmbience;
     AudioSource underwaterSound;
     AudioSource scrapingSound;
 
+    public AudioClip powerDownAudio;
+    public AudioClip powerUpAudio;
 
     AudioSource shipAudioSource;
     public AudioClip smallBonk;
@@ -76,14 +79,16 @@ public class SubmarineController : MonoBehaviour
         engineSound = transform.Find("ship_engine").GetComponent<AudioSource>();
         underwaterSound = transform.Find("water_ambience").GetComponent<AudioSource>();
         scrapingSound = transform.Find("ship_scrape").GetComponent<AudioSource>();
+        cabinAmbience = transform.Find("ship_ambience").GetComponent<AudioSource>();
         shipAudioSource = GetComponent<AudioSource>();
         // Lock cursor
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         currentGear = MovementGear.SLOW;
         acceleration = gearSpeeds[(int)currentGear];
+        wasLightsOn = true;
     }
-
+    bool wasLightsOn = true;
     void Update()
     {
         if( scraping)
@@ -99,8 +104,38 @@ public class SubmarineController : MonoBehaviour
             scrapingSound.Stop();
         }
 
+        if( LightsOn && engineSound.isPlaying == false)
+        {
+            engineSound.Play();
+            cabinAmbience.Play();
+        }
+        else if( LightsOn == false )
+        {
+            engineSound.Stop();
+            cabinAmbience.Stop();
+        }
+
+        if( LightsOn == false )
+        {
+            if (wasLightsOn == true)
+            {
+                shipAudioSource.PlayOneShot(powerDownAudio);
+                SetCurrentGear(MovementGear.STOP);
+            }
+        }
+        else
+        {
+            if (wasLightsOn == false)
+            {
+                shipAudioSource.PlayOneShot(powerUpAudio);
+                SetCurrentGear(MovementGear.SLOW);
+            }
+        }
+
+        wasLightsOn = LightsOn;
+
         UpdateLookDirection();
-        if( Input.GetButtonDown("toggle_gear"))
+        if( Input.GetButtonDown("toggle_gear") && LightsOn)
         {
             ToggleCurrentGear();
         }
@@ -119,11 +154,14 @@ public class SubmarineController : MonoBehaviour
 
     void ToggleCurrentGear()
     {
+        SetCurrentGear( (MovementGear)(((int)currentGear + 1) % num_gears) );        
+    }
+
+    void SetCurrentGear( MovementGear gear )
+    {
         MovementGear old_gear = currentGear;
-
-        currentGear = (MovementGear)(((int)currentGear + 1) % num_gears);
+        currentGear = gear;
         acceleration = gearSpeeds[(int)currentGear];
-
         if (old_gear != currentGear)
         {
             OnGearChanged?.Invoke(this, currentGear);
@@ -135,8 +173,8 @@ public class SubmarineController : MonoBehaviour
         Vector3 forward = submarineCockpit.transform.forward;
         Vector3 right = submarineCockpit.transform.right;
 
-        Vector3 strafe_acceleration = right * Input.GetAxis("Horizontal") * strafeFactor;
-        Vector3 forward_acceleration = forward * Input.GetAxis("Vertical");
+        Vector3 strafe_acceleration = LightsOn ? right * Input.GetAxis("Horizontal") * strafeFactor : Vector3.zero;
+        Vector3 forward_acceleration = LightsOn ? forward * Input.GetAxis("Vertical") : Vector3.zero;
 
         Vector3 input_acceleration = ((strafe_acceleration + forward_acceleration).normalized * acceleration) * Time.fixedDeltaTime;
 
