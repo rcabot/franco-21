@@ -1,6 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Profiling;
+
+using Random = UnityEngine.Random;
 
 public class TerrainTile : MonoBehaviour
 {
@@ -51,6 +55,8 @@ public class TerrainTile : MonoBehaviour
 
     public void Init(TerrainDefinition definition, float[,] baseHeightmap, Vector2Int tileIndex)
     {
+        Profiler.BeginSample("Terrain Tile Init");
+
         _TileIndex = tileIndex;
         float tileWidth = definition.TerrainSize / definition.EdgeTileCount;
 
@@ -61,14 +67,16 @@ public class TerrainTile : MonoBehaviour
         terrainData.SetDetailResolution(32, 8);
         terrainData.size = new Vector3(tileWidth, definition.MaxHeight, tileWidth);
 
-        float[,] tileHeightmap = new float[terrainData.heightmapResolution, terrainData.heightmapResolution];
+        int heightmapResolution = terrainData.heightmapResolution;
+        float[,] tileHeightmap = new float[heightmapResolution, heightmapResolution];
 
+        //Pete Note: This isn't that slow (probably being optimised) ~200ms total on load all tiles combined. Most time is spent in terrainData.SetHeights
         // FIXME: do this via Array.Copy!!!
-        Vector2Int baseIndexOffset = new Vector2Int(tileIndex.x * terrainData.heightmapResolution, tileIndex.y * terrainData.heightmapResolution);
-        for (int currentRow = 0; currentRow < terrainData.heightmapResolution; ++currentRow)
+        Vector2Int baseIndexOffset = new Vector2Int(tileIndex.x * heightmapResolution, tileIndex.y * heightmapResolution);
+        for (int currentRow = 0; currentRow < heightmapResolution; ++currentRow)
         {
             int baseRow = baseIndexOffset.y + currentRow;
-            for (int currentCol = 0; currentCol < terrainData.heightmapResolution; ++currentCol)
+            for (int currentCol = 0; currentCol < heightmapResolution; ++currentCol)
             {
                 int baseColumn = baseIndexOffset.x + currentCol;
                 tileHeightmap[currentRow, currentCol] = baseHeightmap[baseRow, baseColumn];
@@ -77,23 +85,15 @@ public class TerrainTile : MonoBehaviour
 
         // Generate the terrain object
         terrainData.SetHeights(0, 0, tileHeightmap);
+
         TerrainObject = Terrain.CreateTerrainGameObject(terrainData);
         TerrainObject.transform.SetParent(transform, false);
+
         TerrainObject.layer = LayerMask.NameToLayer("Terrain");
 
         _TerrainComponent = TerrainObject.GetComponent<Terrain>();
         _TerrainComponent.materialTemplate = definition.TileMaterial;
-    }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        Profiler.EndSample();
     }
 }

@@ -1,6 +1,8 @@
+using System.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Profiling;
 
 public class TerrainManager : MonoBehaviour
 {
@@ -99,16 +101,18 @@ public class TerrainManager : MonoBehaviour
         TerrainData baseData = tileBase.TerrainComponent.terrainData;
         TerrainData neighborData = tileNeighbor.TerrainComponent.terrainData;
 
+        int heightmapRes = baseData.heightmapResolution;
+
         float[,] baseHeights;
         if (tileNeighbor.TileIndex.x > tileBase.TileIndex.x)
         {
             // Stitching with base on the left
-            baseHeights = baseData.GetHeights(baseData.heightmapResolution - 1, 0, 1, baseData.heightmapResolution);
+            baseHeights = baseData.GetHeights(heightmapRes - 1, 0, 1, heightmapRes);
         }
         else 
         {
             // Stitching with base on the bottom
-            baseHeights = baseData.GetHeights(0, baseData.heightmapResolution - 1, baseData.heightmapResolution, 1);
+            baseHeights = baseData.GetHeights(0, heightmapRes - 1, heightmapRes, 1);
         }
 
         neighborData.SetHeightsDelayLOD(0, 0, baseHeights);
@@ -116,6 +120,8 @@ public class TerrainManager : MonoBehaviour
 
     private void ConnectTiles()
     {
+        Profiler.BeginSample("Connect Tiles");
+
         // Go over all tiles, always only check the "left" and "bottom" neighbor (if available) and stitch to their height values
         List<Terrain> neighborList = new List<Terrain>();
         foreach (TerrainTile currentTile in Tiles)
@@ -191,10 +197,14 @@ public class TerrainManager : MonoBehaviour
             currentTile.TerrainComponent.SetNeighbors(neighborList[0], neighborList[1], neighborList[2], neighborList[3]);
             currentTile.TerrainComponent.Flush();
         }
+
+        Profiler.EndSample();
     }
 
     private void GenerateFlora()
     {
+        Profiler.BeginSample("Generate Flora");
+
         if ((Definition.TreePrototypes.Length <= 0)
             || (Definition.FloraPatchPerTile <= 0)
             || (Definition.FloraPatchDensity <= 0))
@@ -212,6 +222,8 @@ public class TerrainManager : MonoBehaviour
                 currentTile.GenerateFlora(Definition);
             }
         }
+
+        Profiler.EndSample();
     }
 
     float GetBasinGradient(float value)
@@ -220,26 +232,28 @@ public class TerrainManager : MonoBehaviour
         return Mathf.Clamp(result / (1.0f + result), 0.0f, 1.0f);
     }
 
-    void CalculateBasinTile(float[,] heightmap, Vector2Int tileIndex, TerrainData terrainData)
+    void CalculateBasinTile(float[,] heightmap, Vector2Int tileIndex, int heightmapRes)
     {
+        Profiler.BeginSample("Calculate Basin Tile");
+
         // Loop over the texels in the tile and modify them to create a basin
         float terrainSize = GetTerrainSize();
         int edgeTileCount = GetEdgeTileCount();
 
         float terrainMinOffset = -(terrainSize * 0.5f);
-        int resolution = terrainData.heightmapResolution * edgeTileCount;
+        int resolution = heightmapRes * edgeTileCount;
 
         float texelStepSize = GetTerrainSize() / resolution;
         float tileSize = GetTileSize();
 
         Bounds bounds = new Bounds(new Vector3(0, 0, 0), new Vector3(Definition.TerrainSize, 0.5f, Definition.TerrainSize));
 
-        Vector2Int baseIndexOffset = new Vector2Int(tileIndex.x * terrainData.heightmapResolution, tileIndex.y * terrainData.heightmapResolution);
-        for (int currentRow = 0; currentRow < terrainData.heightmapResolution; ++currentRow)
+        Vector2Int baseIndexOffset = new Vector2Int(tileIndex.x * heightmapRes, tileIndex.y * heightmapRes);
+        for (int currentRow = 0; currentRow < heightmapRes; ++currentRow)
         {
             int baseRow = baseIndexOffset.x + currentRow;
             float texelYCoord = terrainMinOffset + (texelStepSize * baseRow);
-            for (int currentCol = 0; currentCol < terrainData.heightmapResolution; ++currentCol)
+            for (int currentCol = 0; currentCol < heightmapRes; ++currentCol)
             {
                 int baseColumn = baseIndexOffset.y + currentCol;
                 float texelXCoord = terrainMinOffset + (texelStepSize * baseColumn);
@@ -251,41 +265,54 @@ public class TerrainManager : MonoBehaviour
                 heightmap[baseRow, baseColumn] = factor + baseValue * (1.0f - factor);
             }
         }
-    }    
+
+        Profiler.EndSample();
+    }
 
     void GenerateBasin(float[,] heightmap, TerrainData terrainData)
     {
+        Profiler.BeginSample("Generate Basin");
+
         int edgeTileCount = GetEdgeTileCount();
-        for (int currentRow = 0; currentRow < edgeTileCount; ++currentRow)
+
+        //Must be called on the main thread. Also accessing this is *really* slow.
+        int heightmapRes = terrainData.heightmapResolution;
+
+        Parallel.For(0, edgeTileCount, currentRow =>
         {
             for (int currentColumn = 0; currentColumn < edgeTileCount; ++currentColumn)
             {
-                if ((currentRow == 0) 
+                if ((currentRow == 0)
                     || (currentRow == (edgeTileCount - 1))
-                    || (currentColumn == 0) 
+                    || (currentColumn == 0)
                     || (currentColumn == (edgeTileCount - 1)))
                 {
-                    CalculateBasinTile(heightmap, new Vector2Int(currentRow, currentColumn), terrainData);
+                    CalculateBasinTile(heightmap, new Vector2Int(currentRow, currentColumn), heightmapRes);
                 }
             }
-        }
+        });
+
+        Profiler.EndSample();
     }
 
     void CalculateTileMountainInfluence(float[,] heightmap, Vector2Int tileIndex, Mountain mountainData, TerrainData terrainData)
     {
+        Profiler.BeginSample("Calculate Mountain Influence");
+
         // Loop over the texels in the tile and check how much the mountain influences them
+        int heightmapResolution = terrainData.heightmapResolution;
         float terrainMinOffset = -(GetTerrainSize() * 0.5f);
         int resolution = terrainData.heightmapResolution * GetEdgeTileCount();
         float texelStepSize = GetTerrainSize() / resolution;
 
-        Vector2Int baseIndexOffset = new Vector2Int(tileIndex.x * terrainData.heightmapResolution, tileIndex.y * terrainData.heightmapResolution);
-        for (int currentRow = 0; currentRow < terrainData.heightmapResolution; ++currentRow)
+        Vector2Int baseIndexOffset = new Vector2Int(tileIndex.x * heightmapResolution, tileIndex.y * heightmapResolution);
+        Parallel.For(0, heightmapResolution, currentRow =>
         {
             int baseRow = baseIndexOffset.x + currentRow;
             float texelYCoord = terrainMinOffset + (texelStepSize * baseRow);
             float mountainNoiseYCoord = (texelStepSize * baseRow) * Definition.MountainNoiseScale;
 
-            for (int currentCol = 0; currentCol < terrainData.heightmapResolution; ++currentCol)
+            for (int currentCol = 0; currentCol < heightmapResolution; ++currentCol)
             {
                 int baseColumn = baseIndexOffset.y + currentCol;
                 float texelXCoord = terrainMinOffset + (texelStepSize * baseColumn);
@@ -303,11 +330,15 @@ public class TerrainManager : MonoBehaviour
                     heightmap[baseRow, baseColumn] = baseValue * mountainScale + (1.0f - mountainScale) * mountainValue;
                 }
             }
-        }
+        });
+
+        Profiler.EndSample();
     }
 
     void GenerateMountains(float[,] heightmap, TerrainData terrainData)
     {
+        Profiler.BeginSample("Generate Mountains");
+
         float tileSize = GetTileSize();
         float terrainMinOffset = -(GetTerrainSize() * 0.5f);
 
@@ -334,7 +365,7 @@ public class TerrainManager : MonoBehaviour
                 mountainData.Position = new Vector2(terrainMinOffset + ((mountainColumn + 1.5f) * tileSize), terrainMinOffset + ((mountainRow + 1.5f) * tileSize));
                 mountainData.Radius = (tileSize * Definition.MountainAreaFactor) * 0.5f;
 
-                GameObject mountainObj = new GameObject(string.Format("Mountain_{0}", mountainCount));
+                GameObject mountainObj = new GameObject($"Mountain_{mountainCount}");
                 mountainObj.transform.parent = TerrainRoot.transform;
                 mountainObj.transform.position = new Vector3(mountainData.Position.x, 0, mountainData.Position.y);
 
@@ -358,10 +389,14 @@ public class TerrainManager : MonoBehaviour
                 ++mountainCount;
             }
         }
+
+        Profiler.EndSample();
     }
 
     float[,] GenerateHeightmap()
     {
+        Profiler.BeginSample("Generate Heightmap");
+
         TerrainData terrainData = new TerrainData();
         terrainData.heightmapResolution = Definition.Resolution.y;
 
@@ -369,29 +404,35 @@ public class TerrainManager : MonoBehaviour
         float[,] heightmap = new float[resolution, resolution];
 
         // First perform the base pass
-        for (int currentRow = 0; currentRow < resolution; ++currentRow)
+        Parallel.For(0, resolution, currentRow =>
         {
             float baseNoiseYCoord = currentRow * Definition.BaseNoiseScale;
+
+            //False sharing happens and hurts performance if this is also made parallel
             for (int currentCol = 0; currentCol < resolution; ++currentCol)
             {
                 float baseNoiseXCoord = currentCol * Definition.BaseNoiseScale;
                 float baseValue = Mathf.PerlinNoise(baseNoiseXCoord, baseNoiseYCoord) * Definition.BaseFactor;
 
-                float heightValue = Mathf.Clamp(baseValue, 0.0f, 1.0f);
+                float heightValue = Mathf.Clamp01(baseValue);
                 heightmap[currentRow, currentCol] = heightValue;
             }
-        }
+        });
 
         // Add basin & mountains
         GenerateBasin(heightmap, terrainData);
         GenerateMountains(heightmap, terrainData);
+
+        Profiler.EndSample();
 
         return heightmap;
     }
 
     // Start is called before the first frame update
     void Start()
-    {        
+    {
+        Profiler.BeginSample("Init Terrain");
+
         Tiles = new List<TerrainTile>();
 
         TerrainRoot = new GameObject("Terrain Root");
@@ -412,7 +453,7 @@ public class TerrainManager : MonoBehaviour
                 TerrainTile currentTile = Instantiate(Definition.TilePrefab);
                 currentTile.transform.parent = TerrainRoot.transform;
                 currentTile.transform.position = Vector3.right * rowOffset + Vector3.forward * columnOffset;
-                currentTile.name = string.Format("Terrain Tile ({0},{1})", tileRow, tileCol);
+                currentTile.name = string.Format($"Terrain Tile ({tileRow},{tileCol})");
 
                 currentTile.Init(Definition, baseHeightmap, new Vector2Int(tileRow, tileCol));
                 Tiles.Add(currentTile);
@@ -425,11 +466,5 @@ public class TerrainManager : MonoBehaviour
 
         ConnectTiles();
         GenerateFlora();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

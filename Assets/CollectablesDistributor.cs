@@ -91,11 +91,10 @@ public class CollectablesDistributor : MonoBehaviour
 
     public static Vector3 PlaceOnTerrain(Vector3 p)
     {
-        var hits = Physics.RaycastAll(p + Vector3.up * 1000, Vector3.down, maxDistance: 2000,
-                    layerMask: LayerMask.GetMask("Terrain"));
-        if (hits.Any())
+        if (Physics.Raycast(p + Vector3.up * 1000, Vector3.down, out RaycastHit hit, maxDistance: 2000,
+                    layerMask: LayerMask.GetMask("Terrain")))
         {
-            p.y = hits.First().point.y + 2.0f;
+            p.y = hit.point.y + 2.0f;
             //Debug.Log("hit!");
         }
 
