@@ -23,7 +23,6 @@ public class Collector : MonoBehaviour
         {
             Destroy(other.gameObject);
             HunterBehaviour.Instance?.OnPlayerPickup();
-            ++m_playerState.Collected;
             trashCollect.Play();
         }
 

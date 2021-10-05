@@ -8,11 +8,12 @@ public class PlayerState : MonoBehaviour
     private int m_totalCollectables;
     private VictoryPortal m_victoryPortal;
     public int Health = 3;
-    public int Collected = 0;
+    private int LeftToCollect => collectablesRegistries.Sum(c => c.SpawnedCollectables.Count(s => s != null));
     public State GameState;
-    public float PercentageCollected => ((float)Collected) / m_totalCollectables;
 
     public static PlayerState Instance = null;
+    private CollectablesDistributor[] collectablesRegistries;
+
     //Unity Events
     private void Awake()
     {
@@ -30,7 +31,8 @@ public class PlayerState : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        foreach (var distributor in FindObjectsOfType<CollectablesDistributor>())
+        collectablesRegistries = FindObjectsOfType<CollectablesDistributor>();
+        foreach (var distributor in collectablesRegistries)
         {
             m_totalCollectables += distributor.AmountToDistribute * distributor.TilesToLitter;
         }
@@ -47,7 +49,7 @@ public class PlayerState : MonoBehaviour
         {
             GameState = State.Defeat;
         }
-        else if (Collected >= m_totalCollectables)
+        else if (LeftToCollect == 0)
         {
             GameState = State.ObjectiveComplete;
         }
