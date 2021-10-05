@@ -4,7 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
-using UnityEditor;
+
+public enum OctreeDirection
+{
+    North,
+    South,
+    East,
+    West,
+    Up,
+    Down
+}
 
 public enum Octant : byte
 {
@@ -12,12 +21,217 @@ public enum Octant : byte
     TopNW,
     TopSE,
     TopSW,
-    BottomNW,
     BottomNE,
+    BottomNW,
     BottomSE,
     BottomSW,
 
     INVALID
+}
+
+//Helpers to get adjacent octants. All cardinal directions are paired due to the repeating nature of the grid
+public static class OctantExtensions
+{
+    public static Octant OppositeX(this Octant o)
+    {
+        switch (o)
+        {
+            case Octant.TopNE:
+                return Octant.TopNW;
+            case Octant.TopNW:
+                return Octant.TopNE;
+            case Octant.TopSE:
+                return Octant.TopSW;
+            case Octant.TopSW:
+                return Octant.TopSE;
+            case Octant.BottomNE:
+                return Octant.BottomNW;
+            case Octant.BottomNW:
+                return Octant.BottomNE;
+            case Octant.BottomSE:
+                return Octant.BottomSW;
+            case Octant.BottomSW:
+                return Octant.BottomSE;
+            case Octant.INVALID:
+            default:
+                return Octant.INVALID;
+        }
+    }
+
+    public static Octant OppositeY(this Octant o)
+    {
+        switch (o)
+        {
+            case Octant.TopNE:
+                return Octant.BottomNE;
+            case Octant.TopNW:
+                return Octant.BottomNW;
+            case Octant.TopSE:
+                return Octant.BottomSE;
+            case Octant.TopSW:
+                return Octant.BottomSW;
+            case Octant.BottomNE:
+                return Octant.TopNE;
+            case Octant.BottomNW:
+                return Octant.TopNW;
+            case Octant.BottomSE:
+                return Octant.TopSE;
+            case Octant.BottomSW:
+                return Octant.TopSW;
+            case Octant.INVALID:
+            default:
+                return Octant.INVALID;
+        }
+    }
+
+    public static Octant OppositeZ(this Octant o)
+    {
+        switch (o)
+        {
+            case Octant.TopNE:
+                return Octant.TopSE;
+            case Octant.TopNW:
+                return Octant.TopSW;
+            case Octant.TopSE:
+                return Octant.TopNE;
+            case Octant.TopSW:
+                return Octant.TopNW;
+            case Octant.BottomNE:
+                return Octant.BottomSE;
+            case Octant.BottomNW:
+                return Octant.BottomSW;
+            case Octant.BottomSE:
+                return Octant.BottomNE;
+            case Octant.BottomSW:
+                return Octant.BottomNW;
+            case Octant.INVALID:
+            default:
+                return Octant.INVALID;
+        }
+    }
+
+    public static Octant MoveDirection(this Octant o, OctreeDirection direction)
+    {
+        switch (direction)
+        {
+            case OctreeDirection.North:
+            case OctreeDirection.South:
+                return OppositeZ(o);
+            case OctreeDirection.East:
+            case OctreeDirection.West:
+                return OppositeX(o);
+            case OctreeDirection.Up:
+            case OctreeDirection.Down:
+                return OppositeY(o);
+            default:
+                return Octant.INVALID;
+        }
+    }
+
+    public static bool IsNorth(this Octant o)
+    {
+        switch (o)
+        {
+            case Octant.TopNE:
+            case Octant.TopNW:
+            case Octant.BottomNE:
+            case Octant.BottomNW:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    public static bool IsSouth(this Octant o)
+    {
+        switch (o)
+        {
+            case Octant.TopSE:
+            case Octant.TopSW:
+            case Octant.BottomSE:
+            case Octant.BottomSW:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    public static bool IsEast(this Octant o)
+    {
+        switch (o)
+        {
+            case Octant.TopNE:
+            case Octant.TopSE:
+            case Octant.BottomNE:
+            case Octant.BottomSE:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    public static bool IsWest(this Octant o)
+    {
+        switch (o)
+        {
+            case Octant.TopNW:
+            case Octant.TopSW:
+            case Octant.BottomNW:
+            case Octant.BottomSW:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    public static bool IsTop(this Octant o)
+    {
+        switch (o)
+        {
+            case Octant.TopNE:
+            case Octant.TopNW:
+            case Octant.TopSE:
+            case Octant.TopSW:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    public static bool IsBottom(this Octant o)
+    {
+        switch (o)
+        {
+            case Octant.BottomNE:
+            case Octant.BottomNW:
+            case Octant.BottomSE:
+            case Octant.BottomSW:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    public static bool DirectionCrossesNode(this Octant o, OctreeDirection direction)
+    {
+        switch (direction)
+        {
+            case OctreeDirection.North:
+                return o.IsNorth();
+            case OctreeDirection.South:
+                return o.IsSouth();
+            case OctreeDirection.East:
+                return o.IsEast();
+            case OctreeDirection.West:
+                return o.IsWest();
+            case OctreeDirection.Up:
+                return o.IsTop();
+            case OctreeDirection.Down:
+                return o.IsBottom();
+            default:
+                return false;
+        }
+    }
 }
 
 public struct OctreeNode<T>
@@ -29,7 +243,7 @@ public struct OctreeNode<T>
     public Octant    Octant;
     public T         Data;
 
-    public bool HasChildren => ChildrenStart != InvalidNodeID;
+    public bool      IsLeaf => ChildrenStart == InvalidNodeID;
 
     public OctreeNode(int parent, Bounds bounds, Octant octant, T data)
     {
@@ -78,6 +292,51 @@ public class Octree<T>
         return node.Octant == Octant.INVALID ? 0 : InvalidNodeID;
     }
 
+    public int GetAdjacentNode(OctreeNode<T> node, OctreeDirection direction)
+    {
+        if (node.Parent != InvalidNodeID)
+        {
+            Octant node_octant = node.Octant;
+            Octant target_octant = node_octant.MoveDirection(direction);
+
+            OctreeNode<T> parent = Nodes[node.Parent];
+            //Opposite nodes are contained in the same parent. Simply return it
+            if (!node_octant.DirectionCrossesNode(direction))
+            {
+                return parent.ChildrenStart + (int)target_octant;
+            }
+            //Get the adjacent node at the parent level and get the adjacent node to this from there
+            else
+            {
+                int parent_adjacent_id = GetAdjacentNode(parent, direction);
+                if (parent_adjacent_id != InvalidNodeID)
+                {
+                    //Now that we have the parent node. Test for children in the target octant. Return the parent adjacent if there are no children
+                    OctreeNode<T> parent_adjacent = Nodes[parent_adjacent_id];
+                    return parent_adjacent.IsLeaf ? parent_adjacent_id : parent_adjacent.ChildrenStart + (int)target_octant;
+                }
+            }
+        }
+
+        return InvalidNodeID;
+    }
+
+    public bool GetAdjacentNodes(OctreeNode<T> node, int[] adjacent_node_ids)
+    {
+        //Up, Down, West, East, North, South
+        if (node.Parent != InvalidNodeID)
+        {
+            //It's a cube. I'm assuming 6 adjacents...
+            for (int i = 0; i < 6; ++i)
+            {
+                adjacent_node_ids[i] = GetAdjacentNode(node, (OctreeDirection)i);
+            }
+            return true;
+        }
+
+        return false;
+    }
+
     public bool SplitNode(OctreeNode<T> node, OctreeNode<T>[] new_children)
     {
         return SplitNode(FindNodeIndex(node), new_children);
@@ -86,7 +345,7 @@ public class Octree<T>
     public bool SplitNode(int node_id, OctreeNode<T>[] new_children)
     {
         OctreeNode<T> parent = m_Nodes[node_id];
-        if (parent.ChildrenStart == InvalidNodeID)
+        if (parent.IsLeaf)
         {
             Bounds parent_bounds = parent.Bounds;
             for (int i = 0; i < 8; ++i)
@@ -114,7 +373,7 @@ public class Octree<T>
     public bool SplitNodeAndAppend(int node_id, IList<OctreeNode<T>> result_list)
     {
         OctreeNode<T> parent = m_Nodes[node_id];
-        if (parent.ChildrenStart == InvalidNodeID)
+        if (parent.IsLeaf)
         {
             parent.ChildrenStart = m_Nodes.Count;
 

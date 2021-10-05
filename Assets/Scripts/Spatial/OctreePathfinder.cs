@@ -11,30 +11,25 @@ using UnityEngine.Profiling;
 [RequireComponent(typeof(TerrainManager))]
 public partial class OctreePathfinder : MonoBehaviour
 {
-    private Octree<bool>     m_PassableTree;
-    private TerrainManager   m_TerrainManager;
-
-    [SerializeField, Tooltip("Height above the terrain that the pathfinder area contains. Used to allow creature to go above the flight ceiling")]
-    private float            m_PathableHeightAboveCeiling = 5f;
+    private Octree<bool>           m_PassableTree;
+    private TerrainManager         m_TerrainManager;
 
     [SerializeField, Tooltip("Minimum size nodes will subdivide to")]
-    private float            m_MinimumNodeSize = 1f;
+    private float                  m_MinimumNodeSize = 1f;
 
     [SerializeField, Tooltip("Physics layers to test for obstacles")]
-    private LayerMask        m_ImpassableLayers = Physics.AllLayers;
+    private LayerMask              m_ImpassableLayers = Physics.AllLayers;
 
     public static OctreePathfinder Instance { get; private set; }
-    public bool              Initialised => m_PassableTree != null;
-    public int               NodeCount => m_PassableTree.Nodes.Count;
-
-    public int BreakIndex = -1;
+    public bool                    Initialised => m_PassableTree != null;
+    public int                     NodeCount => m_PassableTree.Nodes.Count;
 
     private void GeneratePassableTree()
     {
         Profiler.BeginSample("Pathinder - Generate Tree");
 
-        float bounds_height = (Mathf.Max(0f, m_PathableHeightAboveCeiling) + m_TerrainManager.Definition.MaxHeight);
-        Bounds tree_bounds = new Bounds(transform.position + Vector3.up * bounds_height * 0.5f, m_TerrainManager.PlayableTerrainArea.size.XZ() + Vector3.up * bounds_height);
+        Vector3 size = Vector3.one * m_TerrainManager.Definition.TerrainSize;
+        Bounds tree_bounds = new Bounds(transform.position + Vector3.up * size.y * 0.5f, size);
         m_PassableTree = new Octree<bool>(tree_bounds, true);
 
         List<OctreeNode<bool>> open_nodes = new List<OctreeNode<bool>>(256);
@@ -46,10 +41,12 @@ public partial class OctreePathfinder : MonoBehaviour
             OctreeNode<bool> current_node = open_nodes.PopBack();
             int node_index = m_PassableTree.FindNodeIndex(current_node);
 
+#if UNITY_EDITOR
             if (node_index == BreakIndex)
             {
                 Debug.DebugBreak();
             }
+#endif
 
             Vector3 current_node_extents = current_node.Bounds.extents;
             if (Physics.CheckBox(current_node.Bounds.center, current_node_extents, Quaternion.identity, m_ImpassableLayers))

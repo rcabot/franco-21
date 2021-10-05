@@ -26,7 +26,7 @@ public class CollisionTest : MonoBehaviour
             m_Collider.enabled = false;
 
             Gizmos.color = Color.green;
-            if (Physics.CheckBox(test_bounds.center, test_bounds.extents, Quaternion.identity, m_TestLayers))
+            if (Physics.CheckBox(transform.position, test_bounds.extents, Quaternion.identity, m_TestLayers))
             {
                 Gizmos.color = Color.red;
             }

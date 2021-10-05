@@ -117,6 +117,14 @@ class DebugTools : EditorWindow
         if (m_ShowTerrainTest)
         {
             m_DrawTerrainBounds = EditorGUILayout.Toggle("Draw Terrain Bounds", m_DrawTerrainBounds);
+
+            if (GUILayout.Button("Force Refresh Terrain Heights"))
+            {
+                foreach (TerrainTile t in FindObjectsOfType<TerrainTile>())
+                {
+                    t.ForceRefresh();
+                }
+            }
         }
     }
 

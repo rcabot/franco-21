@@ -22,12 +22,15 @@ public partial class OctreePathfinder : MonoBehaviour
     }
 
     [NonSerialized]
-    public DebugNodeDrawFlags Debug_ActiveNodeDrawFlags = DebugNodeDrawFlags.DrawLeafOnly | DebugNodeDrawFlags.DrawOuterBounds;
+    public DebugNodeDrawFlags Debug_ActiveNodeDrawFlags = DebugNodeDrawFlags.DrawLeafOnly | DebugNodeDrawFlags.DrawImpassable;
 
     [NonSerialized]
     public int Debug_HighlightNodeIndex = -1;
 
     public OctreeNode<bool> Debug_HighlightNode => Debug_HighlightNodeIndex >= 0 && Debug_HighlightNodeIndex < NodeCount ? m_PassableTree.Nodes[Debug_HighlightNodeIndex] : default;
+
+    [NonSerialized]
+    public int BreakIndex = -1;
 
     private List<Bounds> Debug_LastSplitBounds = new List<Bounds>();
 
@@ -82,7 +85,7 @@ public partial class OctreePathfinder : MonoBehaviour
                 Gizmos.color = Color.red;
                 foreach (OctreeNode<bool> node in m_PassableTree.Nodes)
                 {
-                    if (!node.Data && !(draw_leaf_only && node.HasChildren))
+                    if (!node.Data && (!draw_leaf_only || node.IsLeaf))
                     {
                         Gizmos.DrawWireCube(node.Bounds.center, node.Bounds.size);
                     }
@@ -94,7 +97,7 @@ public partial class OctreePathfinder : MonoBehaviour
                 Gizmos.color = Color.green;
                 foreach (OctreeNode<bool> node in m_PassableTree.Nodes)
                 {
-                    if (node.Data && !(draw_leaf_only && node.HasChildren))
+                    if (node.Data && (!draw_leaf_only || node.IsLeaf))
                     {
                         Gizmos.DrawWireCube(node.Bounds.center, node.Bounds.size);
                     }

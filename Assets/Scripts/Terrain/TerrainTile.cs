@@ -53,6 +53,14 @@ public class TerrainTile : MonoBehaviour
         TerrainComponent.Flush();
     }
 
+    public void ForceRefresh()
+    {
+        TerrainData tdata = _TerrainComponent.terrainData;
+        int res = tdata.heightmapResolution;
+        float[,] heights = tdata.GetHeights(0, 0, res, res);
+        tdata.SetHeights(0, 0, heights);
+    }
+
     public void Init(TerrainDefinition definition, float[,] baseHeightmap, Vector2Int tileIndex)
     {
         Profiler.BeginSample("Terrain Tile Init");
