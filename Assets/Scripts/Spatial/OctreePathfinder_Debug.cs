@@ -32,6 +32,9 @@ public partial class OctreePathfinder : MonoBehaviour
     [NonSerialized]
     public int BreakIndex = -1;
 
+    private int   Debug_LastHighlightAdjacentNode = InvalidNodeID;
+    private int[] Debug_CachedAdjacentNodes = new int[6].Fill(InvalidNodeID);
+
     private List<Bounds> Debug_LastSplitBounds = new List<Bounds>();
 
     public void DebugRegeneratePassableTree()
@@ -66,6 +69,17 @@ public partial class OctreePathfinder : MonoBehaviour
     public void DebugClearTree()
     {
         m_PassableTree.Clear();
+        Debug_LastHighlightAdjacentNode = InvalidNodeID;
+    }
+
+    public void DebugHighlightAdjacentNodes()
+    {
+        if (Debug_LastHighlightAdjacentNode != Debug_HighlightNodeIndex
+            && Debug_HighlightNodeIndex != InvalidNodeID)
+        {
+            Debug_LastHighlightAdjacentNode = Debug_HighlightNodeIndex;
+            m_PassableTree.GetAdjacentNodes(m_PassableTree.Nodes[Debug_HighlightNodeIndex], Debug_CachedAdjacentNodes);
+        }
     }
 
     private void OnDrawGizmos()
@@ -118,6 +132,17 @@ public partial class OctreePathfinder : MonoBehaviour
                 OctreeNode<bool> node = m_PassableTree.Nodes[Debug_HighlightNodeIndex];
                 Gizmos.color = Physics.CheckBox(node.Bounds.center, node.Bounds.extents, Quaternion.identity, m_ImpassableLayers) ? Color.red : Color.green;
                 Gizmos.DrawCube(node.Bounds.center, node.Bounds.size);
+            }
+
+            Gizmos.color = Color.yellow;
+            foreach (int i in Debug_CachedAdjacentNodes)
+            {
+                if (i != InvalidNodeID)
+                {
+                    Bounds highlight_bounds = m_PassableTree.Nodes[i].Bounds;
+                    Gizmos.DrawSphere(highlight_bounds.center, highlight_bounds.extents.x);
+                    Gizmos.DrawWireCube(highlight_bounds.center, highlight_bounds.size);
+                }
             }
         }
     }

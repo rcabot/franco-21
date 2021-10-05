@@ -138,11 +138,15 @@ class DebugTools : EditorWindow
             OctreePathfinder.Instance.Debug_HighlightNodeIndex = EditorGUILayout.IntSlider("Highlight Node", OctreePathfinder.Instance.Debug_HighlightNodeIndex, -1, OctreePathfinder.Instance.NodeCount - 1);
 
             EditorGUI.BeginDisabledGroup(true);
-
+            EditorGUILayout.IntField("Total Nodes", OctreePathfinder.Instance.NodeCount);
             EditorGUILayout.BoundsField("Highlighted Bounds", OctreePathfinder.Instance.Debug_HighlightNode.Bounds);
             EditorGUILayout.LabelField("Highlighted Octant", OctreePathfinder.Instance.Debug_HighlightNode.Octant.ToString());
-
             EditorGUI.EndDisabledGroup();
+
+            if (GUILayout.Button("Highlight Adjacent", EditorStyles.miniButton))
+            {
+                OctreePathfinder.Instance.DebugHighlightAdjacentNodes();
+            }
 
             EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button("Clear Tree", EditorStyles.miniButtonLeft))

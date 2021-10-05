@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
+//Could do diagonals. Future work...
 public enum OctreeDirection
 {
     North,
@@ -292,6 +293,33 @@ public class Octree<T>
         return node.Octant == Octant.INVALID ? 0 : InvalidNodeID;
     }
 
+    public bool NodeAtPosition(Vector3 position, out OctreeNode<T> result_node)
+    {
+        List<int> open_list = new List<int>(64);
+        open_list.Add(0);
+
+        while (!open_list.Empty())
+        {
+            OctreeNode<T> current_node = m_Nodes[open_list.PopBack()];
+
+            if (current_node.Bounds.Contains(position))
+            {
+                if (current_node.IsLeaf)
+                {
+                    result_node = current_node;
+                    return true;
+                }
+                else
+                {
+                    AppendNodeChildrenIDs(current_node, open_list);
+                }
+            }
+        }
+
+        result_node = Root;
+        return false;
+    }
+
     public int GetAdjacentNode(OctreeNode<T> node, OctreeDirection direction)
     {
         if (node.Parent != InvalidNodeID)
@@ -363,6 +391,28 @@ public class Octree<T>
         }
 
         return false;
+    }
+
+    public void AppendNodeChildren(OctreeNode<T> node, IList<OctreeNode<T>> result_list)
+    {
+        if (!node.IsLeaf)
+        {
+            for (int i = 0; i < 8; ++i)
+            {
+                result_list.Add(m_Nodes[node.ChildrenStart + i]);
+            }
+        }
+    }
+
+    public void AppendNodeChildrenIDs(OctreeNode<T> node, IList<int> result_list)
+    {
+        if (!node.IsLeaf)
+        {
+            for (int i = 0; i < 8; ++i)
+            {
+                result_list.Add(node.ChildrenStart + i);
+            }
+        }
     }
 
     public bool SplitNodeAndAppend(OctreeNode<T> node, IList<OctreeNode<T>> result_list)

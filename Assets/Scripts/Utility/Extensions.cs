@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -79,6 +80,76 @@ public static class ListExtensions
     public static bool Empty<T>(this List<T> list)
     {
         return list.Count == 0;
+    }
+
+    //Make sure your list is sorted before you call this
+    //Returns the index of the first item in the list that is NOT less than the given item
+    public static int LowerBound<T, V>(this IList<T> list, V value) where V : IComparable<T>
+    {
+        return list.LowerBound(value, (T a, V b) => (b.CompareTo(a) > 0));
+    }
+
+    //Make sure your list is sorted before you call this
+    //Returns the index of the first item in the list that is NOT less than the given item
+    public static int LowerBound<T, V>(this IList<T> list, V value, Func<T, V, bool> less_than_compare)
+    {
+        int start = 0;
+        int item_count = list.Count;
+        int iter;
+        int step;
+
+        while (item_count > 0)
+        {
+            iter = start;
+            step = item_count / 2;
+            iter += step;
+            if (less_than_compare(list[iter], value))
+            {
+                start = ++iter;
+                item_count -= step + 1;
+            }
+            else
+            {
+                item_count = step;
+            }
+        }
+
+        return start;
+    }
+
+    //Make sure your list is sorted before you call this
+    //Returns the index of the first item i nthe list that is greater than the given item
+    public static int UpperBound<T, V>(this IList<T> list, V value) where V : IComparable<T>
+    {
+        return list.UpperBound(value, (V a, T b) => a.CompareTo(b) < 0);
+    }
+
+    //Make sure your list is sorted before you call this
+    //Returns the index of the first item i nthe list that is greater than the given item
+    public static int UpperBound<T, V>(this IList<T> list, V value, Func<V, T, bool> less_than_compare)
+    {
+        int start = 0;
+        int iter;
+        int item_count = list.Count;
+        int step;
+
+        while (item_count > 0)
+        {
+            iter = start;
+            step = item_count / 2;
+            iter += step;
+            if (!less_than_compare(value, list[iter]))
+            {
+                start = ++iter;
+                item_count -= step + 1;
+            }
+            else
+            {
+                item_count = step;
+            }
+        }
+
+        return start;
     }
 }
 
