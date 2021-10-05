@@ -18,6 +18,8 @@ class DebugTools : EditorWindow
     bool m_ShowTerrainTest = false;
     bool m_DrawTerrainBounds = false;
 
+    bool m_ShowOctreePathfidingTest = false;
+
     [MenuItem("Franco Jam/Debug Tools")]
     public static void ShowWindow()
     {
@@ -47,6 +49,7 @@ class DebugTools : EditorWindow
             CameraShakeUI();
             CreatureUI();
             TerrainUI();
+            OctreePathfindingUI();
         }
         else
         {
@@ -64,7 +67,7 @@ class DebugTools : EditorWindow
             {
                 HunterBehaviour.EnableLogging = EditorGUILayout.Toggle("Enable Logging", HunterBehaviour.EnableLogging);
                 
-                HunterState new_state = (HunterState)EditorGUILayout.EnumPopup("Current State:", hunter.CurrentState);
+                HunterState new_state = (HunterState)EditorGUILayout.EnumPopup("Current State", hunter.CurrentState);
                 if (new_state != hunter.CurrentState)
                 {
                     hunter.ForceSetState(new_state);
@@ -113,7 +116,42 @@ class DebugTools : EditorWindow
         m_ShowTerrainTest = EditorGUILayout.Foldout(m_ShowTerrainTest, "Terrain"); ;
         if (m_ShowTerrainTest)
         {
-            m_DrawTerrainBounds = EditorGUILayout.Toggle("Draw Terrain Bounds: ", m_DrawTerrainBounds);
+            m_DrawTerrainBounds = EditorGUILayout.Toggle("Draw Terrain Bounds", m_DrawTerrainBounds);
+        }
+    }
+
+    private void OctreePathfindingUI()
+    {
+        m_ShowOctreePathfidingTest = EditorGUILayout.Foldout(m_ShowOctreePathfidingTest, "Octree Pathfinding");
+        if (m_ShowOctreePathfidingTest)
+        {
+            OctreePathfinder.Instance.Debug_ActiveNodeDrawFlags = (OctreePathfinder.DebugNodeDrawFlags)EditorGUILayout.EnumFlagsField("Debug Node Draw", OctreePathfinder.Instance.Debug_ActiveNodeDrawFlags);
+
+            OctreePathfinder.Instance.Debug_HighlightNodeIndex = EditorGUILayout.IntSlider("Highlight Node", OctreePathfinder.Instance.Debug_HighlightNodeIndex, -1, OctreePathfinder.Instance.NodeCount - 1);
+
+            EditorGUI.BeginDisabledGroup(true);
+
+            EditorGUILayout.BoundsField("Highlighted Bounds", OctreePathfinder.Instance.Debug_HighlightNode.Bounds);
+            EditorGUILayout.LabelField("Highlighted Octant", OctreePathfinder.Instance.Debug_HighlightNode.Octant.ToString());
+
+            EditorGUI.EndDisabledGroup();
+
+            EditorGUILayout.BeginHorizontal();
+            if (GUILayout.Button("Clear Tree", EditorStyles.miniButtonLeft))
+            {
+                OctreePathfinder.Instance.DebugClearTree();
+            }
+
+            if (GUILayout.Button("Split Nodes", EditorStyles.miniButtonMid))
+            {
+                OctreePathfinder.Instance.DebugSplitTreeNodes();
+            }
+
+            if (GUILayout.Button("Regenerate Tree", EditorStyles.miniButtonRight))
+            {
+                OctreePathfinder.Instance.DebugRegeneratePassableTree();
+            }
+            EditorGUILayout.EndHorizontal();
         }
     }
 }

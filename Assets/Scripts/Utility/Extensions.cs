@@ -75,6 +75,11 @@ public static class ListExtensions
     {
         return list.Count > 0 ? list[list.Count - 1] : null;
     }
+
+    public static bool Empty<T>(this List<T> list)
+    {
+        return list.Count == 0;
+    }
 }
 
 public static class ArrayExtensions

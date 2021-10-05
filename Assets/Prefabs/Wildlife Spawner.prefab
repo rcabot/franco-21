@@ -58,7 +58,12 @@ MonoBehaviour:
   m_spawnedWildLife: []
   MaxWildlife: 200
   EntityTravelSpeed: 2
-  WildlifeHeightAboveTerrain: 2
+  WildlifeHeightAboveTerrain:
+    start: 8
+    length: 12
+  TerrainMask:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!65 &7380199096935502371
 BoxCollider:
   m_ObjectHideFlags: 0

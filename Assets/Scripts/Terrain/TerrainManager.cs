@@ -18,6 +18,8 @@ public class TerrainManager : MonoBehaviour
 
     public Rect TerrainAreaWithEdge { get { Vector2 half_terrain_size = Vector2.one * GetTerrainSize() * 0.5f; return new Rect(-half_terrain_size, half_terrain_size * 2f); } }
 
+    public bool TerrainGenerated => Tiles != null && !Tiles.Empty();
+
     struct Mountain
     {
         public Vector2 Position;

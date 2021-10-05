@@ -59,7 +59,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a9bbdc4abc48d44ca64cd70b9f850ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Definition: {fileID: 11400000, guid: a64c1238de2ac2c4695f648ed8f4eb87, type: 2}
+  _Definition: {fileID: 11400000, guid: 17baa5f319547d94ba202f19c659e262, type: 2}
 --- !u!1 &8382052127016125531
 GameObject:
   m_ObjectHideFlags: 0
@@ -103,3 +103,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 309a499b279db8a49a6b10bf97693e55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Health: 3
+  Collected: 0
+  GameState: 0
