@@ -309,6 +309,11 @@ public static class Vector3Extensions
         return v.Translated(xy.x, xy.y, 0f);
     }
 
+    public static Vector4 ToVector4(this Vector3 v, float w)
+    {
+        return new Vector4(v.x, v.y, v.z, w);
+    }
+
     public static bool Approximately(this Vector3 lhs, Vector3 rhs)
     {
         return Mathf.Approximately(lhs.x, rhs.x)

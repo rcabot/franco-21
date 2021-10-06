@@ -24,11 +24,7 @@ public partial class OctreePathfinder : MonoBehaviour
     public static int              InvalidNodeID => Octree<bool>.InvalidNodeID;
     public bool                    Initialised => m_PassableTree != null;
     public int                     NodeCount => m_PassableTree.Nodes.Count;
-
-    public OctreeNode<bool> GetNode(int index)
-    {
-        return index != InvalidNodeID ? m_PassableTree.Nodes[index] : m_PassableTree.Root;
-    }
+    public IReadOnlyOctree<bool>   Octree => m_PassableTree;
 
     public bool FindPath(Vector3 start, Vector3 end, List<int> node_path)
     {
@@ -46,6 +42,7 @@ public partial class OctreePathfinder : MonoBehaviour
         return false;
     }
 
+    public Dictionary<int, AStarNode> visited_nodes = new Dictionary<int, AStarNode>();
 
     public bool FindPath(OctreeNode<bool> start, OctreeNode<bool> end, List<int> node_path)
     {
@@ -68,73 +65,72 @@ public partial class OctreePathfinder : MonoBehaviour
         Vector3 target_position = end.Bounds.center;
         List<(int, float)> open_list = new List<(int, float)>(128);
         List<int> expanded_node_ids = new List<int>(32);
-        Dictionary<int, AStarNode> visited_nodes = new Dictionary<int, AStarNode>();
+
+        //Dictionary<int, AStarNode> visited_nodes = new Dictionary<int, AStarNode>();
+        visited_nodes.Clear();
 
         //Push the start node
-        AStarNode current_search_node = default;
-        current_search_node.NodeIndex = start_node_index;
-        current_search_node.PrevNodeIndex = InvalidNodeID;
-        current_search_node.SqrDistanceFromStart = 0f;
-        current_search_node.SqrDistanceToEnd = 0f;
-
-        visited_nodes[start_node_index] = current_search_node;
+        visited_nodes[start_node_index] = new AStarNode { NodeIndex = start_node_index, PrevNodeIndex = InvalidNodeID, SqrDistanceFromStart = 0f, SqrDistanceToEnd = float.PositiveInfinity };
         open_list.Add((start_node_index, float.NegativeInfinity));
 
+        int current_node_id = InvalidNodeID;
         while (!open_list.Empty())
         {
-            (int current_node_id, float _) = open_list.HeapPop(AstarPairLess);
-            current_search_node = visited_nodes[current_search_node.NodeIndex];
+            current_node_id = open_list.HeapPop(AstarPairLess).Item1;
 
             //Found the end node. Exiting
-            if (current_search_node.NodeIndex == end_node_index)
+            if (current_node_id == end_node_index)
             {
                 break;
             }
 
             //Expand the node
-            OctreeNode<bool> current_tree_node = m_PassableTree.Nodes[current_search_node.NodeIndex];
+            OctreeNode<bool> current_tree_node = m_PassableTree.Nodes[current_node_id];
 
             Debug.Assert(current_tree_node.IsLeaf);
 
             //Add Adjacent
-            current_search_node.PrevNodeIndex = current_search_node.NodeIndex;
-            m_PassableTree.GetAdjacentLeafNodes(current_tree_node, expanded_node_ids, (n) => n.Data);
+            expanded_node_ids.Clear();
+            m_PassableTree.AdjacentLeafs(current_tree_node, expanded_node_ids, (n) => n.Data);
+
             Vector3 current_node_center = current_tree_node.Bounds.center;
-            float current_distance_from_start = current_search_node.SqrDistanceFromStart;
+            AStarNode adjacent_search_node = new AStarNode { PrevNodeIndex = current_node_id };
+
+            float current_distance_from_start = visited_nodes[current_node_id].SqrDistanceFromStart;
             foreach (int adjacent_node_index in expanded_node_ids)
             {
                 //Update the node if this path is closer or if the node doesn't already exist
                 Vector3 adjacent_node_center = m_PassableTree.Nodes[adjacent_node_index].Bounds.center;
-                current_search_node.SqrDistanceFromStart = current_distance_from_start + (adjacent_node_center - current_node_center).sqrMagnitude;
-                current_search_node.NodeIndex = adjacent_node_index;
+                adjacent_search_node.SqrDistanceFromStart = current_distance_from_start + (adjacent_node_center - current_node_center).sqrMagnitude;
+                adjacent_search_node.NodeIndex = adjacent_node_index;
                 if (visited_nodes.TryGetValue(adjacent_node_index, out AStarNode existing_node))
                 {
-                    if (existing_node.SqrDistanceFromStart > current_search_node.SqrDistanceFromStart)
+                    if (existing_node.SqrDistanceFromStart > adjacent_search_node.SqrDistanceFromStart)
                     {
                         //This new path is better. Update the info and add the node for re-expansion
-                        current_search_node.SqrDistanceToEnd = existing_node.SqrDistanceToEnd;
-                        visited_nodes[adjacent_node_index] = current_search_node;
-                        open_list.HeapPush((adjacent_node_index, current_search_node.SqrDistanceFromStart + current_search_node.SqrDistanceToEnd), AstarPairLess);
+                        adjacent_search_node.SqrDistanceToEnd = existing_node.SqrDistanceToEnd;
+                        visited_nodes[adjacent_node_index] = adjacent_search_node;
+                        open_list.HeapPush((adjacent_node_index, adjacent_search_node.SqrDistanceFromStart + adjacent_search_node.SqrDistanceToEnd), AstarPairLess);
                     }
                 }
                 else
                 {
                     //Node hasn't been expanded yet. Add it
-                    current_search_node.SqrDistanceToEnd = (target_position - adjacent_node_center).sqrMagnitude;
-                    visited_nodes[adjacent_node_index] = current_search_node;
-                    open_list.HeapPush((adjacent_node_index, current_search_node.SqrDistanceFromStart + current_search_node.SqrDistanceToEnd), AstarPairLess);
+                    adjacent_search_node.SqrDistanceToEnd = (target_position - adjacent_node_center).sqrMagnitude;
+                    visited_nodes[adjacent_node_index] = adjacent_search_node;
+                    open_list.HeapPush((adjacent_node_index, adjacent_search_node.SqrDistanceFromStart + adjacent_search_node.SqrDistanceToEnd), AstarPairLess);
                 }
             }
         }
 
         //Success! Found a path.
-        if (current_search_node.NodeIndex == end_node_index)
+        if (current_node_id == end_node_index)
         {
             //Follow the links backwards and reuse the open_list buffer to store them in reverse order
             open_list.Clear();
 
             //Start will be inherently trimmed by this loop
-            for (; current_search_node.PrevNodeIndex != InvalidNodeID; current_search_node = visited_nodes[current_search_node.PrevNodeIndex])
+            for (AStarNode current_search_node = visited_nodes[current_node_id]; current_search_node.PrevNodeIndex != InvalidNodeID; current_search_node = visited_nodes[current_search_node.PrevNodeIndex])
             {
                 open_list.Add((current_search_node.NodeIndex, 0f));
             }
@@ -157,6 +153,7 @@ public partial class OctreePathfinder : MonoBehaviour
     public bool FindNearestPathableNode(Vector3 position, out OctreeNode<bool> result_node)
     {
         //TODO: Consider buffer reuse
+        //TODO: Consider using a binary minheap for the open list
         
         if (NodeAtPosition(position, out result_node))
         {
@@ -220,7 +217,7 @@ public partial class OctreePathfinder : MonoBehaviour
         return m_PassableTree.NodeAtPosition(position, out result_node);
     }
 
-    #region Private Detail
+#region Private Detail
 
     private void GeneratePassableTree()
     {
@@ -240,13 +237,6 @@ public partial class OctreePathfinder : MonoBehaviour
             OctreeNode<bool> current_node = open_nodes.PopBack();
             int node_index = m_PassableTree.FindNodeIndex(current_node);
 
-#if UNITY_EDITOR
-            if (node_index == BreakIndex)
-            {
-                Debug.DebugBreak();
-            }
-#endif
-
             Bounds current_node_bounds = current_node.Bounds;
             Vector3 current_node_extents = current_node_bounds.extents;
             Vector3 current_node_center = current_node_bounds.center;
@@ -258,7 +248,7 @@ public partial class OctreePathfinder : MonoBehaviour
                 float child_node_size = current_node_extents.x * 0.5f;
                 if (child_node_size > m_MinimumNodeSize)
                 {
-                    m_PassableTree.SplitNodeAndAppend(current_node, open_nodes);
+                    m_PassableTree.SplitNode(current_node, open_nodes);
                 }
                 //Flag as an impassable leaf
                 else
@@ -289,7 +279,7 @@ public partial class OctreePathfinder : MonoBehaviour
         GeneratePassableTree();
     }
 
-    struct AStarNode
+    public struct AStarNode
     {
         public int   NodeIndex;
         public int   PrevNodeIndex;
@@ -297,9 +287,9 @@ public partial class OctreePathfinder : MonoBehaviour
         public float SqrDistanceFromStart;
     }
 
-    #endregion
+#endregion
 
-    #region Unity Events
+#region Unity Events
 
     private void Awake()
     {
@@ -327,6 +317,6 @@ public partial class OctreePathfinder : MonoBehaviour
         }
     }
 
-    #endregion
+#endregion
 
 }

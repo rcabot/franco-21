@@ -297,7 +297,24 @@ public struct OctreeNode<T>
     }
 }
 
-public class Octree<T>
+public interface IReadOnlyOctree<T>
+{
+    public IReadOnlyList<OctreeNode<T>> Nodes { get; }
+    public Bounds                       WorldBounds { get; }
+
+    public int                          FindNodeIndex(OctreeNode<T> node);
+
+    public int                          Adjacent(OctreeNode<T> node, OctreeDirection direction);
+    public void                         AdjacentLeafs(OctreeNode<T> node, IList<int> result_list);
+    public void                         AdjacentLeafs(OctreeNode<T> node, IList<int> result_list, Predicate<OctreeNode<T>> predicate);
+    public void                         AdjacentLeafs(OctreeNode<T> node, OctreeDirection direction, IList<int> result_list);
+    public void                         AdjacentLeafs(OctreeNode<T> node, OctreeDirection direction, IList<int> result_list, Predicate<OctreeNode<T>> predicate);
+
+    public void                         GetNodeChildren(OctreeNode<T> node, IList<OctreeNode<T>> result_list);
+    public void                         GetNodeChildrenIDs(OctreeNode<T> node, IList<int> result_list);
+}
+
+public class Octree<T> : IReadOnlyOctree<T>
 {
     List<OctreeNode<T>> m_Nodes = new List<OctreeNode<T>>();
     T                   m_InitialValue = default;
@@ -352,7 +369,7 @@ public class Octree<T>
                 }
                 else
                 {
-                    AppendNodeChildrenIDs(current_node, open_list);
+                    GetNodeChildrenIDs(current_node, open_list);
                 }
             }
         }
@@ -361,96 +378,59 @@ public class Octree<T>
         return false;
     }
 
-    public int GetAdjacentNode(OctreeNode<T> node, OctreeDirection direction)
+    public int Adjacent(OctreeNode<T> node,  OctreeDirection direction)
     {
-        if (node.Parent != InvalidNodeID)
-        {
-            Octant node_octant = node.Octant;
-            Octant target_octant = node_octant.MoveDirection(direction);
+        if (node.Parent == InvalidNodeID)
+            return InvalidNodeID;
 
-            OctreeNode<T> parent = Nodes[node.Parent];
-            //Opposite nodes are contained in the same parent. Simply return it
-            if (!node_octant.IsDirection(direction))
+        OctreeNode<T> parent_node = m_Nodes[node.Parent];
+        Octant target_octant = node.Octant.MoveDirection(direction);
+
+        //This node is at the edge in this direction. Expand to the parent
+        if (node.Octant.IsDirection(direction))
+        {
+            int parent_adjacent_index = Adjacent(parent_node, direction);
+            if (parent_adjacent_index != InvalidNodeID)
             {
-                return parent.ChildrenStart + (int)target_octant;
+                OctreeNode<T> parent_adjacent = m_Nodes[parent_adjacent_index];
+                return parent_adjacent.IsLeaf ? parent_adjacent_index : parent_adjacent.ChildrenStart + (int)target_octant;
             }
-            //Get the adjacent node at the parent level and get the adjacent node to this from there
-            else
-            {
-                int parent_adjacent_id = GetAdjacentNode(parent, direction);
-                if (parent_adjacent_id != InvalidNodeID)
-                {
-                    //Now that we have the parent node. Test for children in the target octant. Return the parent adjacent if there are no children
-                    OctreeNode<T> parent_adjacent = Nodes[parent_adjacent_id];
-                    return parent_adjacent.IsLeaf ? parent_adjacent_id : parent_adjacent.ChildrenStart + (int)target_octant;
-                }
-            }
+        }
+        //Node is not at the edge in this direction. Just get the node index from the parent
+        else
+        {
+            return parent_node.ChildrenStart + (int)target_octant;
         }
 
         return InvalidNodeID;
     }
 
-    public void GetAdjacentNodes(OctreeNode<T> node, int[] adjacent_node_ids)
+    public void AdjacentLeafs(OctreeNode<T> node, IList<int> result_list)
     {
-        //Up, Down, West, East, North, South
-        if (node.Parent != InvalidNodeID)
+        AdjacentLeafs(node, result_list, n => true);
+    }
+
+    public void AdjacentLeafs(OctreeNode<T> node, IList<int> result_list, Predicate<OctreeNode<T>> predicate)
+    {
+        for (int i = 0; i < 6; ++i)
         {
-            //It's a cube. I'm assuming 6 adjacents...
-            for (int i = 0; i < 6; ++i)
-            {
-                adjacent_node_ids[i] = GetAdjacentNode(node, (OctreeDirection)i);
-            }
+            AdjacentLeafs(node, (OctreeDirection)i, result_list, predicate);
         }
     }
 
-    public void AppendLeafNodesOnDirectionBorder(OctreeNode<T> node, List<int> result_nodes, OctreeDirection direction)
+    public void AdjacentLeafs(OctreeNode<T> node, OctreeDirection direction, IList<int> result_list)
     {
-        AppendLeafNodesOnDirectionBorder(node, result_nodes, direction, (n) => true);
+        AdjacentLeafs(node, direction, result_list, n => true);
     }
 
-    public void AppendLeafNodesOnDirectionBorder(OctreeNode<T> node, List<int> result_nodes, OctreeDirection direction, Predicate<OctreeNode<T>> predicate)
+    public void AdjacentLeafs(OctreeNode<T> node, OctreeDirection direction, IList<int> result_list, Predicate<OctreeNode<T>> predicate)
     {
-        //Node is on the correct border
-        if (node.Octant.IsDirection(direction) && predicate(node))
-        {
-            //Node is a leaf
-            if (node.IsLeaf)
-            {
-                result_nodes.Add(FindNodeIndex(node));
-            }
-            //Expand search to children
-            else
-            {
-                for (int i = 0; i < 8; ++i)
-                {
-                    AppendLeafNodesOnDirectionBorder(m_Nodes[node.ChildrenStart + i], result_nodes, direction);
-                }
-            }
-        }
-    }
+        int immediate_adjacent_index = Adjacent(node, direction);
+        if (immediate_adjacent_index == InvalidNodeID)
+            return;
 
-    public void GetAdjacentLeafNodes(OctreeNode<T> node, List<int> result_nodes)
-    {
-        GetAdjacentLeafNodes(node, result_nodes, (n) => true);
-    }
-
-    public void GetAdjacentLeafNodes(OctreeNode<T> node, List<int> result_nodes, Predicate<OctreeNode<T>> predicate)
-    {
-        result_nodes.Clear();
-
-        if (node.Parent != InvalidNodeID)
-        {
-            for (int i = 0; i < 6; ++i)
-            {
-                OctreeDirection search_direction = (OctreeDirection)i;
-                int immediate_adjacent_id = GetAdjacentNode(node, search_direction);
-                if (immediate_adjacent_id != InvalidNodeID)
-                {
-                    OctreeNode<T> immediate_adjacent_node = m_Nodes[immediate_adjacent_id];
-                    AppendLeafNodesOnDirectionBorder(immediate_adjacent_node, result_nodes, search_direction.OppositeDirection());
-                }
-            }
-        }
+        OctreeNode<T> immediate_adjacent = m_Nodes[immediate_adjacent_index];
+        LeafNodesInDirection(immediate_adjacent, direction.OppositeDirection(), result_list, predicate);
     }
 
     public bool SplitNode(OctreeNode<T> node, OctreeNode<T>[] new_children)
@@ -481,7 +461,7 @@ public class Octree<T>
         return false;
     }
 
-    public void AppendNodeChildren(OctreeNode<T> node, IList<OctreeNode<T>> result_list)
+    public void GetNodeChildren(OctreeNode<T> node, IList<OctreeNode<T>> result_list)
     {
         if (!node.IsLeaf)
         {
@@ -492,7 +472,7 @@ public class Octree<T>
         }
     }
 
-    public void AppendNodeChildrenIDs(OctreeNode<T> node, IList<int> result_list)
+    public void GetNodeChildrenIDs(OctreeNode<T> node, IList<int> result_list)
     {
         if (!node.IsLeaf)
         {
@@ -503,12 +483,12 @@ public class Octree<T>
         }
     }
 
-    public bool SplitNodeAndAppend(OctreeNode<T> node, IList<OctreeNode<T>> result_list)
+    public bool SplitNode(OctreeNode<T> node, IList<OctreeNode<T>> result_list)
     {
-        return SplitNodeAndAppend(FindNodeIndex(node), result_list);
+        return SplitNode(FindNodeIndex(node), result_list);
     }
 
-    public bool SplitNodeAndAppend(int node_id, IList<OctreeNode<T>> result_list)
+    public bool SplitNode(int node_id, IList<OctreeNode<T>> result_list)
     {
         OctreeNode<T> parent = m_Nodes[node_id];
         if (parent.IsLeaf)
@@ -606,5 +586,31 @@ public class Octree<T>
         }
 
         return new Bounds(child_position, child_size);
+    }
+
+    private void LeafNodesInDirection(OctreeNode<T> node, OctreeDirection direction, IList<int> result_list)
+    {
+        LeafNodesInDirection(node, direction, result_list, n => true);
+    }
+
+    private void LeafNodesInDirection(OctreeNode<T> node, OctreeDirection direction, IList<int> result_list, Predicate<OctreeNode<T>> predicate)
+    {
+        if (predicate(node))
+        {
+            if (node.IsLeaf)
+            {
+                result_list.Add(FindNodeIndex(node));
+            }
+            else
+            {
+                for (int i = 0; i < 8; ++i)
+                {
+                    if (((Octant)i).IsDirection(direction))
+                    {
+                        LeafNodesInDirection(m_Nodes[node.ChildrenStart + i], direction, result_list, predicate);
+                    }
+                }
+            }
+        }
     }
 }

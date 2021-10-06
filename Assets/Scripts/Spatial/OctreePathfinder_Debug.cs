@@ -29,9 +29,6 @@ public partial class OctreePathfinder : MonoBehaviour
 
     public OctreeNode<bool> Debug_HighlightNode => Debug_HighlightNodeIndex >= 0 && Debug_HighlightNodeIndex < NodeCount ? m_PassableTree.Nodes[Debug_HighlightNodeIndex] : default;
 
-    [NonSerialized]
-    public int BreakIndex = -1;
-
     private int   Debug_LastHighlightAdjacentNode = InvalidNodeID;
     private int[] Debug_CachedAdjacentNodes = new int[6].Fill(InvalidNodeID);
 
@@ -78,7 +75,7 @@ public partial class OctreePathfinder : MonoBehaviour
             && Debug_HighlightNodeIndex != InvalidNodeID)
         {
             Debug_LastHighlightAdjacentNode = Debug_HighlightNodeIndex;
-            m_PassableTree.GetAdjacentNodes(m_PassableTree.Nodes[Debug_HighlightNodeIndex], Debug_CachedAdjacentNodes);
+            m_PassableTree.AdjacentLeafs(m_PassableTree.Nodes[Debug_HighlightNodeIndex], Debug_CachedAdjacentNodes);
         }
     }
 
