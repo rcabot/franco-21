@@ -213,7 +213,7 @@ public static class OctantExtensions
         }
     }
 
-    public static bool DirectionCrossesNode(this Octant o, OctreeDirection direction)
+    public static bool IsDirection(this Octant o, OctreeDirection direction)
     {
         switch (direction)
         {
@@ -231,6 +231,47 @@ public static class OctantExtensions
                 return o.IsBottom();
             default:
                 return false;
+        }
+    }
+
+    public static bool IsOppositeDirection(this Octant o, OctreeDirection direction)
+    {
+        switch (direction)
+        {
+            case OctreeDirection.North:
+                return o.IsSouth();
+            case OctreeDirection.South:
+                return o.IsNorth();
+            case OctreeDirection.East:
+                return o.IsWest();
+            case OctreeDirection.West:
+                return o.IsEast();
+            case OctreeDirection.Up:
+                return o.IsBottom();
+            case OctreeDirection.Down:
+                return o.IsTop();
+            default:
+                return false;
+        }
+    }
+
+    public static OctreeDirection OppositeDirection(this OctreeDirection dir)
+    {
+        switch (dir)
+        {
+            case OctreeDirection.North:
+                return OctreeDirection.South;
+            case OctreeDirection.South:
+                return OctreeDirection.North;
+            case OctreeDirection.East:
+                return OctreeDirection.West;
+            case OctreeDirection.West:
+                return OctreeDirection.East;
+            case OctreeDirection.Up:
+                return OctreeDirection.Down;
+            case OctreeDirection.Down:
+            default:
+                return OctreeDirection.Up;
         }
     }
 }
@@ -329,7 +370,7 @@ public class Octree<T>
 
             OctreeNode<T> parent = Nodes[node.Parent];
             //Opposite nodes are contained in the same parent. Simply return it
-            if (!node_octant.DirectionCrossesNode(direction))
+            if (!node_octant.IsDirection(direction))
             {
                 return parent.ChildrenStart + (int)target_octant;
             }
@@ -349,7 +390,7 @@ public class Octree<T>
         return InvalidNodeID;
     }
 
-    public bool GetAdjacentNodes(OctreeNode<T> node, int[] adjacent_node_ids)
+    public void GetAdjacentNodes(OctreeNode<T> node, int[] adjacent_node_ids)
     {
         //Up, Down, West, East, North, South
         if (node.Parent != InvalidNodeID)
@@ -359,10 +400,57 @@ public class Octree<T>
             {
                 adjacent_node_ids[i] = GetAdjacentNode(node, (OctreeDirection)i);
             }
-            return true;
         }
+    }
 
-        return false;
+    public void AppendLeafNodesOnDirectionBorder(OctreeNode<T> node, List<int> result_nodes, OctreeDirection direction)
+    {
+        AppendLeafNodesOnDirectionBorder(node, result_nodes, direction, (n) => true);
+    }
+
+    public void AppendLeafNodesOnDirectionBorder(OctreeNode<T> node, List<int> result_nodes, OctreeDirection direction, Predicate<OctreeNode<T>> predicate)
+    {
+        //Node is on the correct border
+        if (node.Octant.IsDirection(direction) && predicate(node))
+        {
+            //Node is a leaf
+            if (node.IsLeaf)
+            {
+                result_nodes.Add(FindNodeIndex(node));
+            }
+            //Expand search to children
+            else
+            {
+                for (int i = 0; i < 8; ++i)
+                {
+                    AppendLeafNodesOnDirectionBorder(m_Nodes[node.ChildrenStart + i], result_nodes, direction);
+                }
+            }
+        }
+    }
+
+    public void GetAdjacentLeafNodes(OctreeNode<T> node, List<int> result_nodes)
+    {
+        GetAdjacentLeafNodes(node, result_nodes, (n) => true);
+    }
+
+    public void GetAdjacentLeafNodes(OctreeNode<T> node, List<int> result_nodes, Predicate<OctreeNode<T>> predicate)
+    {
+        result_nodes.Clear();
+
+        if (node.Parent != InvalidNodeID)
+        {
+            for (int i = 0; i < 6; ++i)
+            {
+                OctreeDirection search_direction = (OctreeDirection)i;
+                int immediate_adjacent_id = GetAdjacentNode(node, search_direction);
+                if (immediate_adjacent_id != InvalidNodeID)
+                {
+                    OctreeNode<T> immediate_adjacent_node = m_Nodes[immediate_adjacent_id];
+                    AppendLeafNodesOnDirectionBorder(immediate_adjacent_node, result_nodes, search_direction.OppositeDirection());
+                }
+            }
+        }
     }
 
     public bool SplitNode(OctreeNode<T> node, OctreeNode<T>[] new_children)

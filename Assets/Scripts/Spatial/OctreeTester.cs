@@ -11,6 +11,12 @@ class OctreeTester : MonoBehaviour
 
 #if UNITY_EDITOR
     [SerializeField]
+    private Transform m_PathfindTarget = null;
+
+    [SerializeField]
+    private bool m_Pathfind = false;
+
+    [SerializeField]
     private bool m_FindNearestPathable = false;
 
     [SerializeField, ReadOnly]
@@ -21,6 +27,9 @@ class OctreeTester : MonoBehaviour
 
     [SerializeField, ReadOnly]
     private float m_ClosestPointDist = float.PositiveInfinity;
+
+    List<int> m_PathfindingResults = new List<int>();
+    List<Vector3> m_PathfindingPoints = new List<Vector3>();
 
     private void OnDrawGizmosSelected()
     {
@@ -53,6 +62,38 @@ class OctreeTester : MonoBehaviour
             m_TerrainHeight = terrain.GetTerrainElevation(node.Bounds.center);
             Gizmos.color = new Color(0.96f, 0.56f, 0.26f);
             Gizmos.DrawWireCube(node.Bounds.center, node.Bounds.size);
+        }
+
+        if (m_Pathfind)
+        {
+            m_Pathfind = false;
+
+            if (m_PathfindTarget != null)
+            {
+                if (pathfinder.FindPath(transform.position, m_PathfindTarget.position, m_PathfindingResults))
+                {
+                    Debug.Log("[Octree Tester] Path Found");
+                    foreach (int i in m_PathfindingResults)
+                    {
+                        Bounds node_bounds = pathfinder.GetNode(i).Bounds;
+                        m_PathfindingPoints.Add(node_bounds.center);
+                    }
+                }
+                else
+                {
+                    Debug.Log("[Octree Tester] Path Not Found");
+                }
+            }
+        }
+
+        if (!m_PathfindingPoints.Empty())
+        {
+            Gizmos.color = Color.magenta;
+
+            foreach (Vector3 point in m_PathfindingPoints)
+            {
+                Gizmos.DrawSphere(point, 0.5f);
+            }
         }
     }
 #endif

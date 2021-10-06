@@ -5,7 +5,7 @@ using UnityEngine;
 
 public static class ListExtensions
 {
-    public static T PopBack<T>(this List<T> list)
+    public static T PopBack<T>(this IList<T> list)
     {
         int last = list.Count - 1;
         T val = list[last];
@@ -13,7 +13,7 @@ public static class ListExtensions
         return val;
     }
 
-    public static void QuickRemove<T>(this List<T> list, T value)
+    public static void QuickRemove<T>(this IList<T> list, T value)
     {
         int index = list.IndexOf(value);
         if (index >= 0)
@@ -22,7 +22,7 @@ public static class ListExtensions
         }
     }
 
-    public static void QuickRemoveAt<T>(this List<T> list, int index)
+    public static void QuickRemoveAt<T>(this IList<T> list, int index)
     {
         int last = list.Count - 1;
         if (last != index)
@@ -153,6 +153,86 @@ public static class ListExtensions
     }
 }
 
+public static class ListHeapExtensions
+{
+    //Organise a list into a binary heap
+    public static void MakeHeap<T>(this IList<T> list, Func<T, T, bool> less_than_compare)
+    {
+
+    }
+
+    public static T HeapPop<T>(this IList<T> list, Func<T, T, bool> less_than_compare)
+    {
+        T top = list[0];
+        list.QuickRemoveAt(0);
+        SortHeap(list, 0, less_than_compare);
+        return top;
+    }
+
+    public static void HeapPush<T>(this IList<T> list, T val, Func<T, T, bool> less_than_compare)
+    {
+        list.Add(val);
+
+        int i = list.Count - 1;
+        while (i != 0)
+        {
+            int parent_index = HeapParent(i);
+            if (less_than_compare(list[i], list[parent_index]))
+            {
+                T temp = list[i];
+                list[i] = list[parent_index];
+                list[parent_index] = temp;
+                i = parent_index;
+            }
+            else
+            {
+                break;
+            }
+        }
+    }
+
+    private static void SortHeap<T>(IList<T> list, int heap_index, Func<T, T, bool> less_than_compare)
+    {
+        int heap_size = list.Count;
+        int left = HeapLeft(heap_index);
+        int right = HeapRight(heap_index);
+
+        int smallest = heap_index;
+        if (left < heap_size && less_than_compare(list[left], list[smallest]))
+        {
+            smallest = left;
+        }
+
+        if (right < heap_size && less_than_compare(list[right], list[smallest]))
+        {
+            smallest = right;
+        }
+
+        if (smallest != heap_index)
+        {
+            T temp = list[heap_index];
+            list[heap_index] = list[smallest];
+            list[smallest] = temp;
+            SortHeap(list, smallest, less_than_compare);
+        }
+    }
+
+    private static int HeapParent(int heap_index)
+    {
+        return (heap_index - 1) / 2;
+    }
+
+    private static int HeapLeft(int heap_index)
+    {
+        return 2 * heap_index + 1;
+    }
+
+    private static int HeapRight(int heap_index)
+    {
+        return 2 * heap_index + 2;
+    }
+}
+
 public static class ArrayExtensions
 {
     public static T[] Fill<T>(this T[] array, T value)
@@ -278,5 +358,22 @@ public static class ComponentExtensions
         T result = o.GetComponent<T>();
         Debug.Assert(result);
         return result;
+    }
+}
+
+public static class GeneralExtensions
+{
+    public static void Swap<T>(ref this T lhs, ref T rhs) where T : struct
+    {
+        T temp = lhs;
+        lhs = rhs;
+        rhs = lhs;
+    }
+
+    public static void Swap<T>(this T lhs, T rhs)
+    {
+        T temp = lhs;
+        lhs = rhs;
+        rhs = lhs;
     }
 }
