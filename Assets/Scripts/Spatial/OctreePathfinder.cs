@@ -34,12 +34,12 @@ public partial class OctreePathfinder : MonoBehaviour
         public float SqrDistanceFromStart;
     }
 
-    public bool SmoothPath(Vector3 start, Vector3 end, List<Vector3> point_path, float segment_size)
+    public bool SmoothPath(Vector3 start, Vector3 end, List<Vector3> point_path, int subdivisions)
     {
         List<Vector3> unsmoothed_path = new List<Vector3>();
         if (FindPath(start, end, unsmoothed_path))
         {
-            CatmullRom.SmoothPath(unsmoothed_path, point_path, segment_size);
+            CatmullRom.SmoothPath(unsmoothed_path, point_path, subdivisions);
             return true;
         }
         return false;

@@ -32,7 +32,7 @@ class OctreeTester : MonoBehaviour
     private int m_CurrentNodeID = OctreeNode<bool>.InvalidNodeID;
 
     [SerializeField]
-    private float m_SmoothSegmentSize = 0.5f;
+    private int m_SmoothSubdivisions = 3;
 
     List<int> m_PathfindingResults = new List<int>();
     List<Vector4> m_PathfindingPoints = new List<Vector4>();
@@ -128,7 +128,7 @@ class OctreeTester : MonoBehaviour
                 {
                     List<Vector3> temp_points = new List<Vector3>();
                     if (m_Flags.HasFlag(OctreeTesterFlags.SmoothPath) ? 
-                          pathfinder.SmoothPath(transform.position, m_PathfindTarget.position, temp_points, m_SmoothSegmentSize)
+                          pathfinder.SmoothPath(transform.position, m_PathfindTarget.position, temp_points, m_SmoothSubdivisions)
                         : pathfinder.FindPath(transform.position, m_PathfindTarget.position, temp_points))
                     {
                         Debug.Log("[Octree Tester] Path Found");
