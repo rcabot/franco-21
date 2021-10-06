@@ -303,6 +303,8 @@ public interface IReadOnlyOctree<T>
     public Bounds                       WorldBounds { get; }
 
     public int                          FindNodeIndex(OctreeNode<T> node);
+    public bool                         NodeAtPosition(Vector3 position, out OctreeNode<T> result_node);
+    public bool                         FindNearestNode(Vector3 position, out OctreeNode<T> result_node);
 
     public int                          Adjacent(OctreeNode<T> node, OctreeDirection direction);
     public void                         AdjacentLeafs(OctreeNode<T> node, IList<int> result_list);
@@ -376,6 +378,11 @@ public class Octree<T> : IReadOnlyOctree<T>
 
         result_node = Root;
         return false;
+    }
+
+    public bool FindNearestNode(Vector3 position, out OctreeNode<T> result_node)
+    {
+        return NodeAtPosition(Root.Bounds.ClosestPoint(position), out result_node);
     }
 
     public int Adjacent(OctreeNode<T> node,  OctreeDirection direction)

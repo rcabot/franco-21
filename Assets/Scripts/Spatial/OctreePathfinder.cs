@@ -26,10 +26,43 @@ public partial class OctreePathfinder : MonoBehaviour
     public int                     NodeCount => m_PassableTree.Nodes.Count;
     public IReadOnlyOctree<bool>   Octree => m_PassableTree;
 
+    struct AStarNode
+    {
+        public int NodeIndex;
+        public int PrevNodeIndex;
+        public float SqrDistanceToEnd;
+        public float SqrDistanceFromStart;
+    }
+
+    public bool SmoothPath(Vector3 start, Vector3 end, List<Vector3> point_path, float segment_size)
+    {
+        List<Vector3> unsmoothed_path = new List<Vector3>();
+        if (FindPath(start, end, unsmoothed_path))
+        {
+            CatmullRom.SmoothPath(unsmoothed_path, point_path, segment_size);
+            return true;
+        }
+        return false;
+    }
+
+    public bool FindPath(Vector3 start, Vector3 end, List<Vector3> point_path)
+    {
+        OctreeNode<bool> start_node;
+        OctreeNode<bool> end_node;
+
+        if (FindNearestPathableNode(start, out start_node)
+            && FindNearestPathableNode(end, out end_node)
+            && FindPath(start_node, end_node, point_path))
+        {
+            point_path.Add(end);
+            return true;
+        }
+
+        return false;
+    }
+
     public bool FindPath(Vector3 start, Vector3 end, List<int> node_path)
     {
-        node_path.Clear();
-
         OctreeNode<bool> start_node;
         OctreeNode<bool> end_node;
 
@@ -42,13 +75,24 @@ public partial class OctreePathfinder : MonoBehaviour
         return false;
     }
 
-    public Dictionary<int, AStarNode> visited_nodes = new Dictionary<int, AStarNode>();
+    public bool FindPath(OctreeNode<bool> start, OctreeNode<bool> end, List<Vector3> point_path)
+    {
+        //Get a path in terms of octree nodes
+        List<int> node_path = new List<int>();
+        node_path.Add(m_PassableTree.FindNodeIndex(start));
+        if (!FindPath(start, end, node_path))
+        {
+            return false;
+        }
+
+        ConvertNodePathToPointPath(node_path, point_path);
+
+        return true;
+    }
 
     public bool FindPath(OctreeNode<bool> start, OctreeNode<bool> end, List<int> node_path)
     {
-        node_path.Clear();
-
-        //TODO: Buffer reuse
+        //TODO: Buffer reuse. Span<T> would make this significantly easier
 
         //Start and End must be passable leaf nodes
         if (!start.Data || !end.Data || !start.IsLeaf || !end.IsLeaf)
@@ -66,8 +110,7 @@ public partial class OctreePathfinder : MonoBehaviour
         List<(int, float)> open_list = new List<(int, float)>(128);
         List<int> expanded_node_ids = new List<int>(32);
 
-        //Dictionary<int, AStarNode> visited_nodes = new Dictionary<int, AStarNode>();
-        visited_nodes.Clear();
+        Dictionary<int, AStarNode> visited_nodes = new Dictionary<int, AStarNode>();
 
         //Push the start node
         visited_nodes[start_node_index] = new AStarNode { NodeIndex = start_node_index, PrevNodeIndex = InvalidNodeID, SqrDistanceFromStart = 0f, SqrDistanceToEnd = float.PositiveInfinity };
@@ -150,12 +193,32 @@ public partial class OctreePathfinder : MonoBehaviour
         return false;
     }
 
+    public void ConvertNodePathToPointPath(List<int> node_path, List<Vector3> point_path)
+    {
+        //Convert the node path to points
+        int total_nodes = node_path.Count;
+        IReadOnlyList<OctreeNode<bool>> nodes = m_PassableTree.Nodes;
+        Bounds[] node_bounds = new Bounds[node_path.Count];
+
+        //Pre-cache the node bounds. Saves indexing the node list and copying the bounds, which is a double copy, each time
+        for (int i = 0; i < total_nodes; ++i)
+        {
+            node_bounds[i] = nodes[node_path[i]].Bounds;
+        }
+
+        //Last node intentionally missed as it would go OOB
+        for (int i = 0, end = node_path.Count - 1; i < end; ++i)
+        {
+            point_path.Add(node_bounds[i].ClosestPoint(node_bounds[i + 1].center));
+        }
+    }
+
     public bool FindNearestPathableNode(Vector3 position, out OctreeNode<bool> result_node)
     {
         //TODO: Consider buffer reuse
         //TODO: Consider using a binary minheap for the open list
         
-        if (NodeAtPosition(position, out result_node))
+        if (m_PassableTree.FindNearestNode(position, out result_node))
         {
             //Node is already passable. No need to expand
             if (result_node.Data)
@@ -165,14 +228,12 @@ public partial class OctreePathfinder : MonoBehaviour
 
             int best_node_index = InvalidNodeID;
             float best_distance_sqr = float.PositiveInfinity;
-            HashSet<int> visited_nodes = new HashSet<int>();
             List<int> open_list = new List<int>(64);
             open_list.Add(0);
 
             while (!open_list.Empty())
             {
                 int cur_node_index = open_list.PopBack();
-                visited_nodes.Add(cur_node_index);
 
                 OctreeNode<bool> cur_node = m_PassableTree.Nodes[cur_node_index];
                 //Only continue if the node is passable or contains passable children
@@ -211,14 +272,6 @@ public partial class OctreePathfinder : MonoBehaviour
         return false;
     }
 
-    public bool NodeAtPosition(Vector3 position, out OctreeNode<bool> result_node)
-    {
-        //I don't want to expose the octree. I would if C# had const access as a concept.
-        return m_PassableTree.NodeAtPosition(position, out result_node);
-    }
-
-#region Private Detail
-
     private void GeneratePassableTree()
     {
         Profiler.BeginSample("Pathinder - Generate Tree");
@@ -235,7 +288,6 @@ public partial class OctreePathfinder : MonoBehaviour
         while (!open_nodes.Empty())
         {
             OctreeNode<bool> current_node = open_nodes.PopBack();
-            int node_index = m_PassableTree.FindNodeIndex(current_node);
 
             Bounds current_node_bounds = current_node.Bounds;
             Vector3 current_node_extents = current_node_bounds.extents;
@@ -278,16 +330,6 @@ public partial class OctreePathfinder : MonoBehaviour
 
         GeneratePassableTree();
     }
-
-    public struct AStarNode
-    {
-        public int   NodeIndex;
-        public int   PrevNodeIndex;
-        public float SqrDistanceToEnd;
-        public float SqrDistanceFromStart;
-    }
-
-#endregion
 
 #region Unity Events
 

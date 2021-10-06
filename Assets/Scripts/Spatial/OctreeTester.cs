@@ -31,18 +31,22 @@ class OctreeTester : MonoBehaviour
     [SerializeField, ReadOnly]
     private int m_CurrentNodeID = OctreeNode<bool>.InvalidNodeID;
 
+    [SerializeField]
+    private float m_SmoothSegmentSize = 0.5f;
+
     List<int> m_PathfindingResults = new List<int>();
     List<Vector4> m_PathfindingPoints = new List<Vector4>();
 
     [Flags]
     enum OctreeTesterFlags
     {
-        None = 0,
-        ExpandAdjacent = 1 << 1,
+        None                   = 0,
+        ExpandAdjacent         = 1 << 1,
         ExpandAdjacentPathable = 1 << 2,
-        ExpandAdjacentAll = 1 << 3,
-        Pathfind = 1 << 4,
-        ShowVisitedNodes = 1 << 5
+        ExpandAdjacentAll      = 1 << 3,
+        Pathfind               = 1 << 4,
+        ShowPathLine           = 1 << 5,
+        SmoothPath             = 1 << 6
     }
 
     [SerializeField]
@@ -62,7 +66,7 @@ class OctreeTester : MonoBehaviour
 
         OctreeNode<bool>? current_node = null;
 
-        //Find the bearest pathable node and draw a box around it
+        //Find the nearest pathable node and draw a box around it
         if (m_FindNearestPathable)
         {
             if (pathfinder.FindNearestPathableNode(transform.position, out OctreeNode<bool> node))
@@ -77,7 +81,7 @@ class OctreeTester : MonoBehaviour
             }
         }
         //Find the closest node and draw a box around it
-        else if (pathfinder.NodeAtPosition(transform.position, out OctreeNode<bool> node))
+        else if (pathfinder.Octree.FindNearestNode(transform.position, out OctreeNode<bool> node))
         {
             current_node = node;
             m_NodeBounds = node.Bounds;
@@ -114,43 +118,66 @@ class OctreeTester : MonoBehaviour
 
         if (m_Pathfind)
         {
-            //m_Pathfind = false;
+            m_Pathfind = false;
+            m_PathfindingPoints.Clear();
+            m_PathfindingResults.Clear();
 
             if (m_PathfindTarget != null)
             {
-                if (pathfinder.FindPath(transform.position, m_PathfindTarget.position, m_PathfindingResults))
+                if (m_Flags.HasFlag(OctreeTesterFlags.ShowPathLine))
                 {
-                    Debug.Log("[Octree Tester] Path Found");
-                    m_PathfindingPoints.Clear();
-                    foreach (int i in m_PathfindingResults)
+                    List<Vector3> temp_points = new List<Vector3>();
+                    if (m_Flags.HasFlag(OctreeTesterFlags.SmoothPath) ? 
+                          pathfinder.SmoothPath(transform.position, m_PathfindTarget.position, temp_points, m_SmoothSegmentSize)
+                        : pathfinder.FindPath(transform.position, m_PathfindTarget.position, temp_points))
                     {
-                        Bounds node_bounds = pathfinder.Octree.Nodes[i].Bounds;
-                        m_PathfindingPoints.Add(node_bounds.center.ToVector4(node_bounds.extents.x * 0.9f));
+                        Debug.Log("[Octree Tester] Path Found");
+                        foreach (Vector3 v in temp_points)
+                        {
+                            m_PathfindingPoints.Add(v);
+                        }
+                    }
+                    else
+                    {
+                        Debug.Log("[Octree Tester] Path Not Found");
                     }
                 }
                 else
                 {
-                    Debug.Log("[Octree Tester] Path Not Found");
+                    if (pathfinder.FindPath(transform.position, m_PathfindTarget.position, m_PathfindingResults))
+                    {
+                        Debug.Log("[Octree Tester] Path Found");
+                        foreach (int i in m_PathfindingResults)
+                        {
+                            Bounds node_bounds = pathfinder.Octree.Nodes[i].Bounds;
+                            m_PathfindingPoints.Add(node_bounds.center.ToVector4(node_bounds.extents.x * 0.9f));
+                        }
+                    }
+                    else
+                    {
+                        Debug.Log("[Octree Tester] Path Not Found");
+                    }
                 }
             }
         }
 
         if (!m_PathfindingPoints.Empty())
         {
-            Gizmos.color = Color.magenta;
-            foreach (Vector4 point in m_PathfindingPoints)
+            if (m_Flags.HasFlag(OctreeTesterFlags.ShowPathLine))
             {
-                Gizmos.DrawSphere(point, point.w);
+                Gizmos.color = Color.magenta;
+                for (int i = 0, end = m_PathfindingPoints.Count - 1; i < end ; ++i)
+                {
+                    Gizmos.DrawLine(m_PathfindingPoints[i], m_PathfindingPoints[i + 1]);
+                }
             }
-        }
-        
-        if (m_Flags.HasFlag(OctreeTesterFlags.ShowVisitedNodes))
-        {
-            Gizmos.color = Color.yellow;
-            foreach (int node_id in pathfinder.visited_nodes.Keys)
+            else
             {
-                Bounds node_bounds = pathfinder.Octree.Nodes[node_id].Bounds;
-                Gizmos.DrawWireCube(node_bounds.center, node_bounds.size);
+                Gizmos.color = Color.magenta;
+                foreach (Vector4 point in m_PathfindingPoints)
+                {
+                    Gizmos.DrawSphere(point, point.w);
+                }
             }
         }
 
