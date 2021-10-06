@@ -26,7 +26,7 @@ public class TerrainDefinition : ScriptableObject
 
     [SerializeField] private TerrainTile _TilePrefab = null;
     [SerializeField] private Material _TileMaterial = null;
-    [SerializeField] private GameObject[] _TreePrototypes;
+    [SerializeField] private GameObject[] _TreePrototypes = null;
 
     public float TerrainSize => _TerrainSize;
     public int EdgeTileCount => _EdgeTileCount;

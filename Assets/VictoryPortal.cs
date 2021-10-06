@@ -3,8 +3,8 @@
 internal class VictoryPortal : MonoBehaviour
 {
     public bool TouchedByPlayer { get; internal set; }
-    public MeshRenderer Portal;
-    public Collider Collider;
+    public MeshRenderer Portal = null;
+    public Collider Collider = null;
     public float HeightAboveTerrain = 5.0f;
 
     private void Start()

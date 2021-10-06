@@ -6,7 +6,7 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Image))]
 public class Speedo : MonoBehaviour
 {
-    [SerializeField] private Sprite[] SpeedoStates;
+    [SerializeField] private Sprite[] SpeedoStates = null;
     private Image m_Image;
     private SubmarineController m_PlayerSub = null;
 

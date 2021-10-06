@@ -10,9 +10,9 @@ using UnityEngine;
 class HunterAnimEvents : MonoBehaviour  
 {
     private Animator m_Animator;
-    public AudioSource biteAudioSource;
-    public AudioClip biteAudio;
-    public AudioClip preBiteAudio;
+    public AudioSource biteAudioSource = null;
+    public AudioClip biteAudio = null;
+    public AudioClip preBiteAudio = null;
 
     private void Awake()
     {
