@@ -803,7 +803,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_MoveTarget: {x: 0, y: 0, z: 0}
-  m_Acceleration: 7
+  m_Acceleration: 15
   m_TurnSpeed: 20
   m_BiteKnockbackForce: 30
   m_FrictionCurve:
@@ -819,8 +819,8 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 0.065088764
     - serializedVersion: 3
-      time: 5
-      value: 10
+      time: 20
+      value: 40
       inSlope: 6.664926
       outSlope: 6.664926
       tangentMode: 0

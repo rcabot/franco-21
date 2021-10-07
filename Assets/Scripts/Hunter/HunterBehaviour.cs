@@ -19,6 +19,7 @@ public class HunterBehaviour : MonoBehaviour
     private HunterState                        m_CurrentState;
     private SubmarineController                m_PlayerSubmarine;
     private Animator                           m_Animator;
+    private Coroutine                          m_RunningBehaviour;
     private static readonly int                m_AttackTriggerID = Animator.StringToHash("AttackTrigger");
 
     private Vector3                            m_Velocity;
@@ -332,28 +333,33 @@ public class HunterBehaviour : MonoBehaviour
     //Woo coroutines
     private void StartStateBehaviour()
     {
+        if (m_RunningBehaviour != null)
+        {
+            StopCoroutine(m_RunningBehaviour);
+        }
+
         switch (CurrentState)
         {
             case HunterState.Backstage:
                 GoBackstage();
                 break;
             case HunterState.FrontstageIdle:
-                StartCoroutine(FrontstageIdle());
+                m_RunningBehaviour = StartCoroutine(FrontstageIdle());
                 break;
             case HunterState.FrontstageDistant:
-                StartCoroutine(FrontstageDistant());
+                m_RunningBehaviour = StartCoroutine(FrontstageDistant());
                 break;
             case HunterState.Suspicious:
-                StartCoroutine(FrontstageSuspicious());
+                m_RunningBehaviour = StartCoroutine(FrontstageSuspicious());
                 break;
             case HunterState.FrontstageClose:
-                StartCoroutine(FrontstageClose());
+                m_RunningBehaviour = StartCoroutine(FrontstageClose());
                 break;
             case HunterState.Attacking:
-                StartCoroutine(Attacking());
+                m_RunningBehaviour = StartCoroutine(Attacking());
                 break;
             case HunterState.Retreat:
-                StartCoroutine(Retreat());
+                m_RunningBehaviour = StartCoroutine(Retreat());
                 break;
             default:
                 LogHunterMessage("[Hunter] Unknown follow state. Missing code");
