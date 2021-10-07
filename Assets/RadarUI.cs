@@ -8,12 +8,10 @@ using UnityEngine.UI;
 public class RadarUI : MonoBehaviour
 {
     public GameObject[] CollectablesBlips;
-    public GameObject[] WildlifeBlips;
     public GameObject PortalBlip;
     public Transform CentreWaypoint;
     public Transform RotationWaypoint;
     public RectTransform Background;
-    private WildlifeSpawner WildlifeRegistry;
     private CollectablesDistributor CollectablesRegistry;
     private VictoryPortal VictoryPortal;
 
@@ -23,24 +21,12 @@ public class RadarUI : MonoBehaviour
 
     private void Awake()
     {
-        WildlifeRegistry = FindObjectOfType<WildlifeSpawner>();
         CollectablesRegistry = FindObjectOfType<CollectablesDistributor>();
         VictoryPortal = FindObjectOfType<VictoryPortal>();
     }
 
-    // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        var wildlife = WildlifeRegistry.m_spawnedWildLife.Where(s=>s!=null).OrderBy(s => Vector3.Distance(s.transform.position, CentreWaypoint.position)).ToArray();
-        for (int i = 0; i < WildlifeBlips.Length; i++)
-        {
-            bool active = i < wildlife.Length;
-            WildlifeBlips[i].SetActive(active);
-            if (active)
-            {
-                PositionBlip(WildlifeBlips[i], wildlife[i]);
-            }
-        }
         var collectables = CollectablesRegistry.SpawnedCollectables.Where(s => s != null).OrderBy(s => Vector3.Distance(s.transform.position, CentreWaypoint.position)).ToArray();
         for (int i = 0; i < CollectablesBlips.Length; i++)
         {
