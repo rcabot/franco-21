@@ -55,7 +55,10 @@ public partial class OctreePathfinder : MonoBehaviour
             && FindNearestPathableNode(end, out end_node)
             && FindPath(start_node, end_node, point_path))
         {
-            point_path.Add(end);
+            if (end_node.Bounds.Contains(end))
+            {
+                point_path.Add(end);
+            }
             return true;
         }
 

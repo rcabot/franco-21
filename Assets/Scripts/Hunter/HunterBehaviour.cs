@@ -435,6 +435,7 @@ public partial class HunterBehaviour : MonoBehaviour
     {
         float max_height = TerrainManager.Instance.Definition.MaxHeight * 0.75f;
 
+        bool wandering = false;
         while (true)
         {
             yield return new WaitForFixedUpdate();
@@ -467,6 +468,8 @@ public partial class HunterBehaviour : MonoBehaviour
             {
                 LogHunterMessage("[Hunter] Player is too far away. Moving closer");
                 m_Path.Clear();
+                wandering = false;
+
 
                 Vector3 player_direction = to_player / Mathf.Sqrt(sqr_distance_to_player);
                 Vector3 target_position = position + player_direction * m_CurrentStateSettings.PlayerDistanceRange.RandomValue;
@@ -484,6 +487,7 @@ public partial class HunterBehaviour : MonoBehaviour
             {
                 LogHunterMessage("[Hunter] Player is too close. Retreating");
                 m_Path.Clear();
+                wandering = false;
 
                 m_CurrentStateSettings = m_RetreatSettings;
 
@@ -497,24 +501,30 @@ public partial class HunterBehaviour : MonoBehaviour
             //We're at a good distance. Clear the path and wander around for a bit
             else
             {
-                m_Path.Clear();
-                Vector3 new_heading = Vector3.RotateTowards(transform.forward, Random.onUnitSphere, Mathf.PI * 0.25f, 0f);
-                Vector3 target_position = position + new_heading * m_CurrentStateSettings.ActionDistance;
-
-                //Stop going too high
-                if (target_position.y >= max_height)
+                if (!wandering)
                 {
-                    target_position.y = Random.Range(0f, max_height);
+                    m_Path.Clear();
+                    wandering = true;
                 }
 
-
-                if (!Physics.Linecast(position, target_position, OctreePathfinder.Instance.ImpassableLayers)
-                        || !(OctreePathfinder.Instance?.SmoothPath(position, target_position, m_Path, c_PathSmoothingSubvisions) ?? false))
+                if (m_Path.Empty())
                 {
-                    m_Path.Add(target_position);
-                }
+                    Vector3 new_heading = Vector3.RotateTowards(transform.forward, Random.onUnitSphere, Mathf.PI * 0.25f, 0f);
+                    Vector3 target_position = position + new_heading * m_CurrentStateSettings.ActionDistance;
 
-                yield return new WaitForSeconds(Random.Range(3f, 5f));
+                    //Stop going too high
+                    if (target_position.y >= max_height)
+                    {
+                        target_position.y = Random.Range(0f, max_height);
+                    }
+
+
+                    if (!Physics.Linecast(position, target_position, OctreePathfinder.Instance.ImpassableLayers)
+                            || !(OctreePathfinder.Instance?.SmoothPath(position, target_position, m_Path, c_PathSmoothingSubvisions) ?? false))
+                    {
+                        m_Path.Add(target_position);
+                    }
+                }
             }
         }
     }
