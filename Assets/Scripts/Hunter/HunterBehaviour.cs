@@ -82,7 +82,8 @@ public class HunterBehaviour : MonoBehaviour
     public HunterState         CurrentState => m_CurrentState;
 
     public bool                AttackEnabled { get; set; }
-    public HunterAggroSettings         Aggro => m_CreatureAggroSettings;
+    public HunterAggroSettings Aggro => m_CreatureAggroSettings;
+    public bool                InLimbo => !m_MeshRenderer.enabled;
 
     //Methods
     public void ForceSetState(HunterState state)
@@ -93,8 +94,6 @@ public class HunterBehaviour : MonoBehaviour
 
     private void HandleAggroChanged()
     {
-        LogHunterMessage($"[Hunter] Player Aggro: {m_PlayerAggro}");
-
         OnAggroChanged?.Invoke(this, m_PlayerAggro);
 
         //If the creature is attacking or retreating then aggro changes are ignored
@@ -341,25 +340,22 @@ public class HunterBehaviour : MonoBehaviour
         switch (CurrentState)
         {
             case HunterState.Backstage:
-                GoBackstage();
+                if (!InLimbo)
+                {
+                    m_RunningBehaviour = StartCoroutine(Retreat(CurrentState));
+                }
+                break;
+            case HunterState.Retreat:
+                m_RunningBehaviour = StartCoroutine(Retreat(CurrentState));
                 break;
             case HunterState.FrontstageIdle:
-                m_RunningBehaviour = StartCoroutine(FrontstageIdle());
-                break;
             case HunterState.FrontstageDistant:
-                m_RunningBehaviour = StartCoroutine(FrontstageDistant());
-                break;
             case HunterState.Suspicious:
-                m_RunningBehaviour = StartCoroutine(FrontstageSuspicious());
-                break;
             case HunterState.FrontstageClose:
-                m_RunningBehaviour = StartCoroutine(FrontstageClose());
+                m_RunningBehaviour = StartCoroutine(FrontstageAvoid(CurrentState));
                 break;
             case HunterState.Attacking:
                 m_RunningBehaviour = StartCoroutine(Attacking());
-                break;
-            case HunterState.Retreat:
-                m_RunningBehaviour = StartCoroutine(Retreat());
                 break;
             default:
                 LogHunterMessage("[Hunter] Unknown follow state. Missing code");
@@ -368,92 +364,78 @@ public class HunterBehaviour : MonoBehaviour
     }
 
     #region Behaviour Coroutines
+    private IEnumerator CoLeaveLimbo(HunterState state, float distance)
+    {
+        //Go frontstage if not already
+        while (InLimbo)
+        {
+            yield return new WaitForFixedUpdate();
 
-    private IEnumerator FrontstageIdle()
+            if (CurrentState != state)
+            {
+                yield break;
+            }
+
+            LogHunterMessage("[Hunter] Trying to leave limbo");
+            if (FindPositionInPlayerRange(distance, out Vector3 spawn_position))
+            {
+                LeaveLimbo(spawn_position);
+            }
+        }
+    }
+
+    private IEnumerator FrontstageAvoid(HunterState state)
     {
         yield return new WaitForFixedUpdate();
 
         //Go frontstage if not already
-        bool exited_limbo = false;
-        while (!exited_limbo)
+        if (InLimbo)
         {
-            yield return new WaitForFixedUpdate();
-
-            if (CurrentState != HunterState.FrontstageIdle)
-            {
-                break;
-            }
-
-            LogHunterMessage("[Hunter] Trying to leave limbo");
-            if (FindPositionInPlayerRange(m_CurrentStateSettings.PlayerDistance, out Vector3 spawn_position))
-            {
-                LeaveLimbo(spawn_position);
-                exited_limbo = true;
-            }
+            yield return StartCoroutine(CoLeaveLimbo(state, m_CurrentStateSettings.PlayerDistance));
         }
 
+        float sqr_vis_distance = m_SafeVisibilityDistance * m_SafeVisibilityDistance;
         while (true)
         {
             yield return new WaitForFixedUpdate();
 
-            if (CurrentState != HunterState.FrontstageIdle)
+            if (CurrentState != state)
             {
-                break;
+                yield break;
             }
 
             //Idle behaviour per-tick
 
-            //TODO: Flee. Go backstage again, etc.
-        }
-    }
-
-    private IEnumerator FrontstageDistant()
-    {
-        while (true)
-        {
-            yield return new WaitForFixedUpdate();
-
-            if (CurrentState != HunterState.FrontstageDistant)
+            //Avoid the player
+            Vector3 from_player = m_PlayerSubmarine.transform.position - transform.position;
+            float sqr_dist_to_player = from_player.sqrMagnitude;
+            if (sqr_dist_to_player < sqr_vis_distance)
             {
-                break;
+                LogHunterMessage("[Hunter] Too close to player. Fleeing");
+                m_MoveTarget = transform.position + (from_player / Mathf.Sqrt(sqr_dist_to_player)) * 1000f;
+
+                //Just flee and try and get to a new position
+                yield return new WaitForSeconds(1f);
+                yield return new WaitForFixedUpdate();
+
+                m_MoveTarget = Vector3.zero;
+
+                if (FindPositionInPlayerRange(m_CurrentStateSettings.PlayerDistance, out Vector3 spawn_position))
+                {
+                    LeaveLimbo(spawn_position);
+                }
             }
-
-            //Frontstage Distant behaviour per-tick
-        }
-    }
-
-    private IEnumerator FrontstageSuspicious()
-    {
-        while (true)
-        {
-            yield return new WaitForFixedUpdate();
-
-            if (CurrentState != HunterState.Suspicious)
-            {
-                break;
-            }
-
-            //Suspicious behaviour per-tick
-        }
-    }
-
-    private IEnumerator FrontstageClose()
-    {
-        while (true)
-        {
-            yield return new WaitForFixedUpdate();
-
-            if (CurrentState != HunterState.FrontstageClose)
-            {
-                break;
-            }
-
-            //Frontstage Close behaviour per-tick
         }
     }
 
     private IEnumerator Attacking()
     {
+        //Go frontstage if not already
+        if (InLimbo)
+        {
+            yield return StartCoroutine(CoLeaveLimbo(HunterState.Attacking, m_SafeVisibilityDistance * 2f));
+        }
+
         while (true)
         {
             yield return new WaitForFixedUpdate();
@@ -497,15 +479,15 @@ public class HunterBehaviour : MonoBehaviour
         m_Animator.ResetTrigger(m_AttackTriggerID);
     }
 
-    private IEnumerator Retreat()
+    private IEnumerator Retreat(HunterState state)
     {
         while (true)
         {
             yield return new WaitForFixedUpdate();
 
-            if (m_CurrentState != HunterState.Retreat)
+            if (m_CurrentState != state)
             {
-                break;
+                yield break;
             }
 
             //Despawn if far enough away from the player
@@ -516,8 +498,8 @@ public class HunterBehaviour : MonoBehaviour
             if (distance_to_player >= m_SafeVisibilityDistance)
             {
                 LogHunterMessage("[Hunter] Tring to Enter Limbo - Far enough away to enter limbo");
-                EnterState(HunterState.Backstage);
-                break;
+                GoBackstage();
+                yield break;
             }
             else
             {
@@ -543,6 +525,7 @@ public class HunterBehaviour : MonoBehaviour
     {
         EnterLimbo();
         transform.position = m_BackstagePosition;
+        EnterState(HunterState.Backstage);
     }
 
     private void EnterLimbo()
@@ -656,8 +639,6 @@ public class HunterBehaviour : MonoBehaviour
             m_AllStateSettings[(int)HunterState.Attacking]         = m_AttackingSettings;
             m_AllStateSettings[(int)HunterState.Retreat]           = m_RetreatSettings;
 
-
-            EnterState(HunterState.Backstage);
             GoBackstage();
         }
         else
