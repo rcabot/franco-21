@@ -49,10 +49,14 @@ MonoBehaviour:
   WildlifeAmountPerSector: 1
   DistributionArea: {fileID: 7380199096935502371}
   Prefabs:
-  - {fileID: 2696988072141467019, guid: 60a341d09c1817240820d11a6730591b, type: 3}
-  - {fileID: 919132149155446097, guid: b514949a0e85f09458c7e5f70f2be9de, type: 3}
-  - {fileID: 919132149155446097, guid: 90bf797e1b198114aa67cf48c374ca78, type: 3}
-  - {fileID: 919132149155446097, guid: 052ca0507a4b4164499d59e82d0a027c, type: 3}
+  - Prefab: {fileID: 2696988072141467019, guid: 60a341d09c1817240820d11a6730591b, type: 3}
+    Weight: 1
+  - Prefab: {fileID: 919132149155446097, guid: 052ca0507a4b4164499d59e82d0a027c, type: 3}
+    Weight: 1
+  - Prefab: {fileID: 919132149155446097, guid: b514949a0e85f09458c7e5f70f2be9de, type: 3}
+    Weight: 1
+  - Prefab: {fileID: 919132149155446097, guid: 90bf797e1b198114aa67cf48c374ca78, type: 3}
+    Weight: 0.1
   CollectablesAmountInSectorToPreventWildlifeSpawning: 1
   SpawnFrequency: 60
   m_spawnedWildLife: []

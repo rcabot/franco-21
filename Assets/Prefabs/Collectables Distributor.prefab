@@ -45,13 +45,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DistributionArea: {fileID: 927092377325406737}
-  TilesToLitter: 3
-  AmountToDistribute: 1
+  TilesToLitter: 5
+  AmountToDistribute: 20
   Prefabs:
-  - {fileID: 9078295109074770923, guid: c7d2a1bb027c53b48b17d8bcfc05cc61, type: 3}
-  - {fileID: 9078295109074770923, guid: 4b604008b1c25a24cb64513249b09a46, type: 3}
-  - {fileID: 9078295109074770923, guid: 0af8583e4538d7b4d82362296ba02deb, type: 3}
-  - {fileID: 9078295109074770923, guid: 63b08ddfbfc7100428a869a5fb8cc74d, type: 3}
+  - Prefab: {fileID: 9078295109074770923, guid: 63b08ddfbfc7100428a869a5fb8cc74d, type: 3}
+    Weight: 1
+  - Prefab: {fileID: 9078295109074770923, guid: c7d2a1bb027c53b48b17d8bcfc05cc61, type: 3}
+    Weight: 1.2
+  - Prefab: {fileID: 9078295109074770923, guid: 0af8583e4538d7b4d82362296ba02deb, type: 3}
+    Weight: 1.2
+  - Prefab: {fileID: 9078295109074770923, guid: 4b604008b1c25a24cb64513249b09a46, type: 3}
+    Weight: 1
   SpawnedCollectables: []
 --- !u!65 &927092377325406737
 BoxCollider:

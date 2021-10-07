@@ -231,6 +231,10 @@ MonoBehaviour:
     m_Extent: {x: 0, y: 0, z: 0}
   m_TerrainHeight: 0
   m_ClosestPointDist: 0
+  m_CurrentNodeID: -1
+  m_SmoothSubdivisions: 3
+  m_Flags: 0
+  m_ExpansionDirection: 5
 --- !u!1 &470127212
 GameObject:
   m_ObjectHideFlags: 0
@@ -720,14 +724,6 @@ PrefabInstance:
     - target: {fileID: 927092377325406740, guid: d9d4b94fb8c0563409092f3e347de1c6, type: 3}
       propertyPath: m_Name
       value: Collectables Distributor
-      objectReference: {fileID: 0}
-    - target: {fileID: 927092377325406742, guid: d9d4b94fb8c0563409092f3e347de1c6, type: 3}
-      propertyPath: TilesToLitter
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 927092377325406742, guid: d9d4b94fb8c0563409092f3e347de1c6, type: 3}
-      propertyPath: AmountToDistribute
-      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 927092377325406743, guid: d9d4b94fb8c0563409092f3e347de1c6, type: 3}
       propertyPath: m_RootOrder

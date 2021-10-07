@@ -9,7 +9,7 @@ public class WildlifeSpawner : MonoBehaviour
     public int SectorsZ = 10;
     public int WildlifeAmountPerSector;
     public BoxCollider DistributionArea;
-    public GameObject[] Prefabs;
+    public WeightedPrefab[] Prefabs;
     public Sector[,] Sectors;
     public int CollectablesAmountInSectorToPreventWildlifeSpawning = 1;
     public float SpawnFrequency;
@@ -141,9 +141,7 @@ public class WildlifeSpawner : MonoBehaviour
 
     private void SpawnWildlifeInSector(Sector sector)
     {
-        m_spawnedWildLife.Add(CollectablesDistributor.SpawnRandomPrefabAtRandomPlaceInBounds(
-            Prefabs.Length,Prefabs,sector.bounds,transform));
-        //Debug.LogFormat("Spawning new wildlife in section {0}", sector.bounds);
+        m_spawnedWildLife.Add(CollectablesDistributor.SpawnRandomPrefabAtRandomPlaceInBounds(Prefabs, sector.bounds, transform));
     }
 
     public class Sector
