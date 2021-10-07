@@ -74,7 +74,7 @@ public partial class HunterBehaviour : MonoBehaviour
                 float clamped_value = Mathf.Clamp(value, 0f, MaxPlayerAggro);
                 if (!Mathf.Approximately(m_PlayerAggro, clamped_value))
                 {
-                    m_PlayerAggro = clamped_value; HandleAggroChanged();
+                    m_PlayerAggro = clamped_value; EvaluateAggroStateChange();
                 }
             }
         }
@@ -96,7 +96,7 @@ public partial class HunterBehaviour : MonoBehaviour
         EnterState(state);
     }
 
-    private void HandleAggroChanged()
+    private void EvaluateAggroStateChange()
     {
         OnAggroChanged?.Invoke(this, m_PlayerAggro);
 
@@ -132,14 +132,11 @@ public partial class HunterBehaviour : MonoBehaviour
         StartStateBehaviour();
 
         //Apply enter effects
-        if (m_CurrentStateSettings != null)
-        {
-            PlayStateEnterSound();
-            ApplyScreenShake(m_CurrentStateSettings.StartScreenShakeMagnitude, m_CurrentStateSettings.StartScreenShakeDuration);
+        PlayStateEnterSound();
+        ApplyScreenShake(m_CurrentStateSettings.StartScreenShakeMagnitude, m_CurrentStateSettings.StartScreenShakeDuration);
 
-            //Setup the period effects
-            m_TimeUntilPeriodEffect = m_CurrentStateSettings.PeriodTimeRange.RandomValue;
-        }
+        //Setup the period effects
+        m_TimeUntilPeriodEffect = m_CurrentStateSettings.PeriodTimeRange.RandomValue;
 
         OnStateChanged?.Invoke(this, new KeyValuePair<HunterState, HunterStateSettings>(m_CurrentState, m_CurrentStateSettings));
     }
@@ -208,9 +205,7 @@ public partial class HunterBehaviour : MonoBehaviour
         LogHunterMessage("[Hunter] Player has been hit");
 
         //Hit the player and knock them back
-        Vector3 force_dir = transform.forward;
-        force_dir.y = 0f; //Don't knock the player up/down
-        player.AddImpulse(force_dir.normalized * m_BiteKnockbackForce);
+        player.AddImpulse(transform.forward * m_BiteKnockbackForce);
         player.TakeHit();
 
         //Start retreating
@@ -298,12 +293,20 @@ public partial class HunterBehaviour : MonoBehaviour
         float sqr_target_distance = target_direction.sqrMagnitude;
 
         //Proceed to the next waypoint
-        if (m_Path.Count > 1 && sqr_target_distance <= m_PathNodeDistance)
+        if (sqr_target_distance <= m_PathNodeDistance)
         {
-            target = m_Path[1];
             m_Path.PopFront();
-            target_direction = target - position;
-            sqr_target_distance = target_direction.sqrMagnitude;
+            if (!m_Path.Empty())
+            {
+                target = m_Path.Front();
+                target_direction = target - position;
+                sqr_target_distance = target_direction.sqrMagnitude;
+            }
+            //Target Reached
+            else
+            {
+                return;
+            }
         }
 
         //Only square root once...
@@ -359,10 +362,7 @@ public partial class HunterBehaviour : MonoBehaviour
         switch (CurrentState)
         {
             case HunterState.Backstage:
-                if (!InLimbo)
-                {
-                    m_RunningBehaviour = StartCoroutine(Retreat(CurrentState));
-                }
+                m_RunningBehaviour = StartCoroutine(BackstageIdle(CurrentState));
                 break;
             case HunterState.Retreat:
                 m_RunningBehaviour = StartCoroutine(Retreat(CurrentState));
@@ -383,7 +383,7 @@ public partial class HunterBehaviour : MonoBehaviour
     }
 
     #region Behaviour Coroutines
-    private IEnumerator CoLeaveLimbo(HunterState state, float distance)
+    private IEnumerator CoLeaveLimbo(HunterState state)
     {
         //Go frontstage if not already
         while (InLimbo)
@@ -396,27 +396,54 @@ public partial class HunterBehaviour : MonoBehaviour
             }
 
             LogHunterMessage("[Hunter] Trying to leave limbo");
-            if (FindPositionInPlayerRange(distance, out Vector3 spawn_position))
+            if (FindPositionInPlayerRange(m_SafeVisibilityDistance, out Vector3 spawn_position))
             {
                 LeaveLimbo(spawn_position);
             }
         }
     }
 
-    private IEnumerator FrontstageAvoid(HunterState state)
+    private IEnumerator BackstageIdle(HunterState state)
     {
-        yield return new WaitForFixedUpdate();
-
-        //Go frontstage if not already
-        if (InLimbo)
+        if (!InLimbo)
         {
-            yield return StartCoroutine(CoLeaveLimbo(state, m_CurrentStateSettings.PlayerDistance));
+            //Get in Limbo
+            m_CurrentStateSettings = m_RetreatSettings;
+            yield return StartCoroutine(Retreat(state));
+
+            if (m_CurrentState == state)
+            {
+                m_CurrentStateSettings = m_AllStateSettings[(int)state];
+            }
         }
 
-        float sqr_vis_distance = m_SafeVisibilityDistance * m_SafeVisibilityDistance;
+        while (InLimbo)
+        {
+            if (m_CurrentState != state)
+            {
+                yield break;
+            }
+
+            EvaluateAggroStateChange();
+            yield return new WaitForSeconds(1.0f);
+        }
+    }
+
+    private IEnumerator FrontstageAvoid(HunterState state)
+    {
+        float max_height = TerrainManager.Instance.Definition.MaxHeight * 0.75f;
+
+        bool wandering = false;
         while (true)
         {
             yield return new WaitForFixedUpdate();
+
+            //Go frontstage if not already
+            if (InLimbo)
+            {
+                yield return StartCoroutine(CoLeaveLimbo(state));
+                continue;
+            }
 
             if (CurrentState != state)
             {
@@ -426,22 +453,75 @@ public partial class HunterBehaviour : MonoBehaviour
             //Idle behaviour per-tick
 
             //Avoid the player
-            Vector3 from_player = m_PlayerSubmarine.transform.position - transform.position;
-            float sqr_dist_to_player = from_player.sqrMagnitude;
-            if (sqr_dist_to_player < sqr_vis_distance)
+            Vector3 position = transform.position;
+            Vector3 player_position = m_PlayerSubmarine.transform.position;
+            Vector3 to_player = player_position - position;
+            float sqr_distance_to_player = to_player.sqrMagnitude;
+
+            float sqr_max_distance = m_CurrentStateSettings.PlayerDistanceRange.end * m_CurrentStateSettings.PlayerDistanceRange.end;
+            float sqr_min_distance = m_CurrentStateSettings.PlayerDistanceRange.start * m_CurrentStateSettings.PlayerDistanceRange.start;
+            
+            //Player is too far away. Move Closer
+            if (sqr_distance_to_player > sqr_max_distance)
             {
-                LogHunterMessage("[Hunter] Too close to player. Fleeing");
+                LogHunterMessage("[Hunter] Player is too far away. Moving closer");
                 m_Path.Clear();
-                m_Path.Add(transform.position + (from_player / Mathf.Sqrt(sqr_dist_to_player)) * 1000f);
+                wandering = false;
+
+
+                Vector3 player_direction = to_player / Mathf.Sqrt(sqr_distance_to_player);
+                Vector3 target_position = position + player_direction * m_CurrentStateSettings.PlayerDistanceRange.RandomValue;
+                if (!Physics.Linecast(position, target_position, OctreePathfinder.Instance.ImpassableLayers)
+                     || !(OctreePathfinder.Instance?.SmoothPath(position, target_position, m_Path, c_PathSmoothingSubvisions) ?? false))
+                {
+                    m_Path.Add(target_position);
+                }
 
                 //Just flee and try and get to a new position
-                yield return new WaitForSeconds(1f);
-                yield return new WaitForFixedUpdate();
-
+                yield return new WaitForSeconds(2f);
+            }
+            //Player is too close. RUN AWAY!
+            else if (sqr_distance_to_player < sqr_min_distance)
+            {
+                LogHunterMessage("[Hunter] Player is too close. Retreating");
                 m_Path.Clear();
-                if (FindPositionInPlayerRange(m_CurrentStateSettings.PlayerDistance, out Vector3 spawn_position))
+                wandering = false;
+
+                m_CurrentStateSettings = m_RetreatSettings;
+
+                yield return StartCoroutine(Retreat(state));
+
+                if (m_CurrentState == state)
                 {
-                    LeaveLimbo(spawn_position);
+                    m_CurrentStateSettings = m_AllStateSettings[(int)state];
+                }
+            }
+            //We're at a good distance. Clear the path and wander around for a bit
+            else
+            {
+                if (!wandering)
+                {
+                    m_Path.Clear();
+                    wandering = true;
+                }
+
+                if (m_Path.Empty())
+                {
+                    Vector3 new_heading = Vector3.RotateTowards(transform.forward, Random.onUnitSphere, Mathf.PI * 0.25f, 0f);
+                    Vector3 target_position = position + new_heading * m_CurrentStateSettings.ActionDistance;
+
+                    //Stop going too high
+                    if (target_position.y >= max_height)
+                    {
+                        target_position.y = Random.Range(0f, max_height);
+                    }
+
+
+                    if (!Physics.Linecast(position, target_position, OctreePathfinder.Instance.ImpassableLayers)
+                            || !(OctreePathfinder.Instance?.SmoothPath(position, target_position, m_Path, c_PathSmoothingSubvisions) ?? false))
+                    {
+                        m_Path.Add(target_position);
+                    }
                 }
             }
         }
@@ -455,7 +535,7 @@ public partial class HunterBehaviour : MonoBehaviour
         //Go frontstage if not already
         if (InLimbo)
         {
-            yield return StartCoroutine(CoLeaveLimbo(HunterState.Attacking, m_SafeVisibilityDistance * 2f));
+            yield return StartCoroutine(CoLeaveLimbo(HunterState.Attacking));
         }
 
         while (true)
@@ -480,7 +560,7 @@ public partial class HunterBehaviour : MonoBehaviour
 
             Vector3 to_attack_position = adjusted_player_position - position;
             float sqr_distance_to_attack_position = to_attack_position.sqrMagnitude;
-            float sqr_player_distance = m_CurrentStateSettings.PlayerDistance * m_CurrentStateSettings.PlayerDistance;
+            float sqr_player_distance = m_CurrentStateSettings.ActionDistance * m_CurrentStateSettings.ActionDistance;
 
 #if UNITY_EDITOR
             LogHunterMessage($"[Hunter] Distance to attack: {Mathf.Sqrt(sqr_distance_to_attack_position):#.##}");
@@ -542,8 +622,9 @@ public partial class HunterBehaviour : MonoBehaviour
             }
 
             //Despawn if far enough away from the player
+            Vector3 position = transform.position;
             Vector3 player_pos = m_PlayerSubmarine.transform.position;
-            Vector3 to_player = player_pos - transform.position;
+            Vector3 to_player = player_pos - position;
             float distance_to_player = to_player.magnitude;
 
             if (distance_to_player >= m_SafeVisibilityDistance)
@@ -566,7 +647,17 @@ public partial class HunterBehaviour : MonoBehaviour
                 }
 
                 m_Path.Clear();
-                m_Path.Add(transform.position + flee_direction * 1000f);
+
+                Vector3 flee_target = position + flee_direction * 1000f + Vector3.up * 100f;
+
+                if (!Physics.Linecast(position, flee_target, OctreePathfinder.Instance.ImpassableLayers)
+                     || !(OctreePathfinder.Instance?.SmoothPath(position, flee_target, m_Path, c_PathSmoothingSubvisions) ?? false))
+                {
+                    m_Path.Add(flee_target);
+
+                    //Just flee for a second
+                    yield return new WaitForSeconds(2f);
+                }
             }
         }
     }
@@ -591,17 +682,12 @@ public partial class HunterBehaviour : MonoBehaviour
     {
         //Teleport the creature way above the target position and then move them down with the physics engine.
         const float teleport_drop_height = 1000f;
-        const float surface_offset = 0.5f;
 
-        transform.position = position + Vector3.up * teleport_drop_height;
+        m_RigidBody.MovePosition(position + Vector3.up * teleport_drop_height);
         m_MeshRenderer.enabled = true;
         m_RigidBody.isKinematic = false;
-
-        if (m_RigidBody.SweepTest(Vector3.down, out RaycastHit hit_info, teleport_drop_height))
-        {
-            position.y = hit_info.point.y + surface_offset;
-        }
-        transform.position = position;
+        m_RigidBody.MovePosition(position);
+        m_Path.Clear();
     }
 
     void ApplyRegularAggro(float delta_time)
@@ -665,6 +751,17 @@ public partial class HunterBehaviour : MonoBehaviour
         PlayerAggro += m_CreatureAggroSettings.SeaCreatureBumpAggro;
     }
 
+    private void TryBite(Collider other_collider)
+    {
+        if (m_CurrentState == HunterState.Attacking && AttackEnabled)
+        {
+            if (other_collider.gameObject == m_PlayerSubmarine.gameObject)
+            {
+                PlayerBitten(m_PlayerSubmarine);
+            }
+        }
+    }
+
     #region Unity Methods
     //Unity Methods
     private void Awake()
@@ -723,14 +820,14 @@ public partial class HunterBehaviour : MonoBehaviour
 
     private void OnTriggerEnter(Collider other_collider)
     {
-        if (m_CurrentState == HunterState.Attacking && AttackEnabled)
-        {
-            if (other_collider.gameObject == m_PlayerSubmarine.gameObject)
-            {
-                PlayerBitten(m_PlayerSubmarine);
-            }
-        }
+        TryBite(other_collider);
     }
+
+    private void OnTriggerStay(Collider other_collider)
+    {
+        TryBite(other_collider);
+    }
+
 
     #endregion
 

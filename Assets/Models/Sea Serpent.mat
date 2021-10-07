@@ -21,7 +21,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Sea Serpent
-  m_Shader: {fileID: -6465566751694194690, guid: 028812229d2875f428697a9bca89c5e8, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: a43a57bd16d7a6e4d9dfd5043245776a, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -131,10 +131,11 @@ Material:
     - anim_amp: 0.5
     - anim_freq: 2
     - anim_speed: 2
+    - emissive_disorder: 5
     - emissive_fade_range: 1
     - emissive_fresnel_strength: 1
     - emissive_start_range: 0
-    - emissive_strength: 2
+    - emissive_strength: 1
     - pulse_anim_amount: 0
     - pulse_anim_speed: 0
     - smoothness: 0.1
@@ -151,4 +152,5 @@ Material:
     - anim_offset_axis: {r: 0, g: 0, b: 0.4, a: 0}
     - anim_spine_axis: {r: 0, g: 1, b: 0, a: 0}
     - emissive_colour: {r: 0.9150943, g: 0.07338022, b: 0.112558626, a: 0}
+    - emissive_variation: {r: 0.25, g: 1.25, b: 0, a: 0}
   m_BuildTextureStacks: []

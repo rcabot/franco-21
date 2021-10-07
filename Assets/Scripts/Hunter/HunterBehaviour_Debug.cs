@@ -57,7 +57,7 @@ public partial class HunterBehaviour : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        for (int i = 1, end = m_Path.Count - 1; i < end; ++i)
+        for (int i = 0, end = m_Path.Count - 1; i < end; ++i)
         {
             Gizmos.color = Color.magenta;
             Gizmos.DrawLine(m_Path[i], m_Path[i + 1]);

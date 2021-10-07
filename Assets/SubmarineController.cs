@@ -173,8 +173,8 @@ public class SubmarineController : MonoBehaviour
         Vector3 forward = submarineCockpit.transform.forward;
         Vector3 right = submarineCockpit.transform.right;
 
-        Vector3 strafe_acceleration = LightsOn ? right * Input.GetAxis("Horizontal") * strafeFactor : Vector3.zero;
-        Vector3 forward_acceleration = LightsOn ? forward * Input.GetAxis("Vertical") : Vector3.zero;
+        Vector3 strafe_acceleration = LightsOn ? right * Mathf.Clamp(Input.GetAxis("Horizontal"), -1f, 1f) * strafeFactor : Vector3.zero;
+        Vector3 forward_acceleration = LightsOn ? forward * Mathf.Clamp(Input.GetAxis("Vertical"), -1f, 1f) : Vector3.zero;
 
         Vector3 input_acceleration = ((strafe_acceleration + forward_acceleration).normalized * acceleration) * Time.fixedDeltaTime;
 

@@ -802,7 +802,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c300bcd325667345a2b4d2173de9722, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_TurnSpeed: 180
+  m_TurnSpeed: 40
   m_BiteKnockbackForce: 30
   m_FrictionCurve:
     serializedVersion: 2
@@ -830,11 +830,14 @@ MonoBehaviour:
     m_RotationOrder: 4
   m_PathNodeDistance: 1
   m_MaxPlayerAggro: 100
-  m_BackstagePosition: {x: 0, y: 0, z: -10000}
+  m_BackstagePosition: {x: 0, y: 1000, z: 0}
   m_SafeVisibilityDistance: 100
   m_BackstageSettings:
     m_ActivationAggro: 0
-    m_PlayerDistance: 0
+    m_ActionDistance: 10
+    m_PlayerDistanceRange:
+      start: 0
+      length: 0
     m_PlayerHeightOffset:
       start: -1
       length: 1
@@ -852,7 +855,10 @@ MonoBehaviour:
       length: 0
   m_FrontstageIdleSettings:
     m_ActivationAggro: 10
-    m_PlayerDistance: 100
+    m_ActionDistance: 20
+    m_PlayerDistanceRange:
+      start: 50
+      length: 200
     m_PlayerHeightOffset:
       start: -5
       length: 10
@@ -870,7 +876,10 @@ MonoBehaviour:
       length: 0
   m_FrontstageDistantSettings:
     m_ActivationAggro: 20
-    m_PlayerDistance: 10
+    m_ActionDistance: 20
+    m_PlayerDistanceRange:
+      start: 30
+      length: 120
     m_PlayerHeightOffset:
       start: -1
       length: 1
@@ -888,10 +897,13 @@ MonoBehaviour:
       length: 0
   m_FrontstageSuspiciousSettings:
     m_ActivationAggro: 30
-    m_PlayerDistance: 10
+    m_ActionDistance: 20
+    m_PlayerDistanceRange:
+      start: 25
+      length: 75
     m_PlayerHeightOffset:
-      start: -1
-      length: 1
+      start: -5
+      length: 10
     m_Acceleration: 5
     m_StartSounds: {fileID: 0}
     m_StartVolumeScale: 1
@@ -906,10 +918,13 @@ MonoBehaviour:
       length: 0
   m_FrontstageCloseSettings:
     m_ActivationAggro: 40
-    m_PlayerDistance: 10
+    m_ActionDistance: 20
+    m_PlayerDistanceRange:
+      start: 10
+      length: 40
     m_PlayerHeightOffset:
-      start: -1
-      length: 1
+      start: -5
+      length: 10
     m_Acceleration: 10
     m_StartSounds: {fileID: 0}
     m_StartVolumeScale: 1
@@ -924,7 +939,10 @@ MonoBehaviour:
       length: 3
   m_AttackingSettings:
     m_ActivationAggro: 90
-    m_PlayerDistance: 8
+    m_ActionDistance: 10
+    m_PlayerDistanceRange:
+      start: 0
+      length: 0
     m_PlayerHeightOffset:
       start: -4
       length: 8
@@ -942,7 +960,10 @@ MonoBehaviour:
       length: 4
   m_RetreatSettings:
     m_ActivationAggro: 0
-    m_PlayerDistance: 10
+    m_ActionDistance: 10
+    m_PlayerDistanceRange:
+      start: 0
+      length: 0
     m_PlayerHeightOffset:
       start: -1
       length: 1

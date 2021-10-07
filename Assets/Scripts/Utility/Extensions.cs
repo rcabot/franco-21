@@ -165,7 +165,7 @@ public static class ListHeapExtensions
     //Organise a list into a binary heap
     public static void MakeHeap<T>(this IList<T> list, Func<T, T, bool> less_than_compare)
     {
-
+        SortHeap(list, 0, less_than_compare);
     }
 
     public static T HeapPop<T>(this IList<T> list, Func<T, T, bool> less_than_compare)
@@ -379,13 +379,13 @@ public static class GeneralExtensions
     {
         T temp = lhs;
         lhs = rhs;
-        rhs = lhs;
+        rhs = temp;
     }
 
     public static void Swap<T>(this T lhs, T rhs)
     {
         T temp = lhs;
         lhs = rhs;
-        rhs = lhs;
+        rhs = temp;
     }
 }
