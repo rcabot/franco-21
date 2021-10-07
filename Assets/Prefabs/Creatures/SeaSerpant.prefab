@@ -926,12 +926,12 @@ MonoBehaviour:
       length: 8
     m_StartSounds: {fileID: 11400000, guid: 36ffa1f3db1cf6c40b364a471ed1fa28, type: 2}
     m_StartVolumeScale: 1
-    m_StartScreenShakeMagnitude: 0
-    m_StartScreenShakeDuration: 0
+    m_StartScreenShakeMagnitude: 0.05
+    m_StartScreenShakeDuration: 0.5
     m_PeriodicSounds: {fileID: 11400000, guid: 36ffa1f3db1cf6c40b364a471ed1fa28, type: 2}
     m_PeriodicSoundScale: 1
-    m_PeriodicScreenShakeMagnitude: 0
-    m_PeriodicScreenShakeDuration: 0
+    m_PeriodicScreenShakeMagnitude: 0.05
+    m_PeriodicScreenShakeDuration: 0.5
     m_PeriodTimeRange:
       start: 8
       length: 4

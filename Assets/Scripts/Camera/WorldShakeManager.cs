@@ -65,12 +65,10 @@ public class WorldShakeManager : MonoBehaviour
     //Methods
     public void Shake(float magnitude, float duration)
     {
-        m_ShakeDuration = duration;
-        m_ShakeMagnitude = magnitude;
-
-        if (Mathf.Approximately(magnitude, 0f) || duration <= 0f)
+        if (magnitude >= m_ShakeMagnitude)
         {
-            StopShake();
+            m_ShakeDuration = duration;
+            m_ShakeMagnitude = magnitude;
         }
     }
 

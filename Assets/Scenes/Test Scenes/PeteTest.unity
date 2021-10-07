@@ -187,21 +187,9 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 5195924198965675715, guid: dd8865b6ed33bbb4c84f8f392fdf4f8e, type: 3}
-      propertyPath: Definition
-      value: 
-      objectReference: {fileID: 11400000, guid: 17baa5f319547d94ba202f19c659e262, type: 2}
-    - target: {fileID: 5195924198965675715, guid: dd8865b6ed33bbb4c84f8f392fdf4f8e, type: 3}
-      propertyPath: _Definition
-      value: 
-      objectReference: {fileID: 11400000, guid: 17baa5f319547d94ba202f19c659e262, type: 2}
     - target: {fileID: 5470941763397547550, guid: dd8865b6ed33bbb4c84f8f392fdf4f8e, type: 3}
       propertyPath: m_Name
       value: SystemHost
-      objectReference: {fileID: 0}
-    - target: {fileID: 5470941763397547616, guid: dd8865b6ed33bbb4c84f8f392fdf4f8e, type: 3}
-      propertyPath: m_ShakeDuration
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5470941763397547617, guid: dd8865b6ed33bbb4c84f8f392fdf4f8e, type: 3}
       propertyPath: m_RootOrder
