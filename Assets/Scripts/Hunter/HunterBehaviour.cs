@@ -205,9 +205,7 @@ public partial class HunterBehaviour : MonoBehaviour
         LogHunterMessage("[Hunter] Player has been hit");
 
         //Hit the player and knock them back
-        Vector3 force_dir = transform.forward;
-        force_dir.y = 0f; //Don't knock the player up/down
-        player.AddImpulse(force_dir.normalized * m_BiteKnockbackForce);
+        player.AddImpulse(transform.forward * m_BiteKnockbackForce);
         player.TakeHit();
 
         //Start retreating
@@ -753,6 +751,17 @@ public partial class HunterBehaviour : MonoBehaviour
         PlayerAggro += m_CreatureAggroSettings.SeaCreatureBumpAggro;
     }
 
+    private void TryBite(Collider other_collider)
+    {
+        if (m_CurrentState == HunterState.Attacking && AttackEnabled)
+        {
+            if (other_collider.gameObject == m_PlayerSubmarine.gameObject)
+            {
+                PlayerBitten(m_PlayerSubmarine);
+            }
+        }
+    }
+
     #region Unity Methods
     //Unity Methods
     private void Awake()
@@ -811,14 +820,14 @@ public partial class HunterBehaviour : MonoBehaviour
 
     private void OnTriggerEnter(Collider other_collider)
     {
-        if (m_CurrentState == HunterState.Attacking && AttackEnabled)
-        {
-            if (other_collider.gameObject == m_PlayerSubmarine.gameObject)
-            {
-                PlayerBitten(m_PlayerSubmarine);
-            }
-        }
+        TryBite(other_collider);
     }
+
+    private void OnTriggerStay(Collider other_collider)
+    {
+        TryBite(other_collider);
+    }
+
 
     #endregion
 
