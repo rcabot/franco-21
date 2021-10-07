@@ -34,6 +34,9 @@ class OctreeTester : MonoBehaviour
     [SerializeField]
     private int m_SmoothSubdivisions = 3;
 
+    [SerializeField]
+    private float m_PathNodeRadius = 0.2f;
+
     List<int> m_PathfindingResults = new List<int>();
     List<Vector4> m_PathfindingPoints = new List<Vector4>();
 
@@ -169,6 +172,12 @@ class OctreeTester : MonoBehaviour
                 for (int i = 0, end = m_PathfindingPoints.Count - 1; i < end ; ++i)
                 {
                     Gizmos.DrawLine(m_PathfindingPoints[i], m_PathfindingPoints[i + 1]);
+                }
+
+                Gizmos.color = Color.yellow;
+                for (int i = 0; i < m_PathfindingPoints.Count; ++i)
+                {
+                    Gizmos.DrawSphere(m_PathfindingPoints[i], m_PathNodeRadius);
                 }
             }
             else

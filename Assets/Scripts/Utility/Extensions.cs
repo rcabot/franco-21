@@ -13,6 +13,13 @@ public static class ListExtensions
         return val;
     }
 
+    public static T PopFront<T>(this IList<T> list)
+    {
+        T val = list[0];
+        list.RemoveAt(0);
+        return val;
+    }
+
     public static void QuickRemove<T>(this IList<T> list, T value)
     {
         int index = list.IndexOf(value);
@@ -67,14 +74,14 @@ public static class ListExtensions
         }
     }
 
-    public static T Front<T>(this List<T> list) where T : class
+    public static T Front<T>(this List<T> list)
     {
-        return list.Count > 0 ? list[0] : null;
+        return list[0];
     }
 
-    public static T Back<T>(this List<T> list) where T : class
+    public static T Back<T>(this List<T> list)
     {
-        return list.Count > 0 ? list[list.Count - 1] : null;
+        return list[list.Count - 1];
     }
 
     public static bool Empty<T>(this List<T> list)

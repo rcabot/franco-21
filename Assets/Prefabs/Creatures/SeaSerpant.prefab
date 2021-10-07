@@ -802,9 +802,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c300bcd325667345a2b4d2173de9722, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_MoveTarget: {x: 0, y: 0, z: 0}
-  m_Acceleration: 15
-  m_TurnSpeed: 20
+  m_TurnSpeed: 180
   m_BiteKnockbackForce: 30
   m_FrictionCurve:
     serializedVersion: 2
@@ -830,15 +828,17 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  m_PathNodeDistance: 1
   m_MaxPlayerAggro: 100
   m_BackstagePosition: {x: 0, y: 0, z: -10000}
-  m_SafeVisibilityDistance: 30
+  m_SafeVisibilityDistance: 100
   m_BackstageSettings:
     m_ActivationAggro: 0
     m_PlayerDistance: 0
     m_PlayerHeightOffset:
       start: -1
       length: 1
+    m_Acceleration: 10
     m_StartSounds: {fileID: 0}
     m_StartVolumeScale: 1
     m_StartScreenShakeMagnitude: 0
@@ -856,6 +856,7 @@ MonoBehaviour:
     m_PlayerHeightOffset:
       start: -5
       length: 10
+    m_Acceleration: 5
     m_StartSounds: {fileID: 0}
     m_StartVolumeScale: 1
     m_StartScreenShakeMagnitude: 0
@@ -873,6 +874,7 @@ MonoBehaviour:
     m_PlayerHeightOffset:
       start: -1
       length: 1
+    m_Acceleration: 5
     m_StartSounds: {fileID: 0}
     m_StartVolumeScale: 1
     m_StartScreenShakeMagnitude: 0
@@ -890,6 +892,7 @@ MonoBehaviour:
     m_PlayerHeightOffset:
       start: -1
       length: 1
+    m_Acceleration: 5
     m_StartSounds: {fileID: 0}
     m_StartVolumeScale: 1
     m_StartScreenShakeMagnitude: 0
@@ -907,6 +910,7 @@ MonoBehaviour:
     m_PlayerHeightOffset:
       start: -1
       length: 1
+    m_Acceleration: 10
     m_StartSounds: {fileID: 0}
     m_StartVolumeScale: 1
     m_StartScreenShakeMagnitude: 0
@@ -924,6 +928,7 @@ MonoBehaviour:
     m_PlayerHeightOffset:
       start: -4
       length: 8
+    m_Acceleration: 20
     m_StartSounds: {fileID: 11400000, guid: 36ffa1f3db1cf6c40b364a471ed1fa28, type: 2}
     m_StartVolumeScale: 1
     m_StartScreenShakeMagnitude: 0.05
@@ -941,6 +946,7 @@ MonoBehaviour:
     m_PlayerHeightOffset:
       start: -1
       length: 1
+    m_Acceleration: 25
     m_StartSounds: {fileID: 0}
     m_StartVolumeScale: 1
     m_StartScreenShakeMagnitude: 0

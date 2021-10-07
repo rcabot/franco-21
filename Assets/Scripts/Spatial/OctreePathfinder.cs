@@ -25,6 +25,7 @@ public partial class OctreePathfinder : MonoBehaviour
     public bool                    Initialised => m_PassableTree != null;
     public int                     NodeCount => m_PassableTree.Nodes.Count;
     public IReadOnlyOctree<bool>   Octree => m_PassableTree;
+    public LayerMask               ImpassableLayers => m_ImpassableLayers;
 
     struct AStarNode
     {

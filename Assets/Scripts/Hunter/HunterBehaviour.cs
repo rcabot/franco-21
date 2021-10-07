@@ -1,12 +1,15 @@
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityRandom = UnityEngine.Random;
+using Random = UnityEngine.Random;
+using Debug = UnityEngine.Debug;
+
 
 [RequireComponent(typeof(AudioSource), typeof(Rigidbody))]
-public class HunterBehaviour : MonoBehaviour
+public partial class HunterBehaviour : MonoBehaviour
 {
     //Members
     private float                              m_PlayerAggro = 0f;
@@ -20,22 +23,23 @@ public class HunterBehaviour : MonoBehaviour
     private SubmarineController                m_PlayerSubmarine;
     private Animator                           m_Animator;
     private Coroutine                          m_RunningBehaviour;
-    private static readonly int                m_AttackTriggerID = Animator.StringToHash("AttackTrigger");
+    private static readonly int                c_AttackTriggerID = Animator.StringToHash("AttackTrigger");
+    private const int                          c_PathSmoothingSubvisions = 3;
 
     private Vector3                            m_Velocity;
-    [SerializeField] private Vector3           m_MoveTarget;
+    private List<Vector3>                      m_Path = new List<Vector3>();
 
     [Header("Physics")]
-    [SerializeField] private float             m_Acceleration = 2f;
     [SerializeField] private float             m_TurnSpeed = 4f;
     [SerializeField] private float             m_BiteKnockbackForce = 40f;
     [SerializeField] private AnimationCurve    m_FrictionCurve = new AnimationCurve();
+    [SerializeField] private float             m_PathNodeDistance = 1f;
 
     [Header("Behaviour")]
     [SerializeField] private int               m_MaxPlayerAggro = 100;
     [SerializeField] private Vector3           m_BackstagePosition = new Vector3(0f, 0f, -10000f);
 
-    [SerializeField, Range(1f, 100f), Tooltip("Distance that it's safe for the creature to appear/disappear at even if infront of the player camera")]
+    [SerializeField, Range(1f, 1000f), Tooltip("Distance that it's safe for the creature to appear/disappear at even if infront of the player camera")]
     private float                              m_SafeVisibilityDistance = 10f;
     
     //Custom inspector would be nice here. I'm restraining myself by not writing one
@@ -261,7 +265,7 @@ public class HunterBehaviour : MonoBehaviour
         //Attempt to position randomly around the player
         for (int i = 0; i < max_tries; ++i)
         {
-            Vector2 direction = base_direction.RotateCw(UnityRandom.Range(min_angle, max_angle));
+            Vector2 direction = base_direction.RotateCw(Random.Range(min_angle, max_angle));
             Vector2 potential_spawn_location = player_position_2d + direction * distance;
 
             if (GetSpawnPointOnTerrain(potential_spawn_location, out result))
@@ -284,16 +288,31 @@ public class HunterBehaviour : MonoBehaviour
 
     private void MoveTowardsTarget()
     {
+        if (m_Path.Empty())
+            return;
+
         Vector3 position = m_RigidBody.position;
-        Vector3 target = m_MoveTarget != Vector3.zero ? m_MoveTarget : position;
+        Vector3 target = m_Path.Front();
 
         Vector3 target_direction = target - position;
-        float target_distance = target_direction.magnitude;
+        float sqr_target_distance = target_direction.sqrMagnitude;
+
+        //Proceed to the next waypoint
+        if (m_Path.Count > 1 && sqr_target_distance <= m_PathNodeDistance)
+        {
+            target = m_Path[1];
+            m_Path.PopFront();
+            target_direction = target - position;
+            sqr_target_distance = target_direction.sqrMagnitude;
+        }
+
+        //Only square root once...
+        float target_distance = Mathf.Sqrt(sqr_target_distance);
 
         if (!Mathf.Approximately(0f, target_distance))
         {
             target_direction /= target_distance; //normalise the direction
-            m_Velocity += m_Acceleration * target_direction * Time.fixedDeltaTime;
+            m_Velocity += m_CurrentStateSettings.Acceleration * target_direction * Time.fixedDeltaTime;
         }
         else
         {
@@ -317,16 +336,16 @@ public class HunterBehaviour : MonoBehaviour
 
         //Rotate towards velocity
         Quaternion target_rotation = m_RigidBody.rotation;
-        if (current_speed > 0f)
+        if (current_speed > 0.1f)
         {
             target_rotation = Quaternion.LookRotation(velocity_direction, Vector3.up);
         }
-        else if (m_MoveTarget  != Vector3.zero)
+        else if (!m_Path.Empty())
         {
             target_rotation = Quaternion.LookRotation(target_direction, Vector3.up);
         }
 
-        m_RigidBody.MoveRotation(Quaternion.RotateTowards(m_RigidBody.rotation, target_rotation, m_TurnSpeed));
+        m_RigidBody.MoveRotation(Quaternion.RotateTowards(m_RigidBody.rotation, target_rotation, m_TurnSpeed * Time.fixedDeltaTime));
     }
 
     //Woo coroutines
@@ -412,14 +431,14 @@ public class HunterBehaviour : MonoBehaviour
             if (sqr_dist_to_player < sqr_vis_distance)
             {
                 LogHunterMessage("[Hunter] Too close to player. Fleeing");
-                m_MoveTarget = transform.position + (from_player / Mathf.Sqrt(sqr_dist_to_player)) * 1000f;
+                m_Path.Clear();
+                m_Path.Add(transform.position + (from_player / Mathf.Sqrt(sqr_dist_to_player)) * 1000f);
 
                 //Just flee and try and get to a new position
                 yield return new WaitForSeconds(1f);
                 yield return new WaitForFixedUpdate();
 
-                m_MoveTarget = Vector3.zero;
-
+                m_Path.Clear();
                 if (FindPositionInPlayerRange(m_CurrentStateSettings.PlayerDistance, out Vector3 spawn_position))
                 {
                     LeaveLimbo(spawn_position);
@@ -430,6 +449,9 @@ public class HunterBehaviour : MonoBehaviour
 
     private IEnumerator Attacking()
     {
+        //Make sure attack gets reset
+        m_Animator.ResetTrigger(c_AttackTriggerID);
+
         //Go frontstage if not already
         if (InLimbo)
         {
@@ -453,10 +475,10 @@ public class HunterBehaviour : MonoBehaviour
             //We want to line up the bite sphere with the player. So offset the player position to account for it
             Vector3 bite_sphere_position = m_BiteTriggerSphere.bounds.center;
             Vector3 bite_sphere_offset = bite_sphere_position - position;
-            Vector3 player_position = m_PlayerSubmarine.transform.position - bite_sphere_offset;
-            m_MoveTarget = player_position;
+            Vector3 player_position = m_PlayerSubmarine.transform.position;
+            Vector3 adjusted_player_position = player_position - bite_sphere_offset;
 
-            Vector3 to_attack_position = player_position - position;
+            Vector3 to_attack_position = adjusted_player_position - position;
             float sqr_distance_to_attack_position = to_attack_position.sqrMagnitude;
             float sqr_player_distance = m_CurrentStateSettings.PlayerDistance * m_CurrentStateSettings.PlayerDistance;
 
@@ -467,20 +489,49 @@ public class HunterBehaviour : MonoBehaviour
             if (sqr_distance_to_attack_position < sqr_player_distance && m_CurrentStateSettings.PlayerHeightOffset.InRange(Mathf.Abs(to_attack_position.y)))
             {
                 //Trigger an attack
-                m_Animator.SetTrigger(m_AttackTriggerID);
+                m_Animator.SetTrigger(c_AttackTriggerID);
             }
             else
             {
-                m_Animator.ResetTrigger(m_AttackTriggerID);
+                //Reset the attack trigger
+                m_Animator.ResetTrigger(c_AttackTriggerID);
+
+                m_Path.Clear();
+                //Pathfind if we can't see the player. Go straight for them if we can see them or if pathing fails
+                if (Physics.Linecast(player_position, position, OctreePathfinder.Instance.ImpassableLayers))
+                {
+                    if (OctreePathfinder.Instance?.SmoothPath(position, player_position, m_Path, c_PathSmoothingSubvisions) ?? false)
+                    {
+                        LogHunterMessage("[Hunter] Cannot See Player. Following Path");
+                    }
+                    else
+                    {
+                        LogHunterMessage("[Hunter] Cannot see Player. Failed to Find Path. Falling back to going straight for them");
+                        m_Path.Add(player_position);
+                    }
+                }
+                //There's nothing but air between us and the player. Go straight for them
+                else
+                {
+                    m_Path.Add(player_position);
+                }
             }
         }
-
-        //Make sure attack gets reset
-        m_Animator.ResetTrigger(m_AttackTriggerID);
     }
 
     private IEnumerator Retreat(HunterState state)
     {
+        //Wait for the attack animation to finish
+        while (AttackEnabled)
+        {
+            if (m_CurrentState != state)
+            {
+                yield break;
+            }
+
+            yield return new WaitForFixedUpdate();
+        }
+
         while (true)
         {
             yield return new WaitForFixedUpdate();
@@ -514,7 +565,8 @@ public class HunterBehaviour : MonoBehaviour
                     flee_direction.Normalize();
                 }
 
-                m_MoveTarget = transform.position + flee_direction * 1000f;
+                m_Path.Clear();
+                m_Path.Add(transform.position + flee_direction * 1000f);
             }
         }
     }
@@ -532,7 +584,7 @@ public class HunterBehaviour : MonoBehaviour
     {
         m_RigidBody.isKinematic = true;
         m_MeshRenderer.enabled = false;
-        m_MoveTarget = Vector3.zero;
+        m_Path.Clear();
     }
 
     private void LeaveLimbo(Vector3 position)
@@ -683,15 +735,8 @@ public class HunterBehaviour : MonoBehaviour
     #endregion
 
     #region Debug
-    public static bool EnableLogging = false;
 
-#if UNITY_EDITOR
-    public void DebugTeleport(Vector3 position)
-    {
-        LeaveLimbo(position);
-    }
-#endif
-
+    [Conditional("UNITY_EDITOR")]
     private void LogHunterMessage(string content)
     {
 #if UNITY_EDITOR
