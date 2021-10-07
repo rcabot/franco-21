@@ -22,7 +22,7 @@ public partial class OctreePathfinder : MonoBehaviour
     }
 
     [NonSerialized]
-    public DebugNodeDrawFlags Debug_ActiveNodeDrawFlags = DebugNodeDrawFlags.DrawLeafOnly | DebugNodeDrawFlags.DrawImpassable;
+    public DebugNodeDrawFlags Debug_ActiveNodeDrawFlags = DebugNodeDrawFlags.None;
 
     [NonSerialized]
     public int Debug_HighlightNodeIndex = -1;
