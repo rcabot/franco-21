@@ -836,12 +836,10 @@ public partial class HunterBehaviour : MonoBehaviour
     [Conditional("UNITY_EDITOR")]
     private void LogHunterMessage(string content)
     {
-#if UNITY_EDITOR
         if (EnableLogging)
         {
             Debug.Log(content, this);
         }
-#endif
     }
 
     #endregion
