@@ -20,8 +20,11 @@ public class HunterStateSettings
     [Range(0, 100), SerializeField, Tooltip("Minimum aggro the player must achieve to enter this state")]
     private int                                    m_ActivationAggro = 0;
 
-    [Range(0, 100), SerializeField, Tooltip("Distance at which the creature will try to act in this state")]
-    private float                                  m_PlayerDistance = 10;
+    [Range(0, 100), SerializeField, Tooltip("Distance from the player that the state action can be performed")]
+    private float                                  m_ActionDistance = 10f;
+
+    [SerializeField, RangeBeginEndAttribute(0f, 1000f), Tooltip("Distance range the creature will try to maintain from the player")]
+    private RangeFloat                             m_PlayerDistanceRange = new RangeFloat(50f, 100f);
 
     [SerializeField, RangeBeginEndAttribute(-100f, 100f), Tooltip("Height offset range that the creature may appear at when spawning near the player")]
     private RangeFloat                             m_PlayerHeightOffset = new RangeFloat(-1f, 1f);
@@ -45,7 +48,8 @@ public class HunterStateSettings
     private RangeFloat                             m_PeriodTimeRange = new RangeFloat(0f, 0f);
 
     public int               ActivationAggro              => m_ActivationAggro;
-    public float             PlayerDistance               => m_PlayerDistance;
+    public float             ActionDistance               => m_ActionDistance;
+    public RangeFloat        PlayerDistanceRange          => m_PlayerDistanceRange;
     public RangeFloat        PlayerHeightOffset           => m_PlayerHeightOffset;
     public float             Acceleration                 => m_Acceleration;
 

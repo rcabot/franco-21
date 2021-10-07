@@ -25,12 +25,20 @@ public class RangeDrawer : PropertyDrawer
             Rect left = new Rect(position.x, position.y, position.width / 2 - 11f, position.height);
             Rect right = new Rect(position.x + position.width - left.width, position.y, left.width, position.height);
             Rect mid = new Rect(left.xMax, position.y, 22, position.height);
-            begin = Mathf.Clamp(EditorGUI.FloatField(left, begin), outer_bounds.min, outer_bounds.max);
+            begin = Mathf.Clamp(EditorGUI.DelayedFloatField(left, begin), outer_bounds.min, outer_bounds.max);
             EditorGUI.LabelField(mid, " to ");
-            end = Mathf.Clamp(EditorGUI.FloatField(right, end), outer_bounds.min, outer_bounds.max);
+            end = Mathf.Clamp(EditorGUI.DelayedFloatField(right, end), outer_bounds.min, outer_bounds.max);
 
             position.y += EditorGUIUtility.singleLineHeight;
             EditorGUI.MinMaxSlider(position, ref begin, ref end, outer_bounds.min, outer_bounds.max);
+
+            //Swap beginning and end if inverted
+            if (end < begin)
+            {
+                float temp = begin;
+                begin = end;
+                end = temp;
+            }
 
             min_value.floatValue = (float)System.Math.Round(begin, 2);
             length_value.floatValue = (float)System.Math.Round(end - begin, 2);

@@ -222,7 +222,7 @@ public partial class OctreePathfinder : MonoBehaviour
         if (m_PassableTree.FindNearestNode(position, out result_node))
         {
             //Node is already passable. No need to expand
-            if (result_node.Data)
+            if (result_node.Data && result_node.IsLeaf)
             {
                 return true;
             }
@@ -310,7 +310,7 @@ public partial class OctreePathfinder : MonoBehaviour
                 }
             }
             //Cull if the top of the node is below the terrain
-            else if (m_TerrainManager.GetTerrainElevation(current_node_center) > current_node_bounds.max.y)
+            else if (m_TerrainManager.GetTerrainElevation(current_node_center) > current_node_center.y)
             {
                 m_PassableTree.SetNodeData(current_node, false);
             }
