@@ -4,5 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/Test Scenes/PeteTest.unity
+    guid: 0b5880a92793de14098a46a1fa0b19f3
   m_configObjects: {}
