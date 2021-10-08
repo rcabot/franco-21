@@ -857,8 +857,8 @@ MonoBehaviour:
     m_ActivationAggro: 10
     m_ActionDistance: 20
     m_PlayerDistanceRange:
-      start: 50
-      length: 200
+      start: 80
+      length: 170
     m_PlayerHeightOffset:
       start: -5
       length: 10
@@ -878,8 +878,8 @@ MonoBehaviour:
     m_ActivationAggro: 20
     m_ActionDistance: 20
     m_PlayerDistanceRange:
-      start: 30
-      length: 120
+      start: 70
+      length: 80
     m_PlayerHeightOffset:
       start: -1
       length: 1
@@ -899,8 +899,8 @@ MonoBehaviour:
     m_ActivationAggro: 30
     m_ActionDistance: 20
     m_PlayerDistanceRange:
-      start: 25
-      length: 75
+      start: 50
+      length: 70
     m_PlayerHeightOffset:
       start: -5
       length: 10
@@ -920,8 +920,8 @@ MonoBehaviour:
     m_ActivationAggro: 40
     m_ActionDistance: 20
     m_PlayerDistanceRange:
-      start: 10
-      length: 40
+      start: 50
+      length: 50
     m_PlayerHeightOffset:
       start: -5
       length: 10
