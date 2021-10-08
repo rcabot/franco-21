@@ -1,4 +1,4 @@
-// GENERATED AUTOMATICALLY FROM 'Assets/Input/PlayerInput.inputactions'
+// GENERATED AUTOMATICALLY FROM 'Assets/Input/SubmarineControlMappings.inputactions'
 
 using System;
 using System.Collections;
@@ -6,13 +6,13 @@ using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Utilities;
 
-public class @PlayerInput : IInputActionCollection, IDisposable
+public class @SubmarineControlMappings : IInputActionCollection, IDisposable
 {
     public InputActionAsset asset { get; }
-    public @PlayerInput()
+    public @SubmarineControlMappings()
     {
         asset = InputActionAsset.FromJson(@"{
-    ""name"": ""PlayerInput"",
+    ""name"": ""SubmarineControlMappings"",
     ""maps"": [
         {
             ""name"": ""Base"",
@@ -423,8 +423,8 @@ public class @PlayerInput : IInputActionCollection, IDisposable
     private readonly InputAction m_Base_GameStart;
     public struct BaseActions
     {
-        private @PlayerInput m_Wrapper;
-        public BaseActions(@PlayerInput wrapper) { m_Wrapper = wrapper; }
+        private @SubmarineControlMappings m_Wrapper;
+        public BaseActions(@SubmarineControlMappings wrapper) { m_Wrapper = wrapper; }
         public InputAction @Look => m_Wrapper.m_Base_Look;
         public InputAction @Move => m_Wrapper.m_Base_Move;
         public InputAction @ToggleLights => m_Wrapper.m_Base_ToggleLights;

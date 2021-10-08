@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class WorldShakeManager : MonoBehaviour
 {
@@ -31,6 +32,8 @@ public class WorldShakeManager : MonoBehaviour
             Instance = null;
             m_Shakeables.Clear();
         }
+
+        Gamepad.current?.SetMotorSpeeds(0f, 0f);
     }
 
     private void LateUpdate()
@@ -59,6 +62,7 @@ public class WorldShakeManager : MonoBehaviour
     {
         if (magnitude >= m_ShakeMagnitude)
         {
+            Gamepad.current?.SetMotorSpeeds(1.0f, 1.0f);
             m_ShakeDuration = duration;
             m_ShakeMagnitude = magnitude;
         }
@@ -68,6 +72,7 @@ public class WorldShakeManager : MonoBehaviour
     {
         m_ShakeDuration = m_ShakeMagnitude = 0f;
 
+        Gamepad.current?.SetMotorSpeeds(0f, 0f);
         foreach (ShakeableObject obj in m_Shakeables)
         {
             obj.StopShake();
