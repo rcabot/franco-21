@@ -158,6 +158,16 @@ public static class ListExtensions
 
         return start;
     }
+
+    public static int IndexOf<T>(this IReadOnlyList<T> list, T value) where T : class
+    {
+        for (int i = 0, end = list.Count - 1; i < end; ++i)
+        {
+            if (list[i] == value)
+                return i;
+        }
+        return -1;
+    }
 }
 
 public static class ListHeapExtensions

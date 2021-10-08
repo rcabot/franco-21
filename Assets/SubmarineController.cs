@@ -75,6 +75,7 @@ public class SubmarineController : MonoBehaviour
     public bool Scraping => scraping;
 
     public event Action<SubmarineController, MovementGear> OnGearChanged;
+    public event Action OnTakeHit;
 
     private void Awake()
     {
@@ -241,6 +242,8 @@ public class SubmarineController : MonoBehaviour
             crack_material.SetFloat(c_CrackOverlayAmountID, 1.0f - Mathf.Max(1, player_state.Health) / (float)player_state.MaxHealth);
         }
 
+        OnTakeHit?.Invoke();
+
         Debug.Log("Player Hit");
     }
 
@@ -266,10 +269,13 @@ public class SubmarineController : MonoBehaviour
 
     IEnumerator WaitForPowerOn()
     {
-        yield return new WaitForSeconds(m_HitDisableTime);
-        m_PowerOn = true;
-        lights.Locked = false;
-        lights.ToggleLights(true);
+        if (PlayerState.Instance.Health > 0)
+        {
+            yield return new WaitForSeconds(m_HitDisableTime);
+            m_PowerOn = true;
+            lights.Locked = false;
+            lights.ToggleLights(true);
+        }
     }
 
 

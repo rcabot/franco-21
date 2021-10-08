@@ -32,6 +32,14 @@ public class LightActivator : MonoBehaviour
         OnLightsToggled?.Invoke(toggle);
     }
 
+    private void Start()
+    {
+        foreach (Light l in m_Lights)
+        {
+            l.enabled = m_LightsEnabled;
+        }
+    }
+
     // Update is called once per frame
     void Update()
     {
