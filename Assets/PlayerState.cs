@@ -19,6 +19,7 @@ public class PlayerState : MonoBehaviour
     private CollectablesDistributor[] collectablesRegistries;
 
     public event Action<PlayerState> OnItemCollected;
+    public event Action<State, State> OnGameStateChanged;
 
     public void CollecedItem()
     {
@@ -53,6 +54,7 @@ public class PlayerState : MonoBehaviour
 
     private void Update()
     {
+        State prev_state = GameState;
         if (m_victoryPortal.TouchedByPlayer)
         {
             GameState = State.Victory;
@@ -68,6 +70,11 @@ public class PlayerState : MonoBehaviour
         else
         {
             GameState = State.Main;
+        }
+
+        if (prev_state != GameState)
+        {
+            OnGameStateChanged?.Invoke(prev_state, GameState);
         }
     }
 

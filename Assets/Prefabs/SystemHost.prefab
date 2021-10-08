@@ -245,6 +245,21 @@ MonoBehaviour:
     Priority: 100
     Mode: 0
   m_IntroDelay: 2
+  m_GameoverVO:
+    SoundBank: {fileID: 0}
+    SingleClip: {fileID: 8300000, guid: fb1a9be6116e7134eba4ef12ba065998, type: 3}
+    Priority: 0
+    Mode: 0
+  m_VictoryVO:
+    SoundBank: {fileID: 0}
+    SingleClip: {fileID: 0}
+    Priority: 0
+    Mode: 0
+  m_ObjectiveCompleteVO:
+    SoundBank: {fileID: 0}
+    SingleClip: {fileID: 0}
+    Priority: 0
+    Mode: 0
   m_DamageVO:
   - SoundBank: {fileID: 0}
     SingleClip: {fileID: 8300000, guid: dc31c0c60ab98a24396977154b40d06d, type: 3}

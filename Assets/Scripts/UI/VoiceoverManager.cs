@@ -36,25 +36,34 @@ public class VoiceoverManager : MonoBehaviour
     private bool                   m_MonsterDetected = false;
     private bool                   m_MonsterWasNear = false;
 
-
     [SerializeField, Header("Audio Sources"), Tooltip("Audio source for the handler")]
     private AudioSource            m_HandlerAudioSource = default;
+
     [SerializeField, Tooltip("Audio source for the EVA computer voice")]
     private AudioSource            m_EVAAudioSource = default;
 
-    [SerializeField, Header("Intro"), Tooltip("Sounds played sequentially for the intro")]
+    [SerializeField, Header("Handler Voice Over"), Tooltip("Handler VO Sounds played for the intro")]
     private VOSoundBank            m_IntroVO = default;
 
     [SerializeField, Range(0f, 100f), Tooltip("Delay (seconds) on game start before the into VO will play")]
     private float                  m_IntroDelay = 0f;
 
-    [SerializeField, Header("Creature"), Tooltip("Sounds played on taking damage. Index is the number of hitpoints remaining")]
+    [SerializeField, Tooltip("Handler VO played when the game is over")]
+    private VOSoundBank            m_GameoverVO = default;
+
+    [SerializeField, Tooltip("Handler VO played on victory")]
+    private VOSoundBank            m_VictoryVO = default;
+
+    [SerializeField, Tooltip("Handler VO played when the victory portal opens")]
+    private VOSoundBank            m_ObjectiveCompleteVO = default;
+
+    [SerializeField, Header("EVA Voice Over"), Tooltip("EVA Sounds played on taking damage. Index is the number of hitpoints remaining")]
     private List<VOSoundBank>      m_DamageVO = new List<VOSoundBank>();
 
-    [SerializeField, Tooltip("Audio bank played when the creature comes out from backstage")]
+    [SerializeField, Tooltip("EVA Audio bank played when the creature comes out from backstage")]
     private VOSoundBank            m_MonsterDetectedVO = default;
 
-    [SerializeField, Tooltip("Audio bank played when the creature gets close")]
+    [SerializeField, Tooltip("EVA Audio bank played when the creature gets close")]
     private VOSoundBank            m_MonsterNearVO = default;
 
     [SerializeField, Range(0f, 1000f), Tooltip("Range at which to trigger the near VO")]
@@ -63,7 +72,7 @@ public class VoiceoverManager : MonoBehaviour
     [SerializeField, Range(1f, 1000f), Tooltip("Time delay before the monster near VO may fire again")]
     private float                  m_MonsterNearCooldown = 5f;
 
-    [SerializeField, Header("Pickups"), Tooltip("Sounds played when the player has collected trash. Index is a divisor. If there are two sounds one will be played at 50% and one at 100%")]
+    [SerializeField, Tooltip("EVA VO played when the player has collected trash. Index is a divisor. If there are two sounds one will be played at 50% and one at 100%")]
     private List<VOSoundBank>      m_PickupsVO = new List<VOSoundBank>();
 
     public event Action            OnIntroVOComplete;
@@ -85,20 +94,23 @@ public class VoiceoverManager : MonoBehaviour
             yield break;
         }
 
-        audio_source.clip = null;
-        AudioClip last = null;
-        foreach (AudioClip clip in bank.SoundBank.AudioClips)
+        if (bank.SoundBank)
         {
-            //Our clip may have been replaced. So only play the next in the sequence if that hasn't happened or we're higher priority
-            if (audio_source.clip == last || bank.Priority > m_CurrentBankPriority)
+            audio_source.clip = null;
+            AudioClip last = null;
+            foreach (AudioClip clip in bank.SoundBank.AudioClips)
             {
-                last = clip;
-                m_CurrentBankPriority = bank.Priority;
-                audio_source.clip = clip;
-                audio_source.Play();
+                //Our clip may have been replaced. So only play the next in the sequence if that hasn't happened or we're higher priority
+                if (audio_source.clip == last || bank.Priority > m_CurrentBankPriority)
+                {
+                    last = clip;
+                    m_CurrentBankPriority = bank.Priority;
+                    audio_source.clip = clip;
+                    audio_source.Play();
 
-                //Wait for the clip to finish
-                yield return new WaitWhile(() => audio_source.isPlaying && audio_source.clip == clip);
+                    //Wait for the clip to finish
+                    yield return new WaitWhile(() => audio_source.isPlaying && audio_source.clip == clip);
+                }
             }
         }
     }
@@ -179,6 +191,25 @@ public class VoiceoverManager : MonoBehaviour
         }
     }
 
+    private void OnGameStateChanged(PlayerState.State prev, PlayerState.State next)
+    {
+        if (prev == next)
+            return;
+
+        switch (next)
+        {
+            case PlayerState.State.Defeat:
+                StartCoroutine(CoPlayBank(m_GameoverVO, m_HandlerAudioSource));
+                break;
+            case PlayerState.State.Victory:
+                StartCoroutine(CoPlayBank(m_VictoryVO, m_HandlerAudioSource));
+                break;
+            case PlayerState.State.ObjectiveComplete:
+                StartCoroutine(CoPlayBank(m_ObjectiveCompleteVO, m_HandlerAudioSource));
+                break;
+        }
+    }
+
     #endregion
 
     #region Unit Events
@@ -208,6 +239,7 @@ public class VoiceoverManager : MonoBehaviour
         m_Creature.OnStateChanged += OnMonsterChangeState;
 
         PlayerState.Instance.OnItemCollected += OnItemCollected;
+        PlayerState.Instance.OnGameStateChanged += OnGameStateChanged;
     }
 
     private void FixedUpdate()
