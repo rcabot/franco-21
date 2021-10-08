@@ -69,37 +69,36 @@ class DebugTools : EditorWindow
 
     private void CreatureUI()
     {
-        HunterBehaviour hunter = HunterBehaviour.Instance;
-        if (hunter != null)
+        m_ShowCreatureTest = EditorGUILayout.Foldout(m_ShowCreatureTest, "Creature Test");
+        if (m_ShowCreatureTest)
         {
-            m_ShowCreatureTest = EditorGUILayout.Foldout(m_ShowCreatureTest, "Creature Test");
-            if (m_ShowCreatureTest)
+            HunterBehaviour hunter = HunterBehaviour.Instance;
+            if (hunter == null)
             {
-                HunterBehaviour.EnableLogging = EditorGUILayout.Toggle("Enable Logging", HunterBehaviour.EnableLogging);
-                
-                HunterState new_state = (HunterState)EditorGUILayout.EnumPopup("Current State", hunter.CurrentState);
-                if (new_state != hunter.CurrentState)
-                {
-                    hunter.ForceSetState(new_state);
-                }
-
-                hunter.PlayerAggro = EditorGUILayout.Slider("Player Aggro", hunter.PlayerAggro, 0, 100);
-
-                if (GUILayout.Button("Force Backstage"))
-                {
-                    hunter.ForceSetState(HunterState.Backstage);
-                }
-
-                m_HunterTeleportPosition = EditorGUILayout.Vector3Field("Teleport Position", m_HunterTeleportPosition);
-                if (GUILayout.Button("Teleport"))
-                {
-                    hunter.DebugTeleport(m_HunterTeleportPosition);
-                }
+                EditorGUILayout.LabelField("No Creature Found...");
+                return;
             }
-        }
-        else
-        {
-            EditorGUILayout.LabelField("- No Creature Found -");
+
+            HunterBehaviour.EnableLogging = EditorGUILayout.Toggle("Enable Logging", HunterBehaviour.EnableLogging);
+                
+            HunterState new_state = (HunterState)EditorGUILayout.EnumPopup("Current State", hunter.CurrentState);
+            if (new_state != hunter.CurrentState)
+            {
+                hunter.ForceSetState(new_state);
+            }
+
+            hunter.PlayerAggro = EditorGUILayout.Slider("Player Aggro", hunter.PlayerAggro, 0, 100);
+
+            if (GUILayout.Button("Force Backstage"))
+            {
+                hunter.ForceSetState(HunterState.Backstage);
+            }
+
+            m_HunterTeleportPosition = EditorGUILayout.Vector3Field("Teleport Position", m_HunterTeleportPosition);
+            if (GUILayout.Button("Teleport"))
+            {
+                hunter.DebugTeleport(m_HunterTeleportPosition);
+            }
         }
     }
 
@@ -108,6 +107,12 @@ class DebugTools : EditorWindow
         m_ShowShakeTest = EditorGUILayout.Foldout(m_ShowShakeTest, "Shake Test");
         if (m_ShowShakeTest)
         {
+            if (WorldShakeManager.Instance == null)
+            {
+                EditorGUILayout.LabelField("No shake manager found...");
+                return;
+            }
+
             m_ShakeTestMagnitude = EditorGUILayout.Slider("Magnitude", m_ShakeTestMagnitude, 0f, 10f);
             m_ShakeTestDuration = EditorGUILayout.Slider("Duration (s)", m_ShakeTestDuration, 0f, 10f);
             if (GUILayout.Button("Test Shake"))
@@ -126,6 +131,12 @@ class DebugTools : EditorWindow
         m_ShowTerrainTest = EditorGUILayout.Foldout(m_ShowTerrainTest, "Terrain"); ;
         if (m_ShowTerrainTest)
         {
+            if (TerrainManager.Instance == null)
+            {
+                EditorGUILayout.LabelField("No terrain manager found...");
+                return;
+            }
+
             m_DrawTerrainBounds = EditorGUILayout.Toggle("Draw Terrain Bounds", m_DrawTerrainBounds);
 
             if (GUILayout.Button("Force Refresh Terrain Heights"))
@@ -143,6 +154,11 @@ class DebugTools : EditorWindow
         m_ShowOctreePathfidingTest = EditorGUILayout.Foldout(m_ShowOctreePathfidingTest, "Octree Pathfinding");
         if (m_ShowOctreePathfidingTest)
         {
+            if (OctreePathfinder.Instance == null)
+            {
+                EditorGUILayout.LabelField("No pathfinder found...");
+                return;
+            }
             OctreePathfinder.Instance.Debug_ActiveNodeDrawFlags = (OctreePathfinder.DebugNodeDrawFlags)EditorGUILayout.EnumFlagsField("Debug Node Draw", OctreePathfinder.Instance.Debug_ActiveNodeDrawFlags);
 
             OctreePathfinder.Instance.Debug_HighlightNodeIndex = EditorGUILayout.IntSlider("Highlight Node", OctreePathfinder.Instance.Debug_HighlightNodeIndex, -1, OctreePathfinder.Instance.NodeCount - 1);
@@ -182,6 +198,12 @@ class DebugTools : EditorWindow
         m_ShowPickupTest = EditorGUILayout.Foldout(m_ShowPickupTest, "Pickup Test");
         if (m_ShowPickupTest)
         {
+            if (PlayerState.Instance == null)
+            {
+                EditorGUILayout.LabelField("No player state active...");
+                return;
+            }
+
             EditorGUILayout.BeginHorizontal();
             EditorGUI.BeginDisabledGroup(true);
             EditorGUILayout.IntField("Total", PlayerState.Instance.TotalCollectables);

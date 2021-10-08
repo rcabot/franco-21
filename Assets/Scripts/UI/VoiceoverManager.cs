@@ -76,6 +76,7 @@ public class VoiceoverManager : MonoBehaviour
     private List<VOSoundBank>      m_PickupsVO = new List<VOSoundBank>();
 
     public event Action            OnIntroVOComplete;
+    public event Action            OnOutroVOComplete;
 
     private IEnumerator CoPlayBank(VOSoundBank bank, AudioSource audio_source)
     {
@@ -90,6 +91,8 @@ public class VoiceoverManager : MonoBehaviour
             {
                 audio_source.clip = single_clip;
                 audio_source.Play();
+                //Wait for the clip to finish
+                yield return new WaitWhile(() => audio_source.isPlaying && audio_source.clip == single_clip);
             }
             yield break;
         }
@@ -121,7 +124,15 @@ public class VoiceoverManager : MonoBehaviour
             yield return new WaitForSeconds(m_IntroDelay);
 
         yield return StartCoroutine(CoPlayBank(m_IntroVO, m_HandlerAudioSource));
+
+
         OnIntroVOComplete?.Invoke();
+    }
+
+    private IEnumerator CoPlayOutro(VOSoundBank bank, AudioSource audio_source)
+    {
+        yield return StartCoroutine(CoPlayBank(bank, m_HandlerAudioSource));
+        OnOutroVOComplete?.Invoke();
     }
 
     private void UpdateMonsterNear()
@@ -193,16 +204,17 @@ public class VoiceoverManager : MonoBehaviour
 
     private void OnGameStateChanged(PlayerState.State prev, PlayerState.State next)
     {
+        Debug.Log(next);
         if (prev == next)
             return;
 
         switch (next)
         {
             case PlayerState.State.Defeat:
-                StartCoroutine(CoPlayBank(m_GameoverVO, m_HandlerAudioSource));
+                StartCoroutine(CoPlayOutro(m_GameoverVO, m_HandlerAudioSource));
                 break;
             case PlayerState.State.Victory:
-                StartCoroutine(CoPlayBank(m_VictoryVO, m_HandlerAudioSource));
+                StartCoroutine(CoPlayOutro(m_VictoryVO, m_HandlerAudioSource));
                 break;
             case PlayerState.State.ObjectiveComplete:
                 StartCoroutine(CoPlayBank(m_ObjectiveCompleteVO, m_HandlerAudioSource));

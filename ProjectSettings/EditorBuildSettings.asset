@@ -9,6 +9,9 @@ EditorBuildSettings:
     path: 
     guid: 00000000000000000000000000000000
   - enabled: 1
-    path: Assets/Scenes/Test Scenes/PeteTest.unity
-    guid: bd29cc19927af6844b3fb899ca9af80a
+    path: Assets/Scenes/Frontend.unity
+    guid: d53572671be33f441906af635b7fb590
+  - enabled: 1
+    path: Assets/Scenes/Game.unity
+    guid: 189f27762974e904dbe21c4830d09fe5
   m_configObjects: {}
