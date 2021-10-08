@@ -383,6 +383,16 @@ public static class ComponentExtensions
     }
 }
 
+public static class GameobjectExtensions
+{
+    public static T RequireComponent<T>(this GameObject o) where T : Component
+    {
+        T result = o.GetComponent<T>();
+        Debug.Assert(result);
+        return result;
+    }
+}
+
 public static class GeneralExtensions
 {
     public static void Swap<T>(ref this T lhs, ref T rhs) where T : struct

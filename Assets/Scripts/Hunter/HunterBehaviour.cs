@@ -731,7 +731,7 @@ public partial class HunterBehaviour : MonoBehaviour
         PlayerAggro += (passive_decay + light_aggro + height_aggro + speed_aggro + tractor_aggro + scrape_aggro) * delta_time;
     }
 
-    public void OnPlayerPickup()
+    public void OnPlayerPickup(PlayerState player_state)
     {
         PlayerAggro += m_CreatureAggroSettings.PickupCollectedAggro;
     }
@@ -771,6 +771,9 @@ public partial class HunterBehaviour : MonoBehaviour
             m_MeshRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
             m_Animator = GetComponentInChildren<Animator>();
 
+            if (PlayerState.Instance)
+                PlayerState.Instance.OnItemCollected += OnPlayerPickup;
+
             //Initialise the state settings collection
             int num_states = Enum.GetValues(typeof(HunterState)).Length;
             m_AllStateSettings.Resize(num_states);
@@ -800,6 +803,9 @@ public partial class HunterBehaviour : MonoBehaviour
 
     private void OnDestroy()
     {
+        if (PlayerState.Instance)
+            PlayerState.Instance.OnItemCollected -= OnPlayerPickup;
+
         if (Instance == this)
         {
             Instance = null;

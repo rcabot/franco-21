@@ -8,17 +8,26 @@ using UnityEditor;
 
 class DebugTools : EditorWindow
 {
+    [SerializeField]
     bool m_ShowShakeTest = false;
     float m_ShakeTestMagnitude = 0f;
     float m_ShakeTestDuration = 0f;
 
+    [SerializeField]
     bool m_ShowCreatureTest = false;
     Vector3 m_HunterTeleportPosition = Vector3.zero;
 
+    [SerializeField]
     bool m_ShowTerrainTest = false;
     bool m_DrawTerrainBounds = false;
 
+    [SerializeField]
     bool m_ShowOctreePathfidingTest = false;
+
+    [SerializeField]
+    bool m_ShowPickupTest = false;
+    [SerializeField]
+    int m_PickupDestroyAmount = 1;
 
     [MenuItem("Franco Jam/Debug Tools")]
     public static void ShowWindow()
@@ -50,6 +59,7 @@ class DebugTools : EditorWindow
             CreatureUI();
             TerrainUI();
             OctreePathfindingUI();
+            PickupTest();
         }
         else
         {
@@ -164,6 +174,42 @@ class DebugTools : EditorWindow
                 OctreePathfinder.Instance.DebugRegeneratePassableTree();
             }
             EditorGUILayout.EndHorizontal();
+        }
+    }
+
+    private void PickupTest()
+    {
+        m_ShowPickupTest = EditorGUILayout.Foldout(m_ShowPickupTest, "Pickup Test");
+        if (m_ShowPickupTest)
+        {
+            EditorGUILayout.BeginHorizontal();
+            EditorGUI.BeginDisabledGroup(true);
+            EditorGUILayout.IntField("Total", PlayerState.Instance.TotalCollectables);
+            EditorGUILayout.IntField("Remaining", PlayerState.Instance.CalculateLeftToCollect);
+            EditorGUI.EndDisabledGroup();
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.BeginHorizontal();
+            m_PickupDestroyAmount = EditorGUILayout.IntSlider(m_PickupDestroyAmount, 1, PlayerState.Instance?.CalculateLeftToCollect ?? 1);
+            if (GUILayout.Button("Destroy Pickup", EditorStyles.miniButtonRight))
+            {
+                foreach (Collectable o in FindObjectsOfType<Collectable>().Take(m_PickupDestroyAmount))
+                {
+                    Destroy(o.gameObject);
+                }
+                PlayerState.Instance?.CollecedItem();
+            }
+            EditorGUILayout.EndHorizontal();
+
+            if (GUILayout.Button("Destroy All Pickups"))
+            {
+                foreach (Collectable o in FindObjectsOfType<Collectable>())
+                {
+                    Destroy(o.gameObject);
+                }
+
+                PlayerState.Instance?.CollecedItem();
+            }
         }
     }
 }

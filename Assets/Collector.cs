@@ -19,10 +19,9 @@ public class Collector : MonoBehaviour
     }
     void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Collectable"))
+        if (other.GetComponent<Collectable>())
         {
             Destroy(other.gameObject);
-            HunterBehaviour.Instance?.OnPlayerPickup();
             trashCollect.Play();
         }
 

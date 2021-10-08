@@ -263,7 +263,6 @@ MonoBehaviour:
     SingleClip: {fileID: 8300000, guid: 34a8c485f2f032f4e9f2581985f70db6, type: 3}
     Priority: 45
     Mode: 0
-  m_MonsterDetectedOnceOnly: 1
   m_MonsterNearVO:
     SoundBank: {fileID: 0}
     SingleClip: {fileID: 8300000, guid: ab087c3282114f1498faa44068e330eb, type: 3}
@@ -271,6 +270,15 @@ MonoBehaviour:
     Mode: 0
   m_MonsterNearRange: 10
   m_MonsterNearCooldown: 5
+  m_PickupsVO:
+  - SoundBank: {fileID: 0}
+    SingleClip: {fileID: 8300000, guid: 1038809b5bb32814998e49a51b0f4535, type: 3}
+    Priority: 500
+    Mode: 0
+  - SoundBank: {fileID: 0}
+    SingleClip: {fileID: 8300000, guid: cc143160b89888e41a7535e020a00a9f, type: 3}
+    Priority: 500
+    Mode: 0
 --- !u!1 &5470941763397547550
 GameObject:
   m_ObjectHideFlags: 0
@@ -318,8 +326,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 530b52c7054086545ac2e2a8ef116819, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ShakeDuration: 0
-  m_ShakeMagnitude: 0.2
 --- !u!114 &5195924198965675715
 MonoBehaviour:
   m_ObjectHideFlags: 0

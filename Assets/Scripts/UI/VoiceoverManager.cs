@@ -30,10 +30,11 @@ public class VoiceoverManager : MonoBehaviour
     public static VoiceoverManager Instance = default;
     private HunterBehaviour        m_Creature = default;
     private SubmarineController    m_PlayerSub = default;
+    private int                    m_LastPickupThreshold = int.MinValue;
     private int                    m_CurrentBankPriority = int.MinValue;
+    private float                  m_MonsterNearCooldownRemaining = 0f;
     private bool                   m_MonsterDetected = false;
     private bool                   m_MonsterWasNear = false;
-    private float                  m_MonsterNearCooldownRemaining = 0f;
 
 
     [SerializeField, Header("Audio Sources"), Tooltip("Audio source for the handler")]
@@ -61,6 +62,9 @@ public class VoiceoverManager : MonoBehaviour
 
     [SerializeField, Range(1f, 1000f), Tooltip("Time delay before the monster near VO may fire again")]
     private float                  m_MonsterNearCooldown = 5f;
+
+    [SerializeField, Header("Pickups"), Tooltip("Sounds played when the player has collected trash. Index is a divisor. If there are two sounds one will be played at 50% and one at 100%")]
+    private List<VOSoundBank>      m_PickupsVO = new List<VOSoundBank>();
 
     public event Action            OnIntroVOComplete;
 
@@ -154,6 +158,27 @@ public class VoiceoverManager : MonoBehaviour
         }
     }
 
+    private void OnItemCollected(PlayerState player)
+    {
+        int total_thresholds = m_PickupsVO.Count;
+        if (total_thresholds > 0 && total_thresholds > m_LastPickupThreshold)
+        {
+            int per_threshold = player.TotalCollectables / total_thresholds;
+            int collected = player.TotalCollectables - player.CalculateLeftToCollect;
+
+            int threshold = (collected / per_threshold) - 1;
+            if (threshold >= 0 && threshold > m_LastPickupThreshold)
+            {
+                m_LastPickupThreshold = threshold;
+
+                if (m_LastPickupThreshold < total_thresholds)
+                {
+                    StartCoroutine(CoPlayBank(m_PickupsVO[m_LastPickupThreshold], m_EVAAudioSource));
+                }
+            }
+        }
+    }
+
     #endregion
 
     #region Unit Events
@@ -168,10 +193,6 @@ public class VoiceoverManager : MonoBehaviour
             {
                 m_PlayerSub.OnTakeHit += OnPlayerHit;
             }
-
-            m_Creature = HunterBehaviour.Instance;
-            m_Creature.OnStateChanged += OnMonsterChangeState;
-
             StartCoroutine(CoPlayIntro());
         }
         else
@@ -179,6 +200,14 @@ public class VoiceoverManager : MonoBehaviour
             Debug.LogError($"Error: More than one VO manager is present in the scene. Objects: [{this}] and [{Instance}]");
             Destroy(this);
         }
+    }
+
+    private void Start()
+    {
+        m_Creature = HunterBehaviour.Instance;
+        m_Creature.OnStateChanged += OnMonsterChangeState;
+
+        PlayerState.Instance.OnItemCollected += OnItemCollected;
     }
 
     private void FixedUpdate()
@@ -193,6 +222,9 @@ public class VoiceoverManager : MonoBehaviour
 
         if (HunterBehaviour.Instance)
             HunterBehaviour.Instance.OnStateChanged -= OnMonsterChangeState;
+
+        if (PlayerState.Instance)
+            PlayerState.Instance.OnItemCollected -= OnItemCollected;
 
         if (Instance == this)
             Instance = null;

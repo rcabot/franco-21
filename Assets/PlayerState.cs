@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,13 +9,21 @@ public class PlayerState : MonoBehaviour
     private int m_MaxHealth;
     private int m_totalCollectables;
     private VictoryPortal m_victoryPortal;
-    public int Health = 3;
-    public int MaxHealth => m_MaxHealth;
-    private int LeftToCollect => collectablesRegistries.Sum(c => c.SpawnedCollectables.Count(s => s != null));
+    public int  Health = 3;
+    public int  MaxHealth => m_MaxHealth;
+    public int  TotalCollectables => m_totalCollectables;
+    public int  CalculateLeftToCollect => collectablesRegistries.Sum(c => c.SpawnedCollectables.Count);
     public State GameState;
 
     public static PlayerState Instance = null;
     private CollectablesDistributor[] collectablesRegistries;
+
+    public event Action<PlayerState> OnItemCollected;
+
+    public void CollecedItem()
+    {
+        OnItemCollected?.Invoke(this);
+    }
 
     //Unity Events
     private void Awake()
@@ -52,7 +61,7 @@ public class PlayerState : MonoBehaviour
         {
             GameState = State.Defeat;
         }
-        else if (LeftToCollect == 0)
+        else if (CalculateLeftToCollect == 0)
         {
             GameState = State.ObjectiveComplete;
         }

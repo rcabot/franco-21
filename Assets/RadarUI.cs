@@ -34,7 +34,7 @@ public class RadarUI : MonoBehaviour
             CollectablesBlips[i].SetActive(active);
             if (active)
             {
-                PositionBlip(CollectablesBlips[i], collectables[i]);
+                PositionBlip(CollectablesBlips[i], collectables[i].gameObject);
             }
         }
 

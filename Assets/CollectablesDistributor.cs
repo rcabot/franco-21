@@ -10,7 +10,7 @@ public class CollectablesDistributor : MonoBehaviour
     public int TilesToLitter;
     public int AmountToDistribute;
     public WeightedPrefab[] Prefabs;
-    public List<GameObject> SpawnedCollectables;
+    public List<Collectable> SpawnedCollectables;
 
     IEnumerator CoInitialise()
     {
@@ -55,7 +55,9 @@ public class CollectablesDistributor : MonoBehaviour
                 {
                     //Bounds bounds = DistributionArea.bounds;
                     Transform parent = transform;
-                    SpawnedCollectables.Add(SpawnRandomPrefabAtRandomPlaceInBounds(Prefabs, bounds, parent));
+                    Collectable new_collectable = SpawnRandomPrefabAtRandomPlaceInBounds(Prefabs, bounds, parent).RequireComponent<Collectable>();
+                    new_collectable.Distributor = this;
+                    SpawnedCollectables.Add(new_collectable);
                 }
 
                 // Update LUT and increment the counter
