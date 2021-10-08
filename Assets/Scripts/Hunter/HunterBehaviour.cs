@@ -529,9 +529,6 @@ public partial class HunterBehaviour : MonoBehaviour
 
     private IEnumerator Attacking()
     {
-        //Make sure attack gets reset
-        m_Animator.ResetTrigger(c_AttackTriggerID);
-
         //Go frontstage if not already
         if (InLimbo)
         {
@@ -573,9 +570,6 @@ public partial class HunterBehaviour : MonoBehaviour
             }
             else
             {
-                //Reset the attack trigger
-                m_Animator.ResetTrigger(c_AttackTriggerID);
-
                 m_Path.Clear();
                 //Pathfind if we can't see the player. Go straight for them if we can see them or if pathing fails
                 if (Physics.Linecast(player_position, position, OctreePathfinder.Instance.ImpassableLayers))

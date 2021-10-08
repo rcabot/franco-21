@@ -3,11 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(Rigidbody), typeof(Animator), typeof(LightActivator))]
 
 public class SubmarineController : MonoBehaviour
 {
-    private static readonly int crackOverlayAmountID = Shader.PropertyToID("crack_amount");
+    private static readonly int c_CrackOverlayAmountID = Shader.PropertyToID("crack_amount");
+    private static readonly int c_HitAnimTriggerID = Animator.StringToHash("Hit");
+    [SerializeField] private float m_HitDisableTime = 3f;
+    private Animator m_Animator;
     private LightActivator lights;
     private TractorBeamActivator tractor_beam;
     private Material crack_material;
@@ -64,6 +67,9 @@ public class SubmarineController : MonoBehaviour
 
     public bool LightsOn => lights?.LightsEnabled ?? false;
 
+    private bool m_PowerOn = true;
+    public bool PowerOn => m_PowerOn;
+
     public bool TractorBeamOn => tractor_beam?.TractorActive ?? false;
 
     public bool Scraping => scraping;
@@ -72,32 +78,33 @@ public class SubmarineController : MonoBehaviour
 
     private void Awake()
     {
-        lights = GetComponent<LightActivator>();
+        lights = this.RequireComponent<LightActivator>();
+        lights.OnLightsToggled += OnLightsToggled;
+
         tractor_beam = GetComponentInChildren<TractorBeamActivator>();
 
-        crack_material = crackOverlay?.GetComponent<MeshRenderer>()?.material;
-        if (crack_material)
-        {
-            crack_material.SetFloat(crackOverlayAmountID, 0f);
-        }
-    }
+        m_Animator = this.RequireComponent<Animator>();
 
-    void Start()
-    {
-        rigidBody = GetComponent<Rigidbody>();
+        crack_material = crackOverlay?.RequireComponent<MeshRenderer>().material;
+        crack_material.SetFloat(c_CrackOverlayAmountID, 0f);
+
+        rigidBody = this.RequireComponent<Rigidbody>();
         engineSound = transform.Find("ship_engine").GetComponent<AudioSource>();
         underwaterSound = transform.Find("water_ambience").GetComponent<AudioSource>();
         scrapingSound = transform.Find("ship_scrape").GetComponent<AudioSource>();
         cabinAmbience = transform.Find("ship_ambience").GetComponent<AudioSource>();
-        shipAudioSource = GetComponent<AudioSource>();
+        shipAudioSource = this.RequireComponent<AudioSource>();
+    }
+
+    void Start()
+    {
         // Lock cursor
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         currentGear = MovementGear.SLOW;
         acceleration = gearSpeeds[(int)currentGear];
-        wasLightsOn = true;
     }
-    bool wasLightsOn = true;
+
     void Update()
     {
         if( scraping)
@@ -124,25 +131,6 @@ public class SubmarineController : MonoBehaviour
             cabinAmbience.Stop();
         }
 
-        if( LightsOn == false )
-        {
-            if (wasLightsOn == true)
-            {
-                shipAudioSource.PlayOneShot(powerDownAudio);
-                SetCurrentGear(MovementGear.STOP);
-            }
-        }
-        else
-        {
-            if (wasLightsOn == false)
-            {
-                shipAudioSource.PlayOneShot(powerUpAudio);
-                SetCurrentGear(MovementGear.SLOW);
-            }
-        }
-
-        wasLightsOn = LightsOn;
-
         UpdateLookDirection();
         if( Input.GetButtonDown("toggle_gear") && LightsOn)
         {
@@ -160,10 +148,9 @@ public class SubmarineController : MonoBehaviour
         hasCollidedThisFrame = false;
     }
 
-
     void ToggleCurrentGear()
     {
-        SetCurrentGear( (MovementGear)(((int)currentGear + 1) % num_gears) );        
+        SetCurrentGear( (MovementGear)(((int)currentGear + 1) % num_gears) );
     }
 
     void SetCurrentGear( MovementGear gear )
@@ -230,7 +217,6 @@ public class SubmarineController : MonoBehaviour
         }
         playerCamera.transform.rotation = Quaternion.Euler(targetLookRotation.x, targetLookRotation.y, 0);
         submarineCockpit.localRotation = Quaternion.Euler(currentLookRotation.x, currentLookRotation.y, 0);
-        //transform.rotation *= Quaternion.Euler(0, currentLookSpeed.y, 0);
     }
 
     public void AddImpulse(Vector3 force)
@@ -240,25 +226,52 @@ public class SubmarineController : MonoBehaviour
 
     public void TakeHit()
     {
+        lights.Locked = true;
+        m_PowerOn = false;
         WorldShakeManager.Instance.Shake(1.0f, 1.0f);
         PlayerState player_state = PlayerState.Instance;
         --player_state.Health;
         shipAudioSource.clip = damageBonk;
         shipAudioSource.Play();
-        lights.ToggleLights(false);
-        if (currentGear != MovementGear.STOP)
-        {
-            currentGear = MovementGear.STOP;
-            OnGearChanged?.Invoke(this, currentGear);
-        }
+        SetCurrentGear(MovementGear.STOP);
+        m_Animator.SetTrigger(c_HitAnimTriggerID);
 
         if (crack_material)
         {
-            crack_material.SetFloat(crackOverlayAmountID, 1.0f - Mathf.Max(1, player_state.Health) / (float)player_state.MaxHealth);
+            crack_material.SetFloat(c_CrackOverlayAmountID, 1.0f - Mathf.Max(1, player_state.Health) / (float)player_state.MaxHealth);
         }
 
         Debug.Log("Player Hit");
     }
+
+    private void OnLightsToggled(bool toggle)
+    {
+        if (PowerOn && toggle)
+        {
+            shipAudioSource.PlayOneShot(powerUpAudio);
+            SetCurrentGear(MovementGear.SLOW);
+        }
+        else
+        {
+            shipAudioSource.PlayOneShot(powerDownAudio);
+            SetCurrentGear(MovementGear.STOP);
+        }
+    }
+
+    private void OnHitAnimationCompleted()
+    {
+        lights.ToggleLights(false);
+        StartCoroutine(WaitForPowerOn());
+    }
+
+    IEnumerator WaitForPowerOn()
+    {
+        yield return new WaitForSeconds(m_HitDisableTime);
+        m_PowerOn = true;
+        lights.Locked = false;
+        lights.ToggleLights(true);
+    }
+
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -289,5 +302,10 @@ public class SubmarineController : MonoBehaviour
     private void OnCollisionExit(Collision collision)
     {
         scraping = false;
+    }
+
+    private void OnDestroy()
+    {
+        lights.OnLightsToggled -= OnLightsToggled;
     }
 }

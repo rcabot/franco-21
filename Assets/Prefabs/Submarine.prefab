@@ -120,6 +120,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 7576024100105493024}
   - {fileID: 7952300513222641857}
   - {fileID: 1623479760}
   m_Father: {fileID: 7626430705779275366}
@@ -5535,7 +5536,7 @@ Transform:
   m_Children:
   - {fileID: 1922901010}
   m_Father: {fileID: 215297124}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &824590335117160248
 MonoBehaviour:
@@ -6730,8 +6731,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 2.006}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 7626430706555402597}
-  m_RootOrder: 2
+  m_Father: {fileID: 215297124}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!108 &3931523732993093990
 Light:
@@ -10321,6 +10322,7 @@ GameObject:
   - component: {fileID: 3487051285311501461}
   - component: {fileID: 8359136923854504685}
   - component: {fileID: 1182551147}
+  - component: {fileID: 4628583269794377052}
   m_Layer: 8
   m_Name: Submarine
   m_TagString: Player
@@ -10574,6 +10576,25 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 3f738622d5d773e40bc45de1f50ecf53, type: 2}
   - {fileID: 2100000, guid: 567cd93c36b319a4ca53bcbe286afc6e, type: 2}
   - {fileID: 2100000, guid: 850c44532cc2a684eb4044a5ca20387e, type: 2}
+--- !u!95 &4628583269794377052
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7626430705779275364}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 11f5073da71d5874c87b60afd0d51af6, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &7626430706555402592
 GameObject:
   m_ObjectHideFlags: 0
@@ -10606,7 +10627,6 @@ Transform:
   m_Children:
   - {fileID: 4386714788836377718}
   - {fileID: 587862632}
-  - {fileID: 7576024100105493024}
   m_Father: {fileID: 7626430705779275366}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -11624,7 +11644,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 583b7bfc9d4cd8c46995d282ce3995ae, type: 3}
       propertyPath: m_RootOrder
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 583b7bfc9d4cd8c46995d282ce3995ae, type: 3}
       propertyPath: m_LocalScale.x
