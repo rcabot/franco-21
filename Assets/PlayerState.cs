@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class PlayerState : MonoBehaviour
 {
@@ -51,14 +50,6 @@ public class PlayerState : MonoBehaviour
             m_totalCollectables += distributor.AmountToDistribute * distributor.TilesToLitter;
         }
         m_victoryPortal = FindObjectOfType<VictoryPortal>(true);
-
-        VoiceoverManager.Instance.OnOutroVOComplete += OnOutroVOComplete;
-    }
-
-    private void OnOutroVOComplete()
-    {
-        //Return to the frontend
-        SceneManager.LoadScene(0);
     }
 
     private void Update()
