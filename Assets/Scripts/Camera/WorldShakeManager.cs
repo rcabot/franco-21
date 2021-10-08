@@ -7,8 +7,8 @@ public class WorldShakeManager : MonoBehaviour
     public static WorldShakeManager Instance = null;
     private static List<ShakeableObject> m_Shakeables = new List<ShakeableObject>();
 
-    [SerializeField] private float m_ShakeDuration = 0f;
-    [SerializeField] private float m_ShakeMagnitude = 0.2f;
+    private float m_ShakeDuration = 0f;
+    private float m_ShakeMagnitude = 0f;
 
     //Unity Events
     private void Awake()
@@ -35,14 +35,6 @@ public class WorldShakeManager : MonoBehaviour
 
     private void LateUpdate()
     {
-#if UNITY_EDITOR
-        if (Input.GetKeyDown(KeyCode.F1))
-        {
-            m_ShakeDuration = 3f;
-            m_ShakeMagnitude = .2f;
-        }
-#endif
-
         if (m_ShakeDuration > 0f)
         {
             m_ShakeDuration -= Time.deltaTime;

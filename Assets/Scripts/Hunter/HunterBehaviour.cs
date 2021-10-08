@@ -58,8 +58,8 @@ public partial class HunterBehaviour : MonoBehaviour
     List<HunterStateSettings>                    m_AllStateSettings = new List<HunterStateSettings>();
 
     //Events
-    public event EventHandler<float>                                          OnAggroChanged;
-    public event EventHandler<KeyValuePair<HunterState, HunterStateSettings>> OnStateChanged;
+    public event Action<float>                    OnAggroChanged;
+    public event Action<HunterState, HunterState> OnStateChanged;
 
     //Properties
     public static HunterBehaviour Instance { get; private set; }
@@ -98,7 +98,7 @@ public partial class HunterBehaviour : MonoBehaviour
 
     private void EvaluateAggroStateChange()
     {
-        OnAggroChanged?.Invoke(this, m_PlayerAggro);
+        OnAggroChanged?.Invoke(m_PlayerAggro);
 
         //If the creature is attacking or retreating then aggro changes are ignored
         switch (CurrentState)
@@ -127,6 +127,7 @@ public partial class HunterBehaviour : MonoBehaviour
     {
         LogHunterMessage($"[Hunter] Entering State:  {state}");
 
+        HunterState prev_state = m_CurrentState;
         m_CurrentState = state;
         m_CurrentStateSettings = m_AllStateSettings[(int)state];
         StartStateBehaviour();
@@ -138,7 +139,7 @@ public partial class HunterBehaviour : MonoBehaviour
         //Setup the period effects
         m_TimeUntilPeriodEffect = m_CurrentStateSettings.PeriodTimeRange.RandomValue;
 
-        OnStateChanged?.Invoke(this, new KeyValuePair<HunterState, HunterStateSettings>(m_CurrentState, m_CurrentStateSettings));
+        OnStateChanged?.Invoke(prev_state, m_CurrentState);
     }
 
     private void UpdatePeriodicEffects()
@@ -146,22 +147,22 @@ public partial class HunterBehaviour : MonoBehaviour
         if (m_TimeUntilPeriodEffect > 0f)
         {
             m_TimeUntilPeriodEffect -= Time.deltaTime;
+        }
 
-            if (m_TimeUntilPeriodEffect <= 0f)
+        if (m_TimeUntilPeriodEffect <= 0f)
+        {
+            if (m_CurrentStateSettings != null)
             {
-                if (m_CurrentStateSettings != null)
-                {
-                    m_TimeUntilPeriodEffect = m_CurrentStateSettings.PeriodTimeRange.RandomValue;
+                m_TimeUntilPeriodEffect = m_CurrentStateSettings.PeriodTimeRange.RandomValue;
 
-                    PlayPeriodicSound();
-                    ApplyScreenShake(m_CurrentStateSettings.PeriodicScreenShakeMagnitude, m_CurrentStateSettings.PeriodicScreenShakeDuration);
+                PlayPeriodicSound();
+                ApplyScreenShake(m_CurrentStateSettings.PeriodicScreenShakeMagnitude, m_CurrentStateSettings.PeriodicScreenShakeDuration);
 
-                    LogHunterMessage($"[Hunter] Periodic Effects Triggered. Time Until Next: {m_TimeUntilPeriodEffect: #.##} seconds");
-                }
-                else
-                {
-                    m_TimeUntilPeriodEffect = 0f;
-                }
+                LogHunterMessage($"[Hunter] Periodic Effects Triggered. Time Until Next: {m_TimeUntilPeriodEffect: #.##} seconds");
+            }
+            else
+            {
+                m_TimeUntilPeriodEffect = 0f;
             }
         }
     }
