@@ -36,6 +36,11 @@ public struct RangeFloat
             : sqr_val <= start && sqr_val >= sqr_end;
     }
     
+    public float SampleNormalised(float normal)
+    {
+        return start + length * normal;
+    }
+
     public float Clamp(float val)
     {
         return length > 0 ?

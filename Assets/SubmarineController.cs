@@ -65,6 +65,18 @@ public class SubmarineController : MonoBehaviour
     int num_gears = Enum.GetNames(typeof(MovementGear)).Length;
     public float[] gearSpeeds = { 0, 2, 5, 10 };
 
+    [SerializeField, Header("Sonar")]
+    AudioSource sonarPingSound;
+
+    [SerializeField, RangeBeginEnd(0f, 1f)]
+    RangeFloat sonarPingVolumeRange = new RangeFloat(0f, 0.25f);
+
+    [SerializeField, RangeBeginEnd(0f, 3f)]
+    RangeFloat sonarPingPitchRange = new RangeFloat(1f, 1.5f);
+
+    [SerializeField, Range(0f, 1000f)]
+    float sonarCreatureMaxDistance = 150f;
+
     public bool LightsOn => lights?.LightsEnabled ?? false;
 
     private bool m_PowerOn = true;
@@ -125,10 +137,12 @@ public class SubmarineController : MonoBehaviour
         {
             engineSound.Play();
             cabinAmbience.Play();
+            sonarPingSound.Play();
         }
         else if( LightsOn == false )
         {
             engineSound.Stop();
+            sonarPingSound.Stop();
             cabinAmbience.Stop();
         }
 
@@ -137,15 +151,19 @@ public class SubmarineController : MonoBehaviour
         {
             ToggleCurrentGear();
         }
+
+#if UNITY_EDITOR
         if (Input.GetKeyDown(KeyCode.F2))
         {
             TakeHit();
         }
+#endif
     }
 
     private void FixedUpdate()
     {
         UpdateMovement();
+        UpdateSonar();
         hasCollidedThisFrame = false;
     }
 
@@ -220,6 +238,28 @@ public class SubmarineController : MonoBehaviour
         submarineCockpit.localRotation = Quaternion.Euler(currentLookRotation.x, currentLookRotation.y, 0);
     }
 
+    private void UpdateSonar()
+    {
+        HunterBehaviour creature = HunterBehaviour.Instance;
+        if (creature == null || sonarPingSound == null)
+            return;
+
+        Vector3 to_creature = creature.transform.position - transform.position;
+        float sqr_distance = to_creature.sqrMagnitude;
+        if (sqr_distance < (sonarCreatureMaxDistance * sonarCreatureMaxDistance))
+        {
+            float actual_distance = Mathf.Sqrt(sqr_distance);
+            float normalised_distance = 1.0f - actual_distance / sonarCreatureMaxDistance;
+            sonarPingSound.pitch = sonarPingPitchRange.SampleNormalised(normalised_distance);
+            sonarPingSound.volume = sonarPingVolumeRange.SampleNormalised(normalised_distance);
+        }
+        else
+        {
+            sonarPingSound.pitch = sonarPingPitchRange.start;
+            sonarPingSound.volume = sonarPingVolumeRange.start;
+        }
+    }
+
     public void AddImpulse(Vector3 force)
     {
         currentSpeed += force;
@@ -269,9 +309,10 @@ public class SubmarineController : MonoBehaviour
 
     IEnumerator WaitForPowerOn()
     {
+        yield return new WaitForSeconds(m_HitDisableTime);
+
         if (PlayerState.Instance.Health > 0)
         {
-            yield return new WaitForSeconds(m_HitDisableTime);
             m_PowerOn = true;
             lights.Locked = false;
             lights.ToggleLights(true);
