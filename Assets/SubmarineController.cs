@@ -7,11 +7,14 @@ using UnityEngine;
 
 public class SubmarineController : MonoBehaviour
 {
+    private static readonly int crackOverlayAmountID = Shader.PropertyToID("crack_amount");
     private LightActivator lights;
     private TractorBeamActivator tractor_beam;
+    private Material crack_material;
     float acceleration = 7.5f;
     public Camera playerCamera;
     public Transform submarineCockpit;
+    public Transform crackOverlay;
     public float baseLookSpeed = 2.0f;
     public float maxLookSpeed = 2.0f;
     public float lookXLimit = 45.0f;
@@ -71,6 +74,12 @@ public class SubmarineController : MonoBehaviour
     {
         lights = GetComponent<LightActivator>();
         tractor_beam = GetComponentInChildren<TractorBeamActivator>();
+
+        crack_material = crackOverlay?.GetComponent<MeshRenderer>()?.material;
+        if (crack_material)
+        {
+            crack_material.SetFloat(crackOverlayAmountID, 0f);
+        }
     }
 
     void Start()
@@ -232,7 +241,8 @@ public class SubmarineController : MonoBehaviour
     public void TakeHit()
     {
         WorldShakeManager.Instance.Shake(1.0f, 1.0f);
-        --PlayerState.Instance.Health;
+        PlayerState player_state = PlayerState.Instance;
+        --player_state.Health;
         shipAudioSource.clip = damageBonk;
         shipAudioSource.Play();
         lights.ToggleLights(false);
@@ -240,6 +250,11 @@ public class SubmarineController : MonoBehaviour
         {
             currentGear = MovementGear.STOP;
             OnGearChanged?.Invoke(this, currentGear);
+        }
+
+        if (crack_material)
+        {
+            crack_material.SetFloat(crackOverlayAmountID, 1.0f - Mathf.Max(1, player_state.Health) / (float)player_state.MaxHealth);
         }
 
         Debug.Log("Player Hit");

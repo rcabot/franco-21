@@ -28,7 +28,7 @@ public class RadarUI : MonoBehaviour
     void FixedUpdate()
     {
         var collectables = CollectablesRegistry.SpawnedCollectables.Where(s => s != null).OrderBy(s => Vector3.Distance(s.transform.position, CentreWaypoint.position)).ToArray();
-        for (int i = 0; i < CollectablesBlips.Length; i++)
+        for (int i = 0; i < CollectablesBlips.Length; ++i)
         {
             bool active = i < collectables.Length;
             CollectablesBlips[i].SetActive(active);
@@ -55,7 +55,7 @@ public class RadarUI : MonoBehaviour
 
     private void PositionBlip(GameObject blip, GameObject inWorldObject)
     {
-        var radarRadius = Background.rect.width / 2f;
+        var radarRadius = Background.rect.width * 0.5f;
         var displacement = inWorldObject.transform.position - CentreWaypoint.position;
         var direction = displacement.normalized;
         var distanceFromRadarCentre = Mathf.InverseLerp(0, RadarDistance, displacement.magnitude);

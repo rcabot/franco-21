@@ -5,9 +5,11 @@ using System.Linq;
 
 public class PlayerState : MonoBehaviour
 {
+    private int m_MaxHealth;
     private int m_totalCollectables;
     private VictoryPortal m_victoryPortal;
     public int Health = 3;
+    public int MaxHealth => m_MaxHealth;
     private int LeftToCollect => collectablesRegistries.Sum(c => c.SpawnedCollectables.Count(s => s != null));
     public State GameState;
 
@@ -20,6 +22,7 @@ public class PlayerState : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
+            m_MaxHealth = Health;
         }
         else
         {
