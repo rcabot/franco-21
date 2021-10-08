@@ -17,6 +17,11 @@ public class Speedo : MonoBehaviour
         m_PlayerSub.OnGearChanged += OnGearChanged;
     }
 
+    private void Start()
+    {
+        m_Image.sprite = SpeedoStates[Mathf.Min(SpeedoStates.Length - 1, (int)m_PlayerSub.currentGear)];
+    }
+
     private void OnDestroy()
     {
         m_PlayerSub.OnGearChanged -= OnGearChanged;

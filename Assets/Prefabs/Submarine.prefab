@@ -5678,6 +5678,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_tractorBeam: {fileID: 1922901009}
+  m_tractorAction: {fileID: -3134085723255756489, guid: ce01ce83fb360f84584616367885a8cb, type: 3}
 --- !u!82 &4614401553254164618
 AudioSource:
   m_ObjectHideFlags: 0
@@ -10567,6 +10568,10 @@ MonoBehaviour:
     start: 1
     length: 1.5
   sonarCreatureMaxDistance: 80
+  moveAction: {fileID: 4302198742777711495, guid: ce01ce83fb360f84584616367885a8cb, type: 3}
+  lookAction: {fileID: -4344615326965595263, guid: ce01ce83fb360f84584616367885a8cb, type: 3}
+  gearShiftUpAction: {fileID: -3329534392512987092, guid: ce01ce83fb360f84584616367885a8cb, type: 3}
+  gearShiftDownAction: {fileID: -782810604098343409, guid: ce01ce83fb360f84584616367885a8cb, type: 3}
 --- !u!135 &1880942715
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -10704,7 +10709,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c19c621ae9c84646a0840542eed1e6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ButtonName: Fire2
+  m_ButtonAction: {fileID: 9114365404769519781, guid: ce01ce83fb360f84584616367885a8cb, type: 3}
   m_Lights:
   - {fileID: 3931523732993093990}
   - {fileID: 587862633}

@@ -2,12 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class LightActivator : MonoBehaviour
 {
     private readonly int emissive_pulse_id = Shader.PropertyToID("use_emissive_pulse");
     private bool m_LightsEnabled = true;
-    public string m_ButtonName = "Fire2";
+    public InputActionReference m_ButtonAction;
     public Light[] m_Lights;
     public Material[] pulsePropMaterials;
 
@@ -32,18 +33,9 @@ public class LightActivator : MonoBehaviour
         OnLightsToggled?.Invoke(toggle);
     }
 
-    private void Start()
+    private void OnLightTogglePressed(InputAction.CallbackContext obj)
     {
-        foreach (Light l in m_Lights)
-        {
-            l.enabled = m_LightsEnabled;
-        }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if (!Locked && Input.GetButtonDown(m_ButtonName))
+        if (!Locked)
         {
             if (m_Lights.Length >= 0)
             {
@@ -51,4 +43,20 @@ public class LightActivator : MonoBehaviour
             }
         }
     }
+
+    private void Start()
+    {
+        foreach (Light l in m_Lights)
+        {
+            l.enabled = m_LightsEnabled;
+        }
+
+        m_ButtonAction.action.performed += OnLightTogglePressed;
+    }
+
+    private void OnDestroy()
+    {
+        m_ButtonAction.action.performed -= OnLightTogglePressed;
+    }
+
 }

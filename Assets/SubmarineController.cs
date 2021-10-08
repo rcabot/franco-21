@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Rigidbody), typeof(Animator), typeof(LightActivator))]
 
@@ -48,7 +49,6 @@ public class SubmarineController : MonoBehaviour
     public AudioClip bigBonk;
     public AudioClip damageBonk;
 
-
     public float collisionElasticity = 0.5f;
     public float collisionHardThreshold = 12.0f;
     private bool hasCollidedThisFrame = false;
@@ -66,7 +66,7 @@ public class SubmarineController : MonoBehaviour
     public float[] gearSpeeds = { 0, 2, 5, 10 };
 
     [SerializeField, Header("Sonar")]
-    AudioSource sonarPingSound;
+    AudioSource sonarPingSound = default;
 
     [SerializeField, RangeBeginEnd(0f, 1f)]
     RangeFloat sonarPingVolumeRange = new RangeFloat(0f, 0.25f);
@@ -76,6 +76,12 @@ public class SubmarineController : MonoBehaviour
 
     [SerializeField, Range(0f, 1000f)]
     float sonarCreatureMaxDistance = 150f;
+
+    [Header("Input")]
+    [SerializeField] private InputActionReference moveAction;
+    [SerializeField] private InputActionReference lookAction;
+    [SerializeField] private InputActionReference gearShiftUpAction;
+    [SerializeField] private InputActionReference gearShiftDownAction;
 
     public bool LightsOn => lights?.LightsEnabled ?? false;
 
@@ -116,6 +122,9 @@ public class SubmarineController : MonoBehaviour
         Cursor.visible = false;
         currentGear = MovementGear.SLOW;
         acceleration = gearSpeeds[(int)currentGear];
+
+        gearShiftUpAction.action.performed += OnGearShiftUpPressed;
+        gearShiftDownAction.action.performed += OnGearShiftDownPressed;
     }
 
     void Update()
@@ -147,17 +156,6 @@ public class SubmarineController : MonoBehaviour
         }
 
         UpdateLookDirection();
-        if( Input.GetButtonDown("toggle_gear") && LightsOn)
-        {
-            ToggleCurrentGear();
-        }
-
-#if UNITY_EDITOR
-        if (Input.GetKeyDown(KeyCode.F2))
-        {
-            TakeHit();
-        }
-#endif
     }
 
     private void FixedUpdate()
@@ -165,11 +163,6 @@ public class SubmarineController : MonoBehaviour
         UpdateMovement();
         UpdateSonar();
         hasCollidedThisFrame = false;
-    }
-
-    void ToggleCurrentGear()
-    {
-        SetCurrentGear( (MovementGear)(((int)currentGear + 1) % num_gears) );
     }
 
     void SetCurrentGear( MovementGear gear )
@@ -188,8 +181,9 @@ public class SubmarineController : MonoBehaviour
         Vector3 forward = submarineCockpit.transform.forward;
         Vector3 right = submarineCockpit.transform.right;
 
-        Vector3 strafe_acceleration = LightsOn ? right * Mathf.Clamp(Input.GetAxis("Horizontal"), -1f, 1f) * strafeFactor : Vector3.zero;
-        Vector3 forward_acceleration = LightsOn ? forward * Mathf.Clamp(Input.GetAxis("Vertical"), -1f, 1f) : Vector3.zero;
+        Vector2 move_input = LightsOn ? moveAction.action.ReadValue<Vector2>() : Vector2.zero;
+        Vector3 strafe_acceleration = right * move_input.x * strafeFactor;
+        Vector3 forward_acceleration = forward * move_input.y;
 
         Vector3 input_acceleration = ((strafe_acceleration + forward_acceleration).normalized * acceleration) * Time.fixedDeltaTime;
 
@@ -225,9 +219,11 @@ public class SubmarineController : MonoBehaviour
     private void UpdateLookDirection()
     {
         // Player and Camera rotation
-        targetLookRotation.x += -Input.GetAxis("Mouse Y") * baseLookSpeed;
+        Vector2 look_input = lookAction.action.ReadValue<Vector2>();
+
+        targetLookRotation.x += -look_input.y * baseLookSpeed;
         targetLookRotation.x = Mathf.Clamp(targetLookRotation.x, -lookXLimit, lookXLimit);
-        targetLookRotation.y += Input.GetAxis("Mouse X") * baseLookSpeed;
+        targetLookRotation.y += look_input.x * baseLookSpeed;
         var prevLook = targetLookRotation - currentLookRotation;
         currentLookRotation = Vector2.SmoothDamp(currentLookRotation, targetLookRotation, ref currentLookVelocity, lookSmoothTime,maxLookSpeed);
         if (enableGradualRotation)
@@ -319,7 +315,6 @@ public class SubmarineController : MonoBehaviour
         }
     }
 
-
     private void OnCollisionEnter(Collision collision)
     {
         scraping = true;
@@ -354,5 +349,23 @@ public class SubmarineController : MonoBehaviour
     private void OnDestroy()
     {
         lights.OnLightsToggled -= OnLightsToggled;
+        gearShiftUpAction.action.performed -= OnGearShiftUpPressed;
+        gearShiftDownAction.action.performed -= OnGearShiftDownPressed;
     }
+
+    #region Input Listeners
+
+    private void OnGearShiftDownPressed(InputAction.CallbackContext obj)
+    {
+        if (m_PowerOn && LightsOn)
+            SetCurrentGear((MovementGear)Mathf.Clamp((int)currentGear - 1, 0, num_gears - 1));
+    }
+
+    private void OnGearShiftUpPressed(InputAction.CallbackContext obj)
+    {
+        if (m_PowerOn && LightsOn)
+            SetCurrentGear((MovementGear)Mathf.Clamp((int)currentGear + 1, 0, num_gears - 1));
+    }
+
+    #endregion
 }
