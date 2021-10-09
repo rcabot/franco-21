@@ -1,5 +1,5 @@
 {
-    "name": "PlayerInput",
+    "name": "SubmarineControlMappings",
     "maps": [
         {
             "name": "Base",
@@ -49,6 +49,14 @@
                     "name": "Tractor",
                     "type": "Button",
                     "id": "4a916176-2bca-4d49-bcba-842be1f5d907",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Quit",
+                    "type": "Button",
+                    "id": "a5e80e4b-534b-46f9-bdf8-44ff5858ad75",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
@@ -297,7 +305,7 @@
                 {
                     "name": "",
                     "id": "beed35f2-79cc-4c12-80d6-78a290a6017b",
-                    "path": "<Keyboard>/anyKey",
+                    "path": "<Keyboard>/space",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -335,6 +343,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "GameStart",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "bb442475-c00e-4537-9ba4-af71229ee19b",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Quit",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -67,6 +67,14 @@ public class @SubmarineControlMappings : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
+                    ""name"": ""Quit"",
+                    ""type"": ""Button"",
+                    ""id"": ""a5e80e4b-534b-46f9-bdf8-44ff5858ad75"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
                     ""name"": ""GameStart"",
                     ""type"": ""Button"",
                     ""id"": ""33148024-d4da-4d80-a1be-ef4853086b82"",
@@ -310,7 +318,7 @@ public class @SubmarineControlMappings : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""beed35f2-79cc-4c12-80d6-78a290a6017b"",
-                    ""path"": ""<Keyboard>/anyKey"",
+                    ""path"": ""<Keyboard>/space"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -350,6 +358,17 @@ public class @SubmarineControlMappings : IInputActionCollection, IDisposable
                     ""action"": ""GameStart"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""bb442475-c00e-4537-9ba4-af71229ee19b"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Quit"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -364,6 +383,7 @@ public class @SubmarineControlMappings : IInputActionCollection, IDisposable
         m_Base_GearUp = m_Base.FindAction("GearUp", throwIfNotFound: true);
         m_Base_GearDown = m_Base.FindAction("GearDown", throwIfNotFound: true);
         m_Base_Tractor = m_Base.FindAction("Tractor", throwIfNotFound: true);
+        m_Base_Quit = m_Base.FindAction("Quit", throwIfNotFound: true);
         m_Base_GameStart = m_Base.FindAction("GameStart", throwIfNotFound: true);
     }
 
@@ -420,6 +440,7 @@ public class @SubmarineControlMappings : IInputActionCollection, IDisposable
     private readonly InputAction m_Base_GearUp;
     private readonly InputAction m_Base_GearDown;
     private readonly InputAction m_Base_Tractor;
+    private readonly InputAction m_Base_Quit;
     private readonly InputAction m_Base_GameStart;
     public struct BaseActions
     {
@@ -431,6 +452,7 @@ public class @SubmarineControlMappings : IInputActionCollection, IDisposable
         public InputAction @GearUp => m_Wrapper.m_Base_GearUp;
         public InputAction @GearDown => m_Wrapper.m_Base_GearDown;
         public InputAction @Tractor => m_Wrapper.m_Base_Tractor;
+        public InputAction @Quit => m_Wrapper.m_Base_Quit;
         public InputAction @GameStart => m_Wrapper.m_Base_GameStart;
         public InputActionMap Get() { return m_Wrapper.m_Base; }
         public void Enable() { Get().Enable(); }
@@ -459,6 +481,9 @@ public class @SubmarineControlMappings : IInputActionCollection, IDisposable
                 @Tractor.started -= m_Wrapper.m_BaseActionsCallbackInterface.OnTractor;
                 @Tractor.performed -= m_Wrapper.m_BaseActionsCallbackInterface.OnTractor;
                 @Tractor.canceled -= m_Wrapper.m_BaseActionsCallbackInterface.OnTractor;
+                @Quit.started -= m_Wrapper.m_BaseActionsCallbackInterface.OnQuit;
+                @Quit.performed -= m_Wrapper.m_BaseActionsCallbackInterface.OnQuit;
+                @Quit.canceled -= m_Wrapper.m_BaseActionsCallbackInterface.OnQuit;
                 @GameStart.started -= m_Wrapper.m_BaseActionsCallbackInterface.OnGameStart;
                 @GameStart.performed -= m_Wrapper.m_BaseActionsCallbackInterface.OnGameStart;
                 @GameStart.canceled -= m_Wrapper.m_BaseActionsCallbackInterface.OnGameStart;
@@ -484,6 +509,9 @@ public class @SubmarineControlMappings : IInputActionCollection, IDisposable
                 @Tractor.started += instance.OnTractor;
                 @Tractor.performed += instance.OnTractor;
                 @Tractor.canceled += instance.OnTractor;
+                @Quit.started += instance.OnQuit;
+                @Quit.performed += instance.OnQuit;
+                @Quit.canceled += instance.OnQuit;
                 @GameStart.started += instance.OnGameStart;
                 @GameStart.performed += instance.OnGameStart;
                 @GameStart.canceled += instance.OnGameStart;
@@ -499,6 +527,7 @@ public class @SubmarineControlMappings : IInputActionCollection, IDisposable
         void OnGearUp(InputAction.CallbackContext context);
         void OnGearDown(InputAction.CallbackContext context);
         void OnTractor(InputAction.CallbackContext context);
+        void OnQuit(InputAction.CallbackContext context);
         void OnGameStart(InputAction.CallbackContext context);
     }
 }

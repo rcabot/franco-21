@@ -13,6 +13,13 @@ public class ContinueText : MonoBehaviour
     string                 m_BaseContent;
     StringBuilder          m_StringBuilder = new StringBuilder();
 
+    public void SetText(string text)
+    {
+        m_BaseContent = text;
+        m_Text.text = text;
+        m_EllipsesProgress = 0f;
+    }
+
     private void Awake()
     {
         m_Text = this.RequireComponent<Text>();

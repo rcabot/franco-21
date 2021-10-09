@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 public class ObjectiveScreensActivator : MonoBehaviour
 {
     [SerializeField] private InputActionReference PressStartAction;
+    [SerializeField] private InputActionReference QuitAction;
     public GameObject VictoryScreen;
     public GameObject DefeatScreen;
 
@@ -14,11 +15,13 @@ public class ObjectiveScreensActivator : MonoBehaviour
     private void Start()
     {
         PlayerState.Instance.OnGameStateChanged += OnGameStateChanged;
+        QuitAction.action.performed += OnQuitPressed;
     }
 
     private void OnDestroy()
     {
         PressStartAction.action.performed -= OnStartPressed;
+        QuitAction.action.performed -= OnQuitPressed;
     }
 
     private void OnGameStateChanged(PlayerState.State prev, PlayerState.State next)
@@ -38,6 +41,12 @@ public class ObjectiveScreensActivator : MonoBehaviour
     }
 
     private void OnStartPressed(InputAction.CallbackContext obj)
+    {
+        //Return to the frontend
+        SceneManager.LoadScene(0);
+    }
+
+    private void OnQuitPressed(InputAction.CallbackContext obj)
     {
         //Return to the frontend
         SceneManager.LoadScene(0);

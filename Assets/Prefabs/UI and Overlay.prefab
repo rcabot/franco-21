@@ -250,7 +250,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &5705479142762491345
 RectTransform:
   m_ObjectHideFlags: 0
@@ -392,7 +392,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &8757668969359114925
 RectTransform:
   m_ObjectHideFlags: 0
@@ -672,6 +672,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PressStartAction: {fileID: -7654981926334600474, guid: ce01ce83fb360f84584616367885a8cb, type: 3}
+  QuitAction: {fileID: -5791987808830191675, guid: ce01ce83fb360f84584616367885a8cb, type: 3}
   VictoryScreen: {fileID: 4309536657436052490}
   DefeatScreen: {fileID: 9054233525752200101}
 --- !u!114 &4188869456643751155
