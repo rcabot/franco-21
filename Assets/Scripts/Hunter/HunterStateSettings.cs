@@ -32,6 +32,12 @@ public class HunterStateSettings
     [SerializeField, Tooltip("Speed of acceleration the creature has in this state")]
     private float                                  m_Acceleration = 10f;
 
+    [SerializeField, Tooltip("Minimum distance to the player for passive aggro to apply")]
+    private float                                  m_MinRangeAggroProximity = 0f;
+
+    [SerializeField, Tooltip("Aggro applied (per-second) when the player is within minimum range")]
+    private float                                  m_MinRangeAggro = 0f;
+
     [Header("Start Effects")]
     [SerializeField] private SoundBank             m_StartSounds = null;
     [Range(0f, 1f), SerializeField] private float  m_StartVolumeScale = 1f;
@@ -52,6 +58,8 @@ public class HunterStateSettings
     public RangeFloat        PlayerDistanceRange          => m_PlayerDistanceRange;
     public RangeFloat        PlayerHeightOffset           => m_PlayerHeightOffset;
     public float             Acceleration                 => m_Acceleration;
+    public float             MinRangeAggroProximity       => m_MinRangeAggroProximity;
+    public float             MinRangeAggro                => m_MinRangeAggro;
 
     public SoundBank         StateStartSounds             => m_StartSounds;
     public float             StartSoundVolume             => m_StartVolumeScale;

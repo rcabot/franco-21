@@ -724,11 +724,21 @@ public partial class HunterBehaviour : MonoBehaviour
 
         float scrape_aggro = m_PlayerSubmarine.Scraping ? m_CreatureAggroSettings.TerrainScrapeAggro : 0f;
 
+        float range_aggro = 0f;
+        if (m_CurrentStateSettings.MinRangeAggro > 0f && m_CurrentStateSettings.MinRangeAggroProximity > 0f)
+        {
+            float sqr_distance_to_player = (m_PlayerSubmarine.transform.position - transform.position).sqrMagnitude;
+            if (sqr_distance_to_player <= (m_CurrentStateSettings.MinRangeAggroProximity * m_CurrentStateSettings.MinRangeAggroProximity))
+            {
+                range_aggro = m_CurrentStateSettings.MinRangeAggro;
+            }
+        }
+
 #if UNITY_EDITOR
         //LogHunterMessage($"[Hunter] Threat Tick. Decay: {passive_decay : #.##} | Lights: {light_aggro : #.##} | Speed: {speed_aggro : #.##} | Height: {height_aggro: #.##} | Tractor Beam: {tractor_aggro : #.##} | Scrape Aggro: {scrape_aggro : #.##}");
 #endif
 
-        PlayerAggro += (passive_decay + light_aggro + height_aggro + speed_aggro + tractor_aggro + scrape_aggro) * delta_time;
+        PlayerAggro += (passive_decay + light_aggro + height_aggro + speed_aggro + tractor_aggro + scrape_aggro + range_aggro) * delta_time;
     }
 
     public void OnPlayerPickup(PlayerState player_state)
