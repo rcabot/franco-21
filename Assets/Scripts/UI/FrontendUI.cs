@@ -18,9 +18,17 @@ public class FrontendUI : MonoBehaviour
         QuitAction.action.performed += OnQuit;
     }
 
+    private void OnDestroy()
+    {
+        NextSceneAction.action.performed -= OnNextScenePressed;
+        QuitAction.action.performed -= OnQuit;
+    }
+
     private void OnQuit(InputAction.CallbackContext obj)
     {
+#if !UNITY_EDITOR
         Application.Quit();
+#endif
     }
 
     private void OnNextScenePressed(InputAction.CallbackContext obj)

@@ -48,7 +48,9 @@ public class ObjectiveScreensActivator : MonoBehaviour
 
     private void OnQuitPressed(InputAction.CallbackContext obj)
     {
+#if !UNITY_EDITOR
         //Return to the frontend
         SceneManager.LoadScene(0);
+#endif
     }
 }
