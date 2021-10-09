@@ -358,13 +358,19 @@ public class SubmarineController : MonoBehaviour
     private void OnGearShiftDownPressed(InputAction.CallbackContext obj)
     {
         if (m_PowerOn && LightsOn)
-            SetCurrentGear((MovementGear)Mathf.Clamp((int)currentGear - 1, 0, num_gears - 1));
+        {
+            int gear = ((int)currentGear - 1 + num_gears) % num_gears;
+            SetCurrentGear((MovementGear)gear);
+        }
     }
 
     private void OnGearShiftUpPressed(InputAction.CallbackContext obj)
     {
         if (m_PowerOn && LightsOn)
-            SetCurrentGear((MovementGear)Mathf.Clamp((int)currentGear + 1, 0, num_gears - 1));
+        {
+            int gear = ((int)currentGear + 1) % num_gears;
+            SetCurrentGear((MovementGear)gear);
+        }
     }
 
     #endregion
