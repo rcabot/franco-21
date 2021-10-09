@@ -25,12 +25,16 @@ public class LightActivator : MonoBehaviour
             l.enabled = toggle;
         }
 
+        SetupEmissiveMaterials(toggle);
+        OnLightsToggled?.Invoke(toggle);
+    }
+
+    private void SetupEmissiveMaterials(bool on)
+    {
         foreach (var pulseMaterial in pulsePropMaterials)
         {
-            pulseMaterial.SetFloat(emissive_pulse_id, toggle ? 1f : 0f);
+            pulseMaterial.SetFloat(emissive_pulse_id, on ? 1f : 0f);
         }
-
-        OnLightsToggled?.Invoke(toggle);
     }
 
     private void OnLightTogglePressed(InputAction.CallbackContext obj)
@@ -50,6 +54,8 @@ public class LightActivator : MonoBehaviour
         {
             l.enabled = m_LightsEnabled;
         }
+
+        SetupEmissiveMaterials(m_LightsEnabled);
 
         m_ButtonAction.action.performed += OnLightTogglePressed;
     }
