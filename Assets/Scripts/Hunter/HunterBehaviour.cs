@@ -578,27 +578,25 @@ public partial class HunterBehaviour : MonoBehaviour
                 //Trigger an attack
                 m_Animator.SetTrigger(c_AttackTriggerID);
             }
-            else
+
+            m_Path.Clear();
+            //Pathfind if we can't see the player. Go straight for them if we can see them or if pathing fails
+            if (Physics.Linecast(player_position, position, OctreePathfinder.Instance.ImpassableLayers))
             {
-                m_Path.Clear();
-                //Pathfind if we can't see the player. Go straight for them if we can see them or if pathing fails
-                if (Physics.Linecast(player_position, position, OctreePathfinder.Instance.ImpassableLayers))
+                if (OctreePathfinder.Instance?.SmoothPath(position, player_position, m_Path, c_PathSmoothingSubvisions) ?? false)
                 {
-                    if (OctreePathfinder.Instance?.SmoothPath(position, player_position, m_Path, c_PathSmoothingSubvisions) ?? false)
-                    {
-                        LogHunterMessage("[Hunter] Cannot See Player. Following Path");
-                    }
-                    else
-                    {
-                        LogHunterMessage("[Hunter] Cannot see Player. Failed to Find Path. Falling back to going straight for them");
-                        m_Path.Add(player_position);
-                    }
+                    LogHunterMessage("[Hunter] Cannot See Player. Following Path");
                 }
-                //There's nothing but air between us and the player. Go straight for them
                 else
                 {
+                    LogHunterMessage("[Hunter] Cannot see Player. Failed to Find Path. Falling back to going straight for them");
                     m_Path.Add(player_position);
                 }
+            }
+            //There's nothing but air between us and the player. Go straight for them
+            else
+            {
+                m_Path.Add(player_position);
             }
         }
     }

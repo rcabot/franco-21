@@ -352,7 +352,7 @@ public class @SubmarineControlMappings : IInputActionCollection, IDisposable
                     ""name"": """",
                     ""id"": ""639d2a0b-d193-4b10-8e54-9075b7c54a52"",
                     ""path"": ""<Gamepad>/rightTrigger"",
-                    ""interactions"": ""Press"",
+                    ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Tractor"",
