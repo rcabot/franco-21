@@ -56,7 +56,7 @@ public class SubmarineController : MonoBehaviour
     private bool hasCollidedThisFrame = false;
     private bool scraping = false;
 
-    private bool intro_fall = true;
+    private int intro_fall = 2;
     public enum MovementGear
     {
         STOP,
@@ -133,7 +133,7 @@ public class SubmarineController : MonoBehaviour
         gearShiftUpAction.action.performed += OnGearShiftUpPressed;
         gearShiftDownAction.action.performed += OnGearShiftDownPressed;
 
-        intro_fall = true;
+        intro_fall = 2;
         lights.Locked = true;
     }
 
@@ -170,10 +170,23 @@ public class SubmarineController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if( intro_fall )
+        if( intro_fall == 2 )
         {
             currentSpeed = new Vector3(0.0f, -2.0f, 0.0f);
         }
+        else if (intro_fall == 1)
+        {
+            currentSpeed += new Vector3(0.0f, 0.5f * Time.fixedDeltaTime, 0.0f);
+            if( currentSpeed.y >= -0.1f)
+            {
+                currentSpeed = new Vector3(0.0f, 0.0f, 0.0f);
+                lights.Locked = false;
+                lights.ToggleLights(true);
+                currentSpeed = Vector3.zero;
+                intro_fall = 0;
+            }
+        }
+
         UpdateMovement();
         UpdateSonar();
         hasCollidedThisFrame = false;
@@ -336,14 +349,11 @@ public class SubmarineController : MonoBehaviour
 
     private void OnIntroCollisionEnter(Collider other)
     {
-        if (intro_fall)
+        if (intro_fall == 2)
         {
             if (other as TerrainCollider)
             {
-                intro_fall = false;
-                lights.Locked = false;
-                lights.ToggleLights(true);
-                currentSpeed = Vector3.zero;
+                intro_fall = 1;
                 return;
             }
         }
