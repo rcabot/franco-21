@@ -343,6 +343,7 @@ public class SubmarineController : MonoBehaviour
                 intro_fall = false;
                 lights.Locked = false;
                 lights.ToggleLights(true);
+                currentSpeed = Vector3.zero;
                 return;
             }
         }
