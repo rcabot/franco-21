@@ -50,7 +50,7 @@ public class FrontendUI : MonoBehaviour
         if (fade_dir == FadeDirection.Out)
         {
             m_ContinueText?.SetText("Loading...");
-            SceneManager.LoadSceneAsync(NextScene);
+            SceneManager.LoadScene(NextScene);
             NextSceneAction.action.performed -= OnNextScenePressed;
         }
     }

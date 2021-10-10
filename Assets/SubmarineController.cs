@@ -330,9 +330,20 @@ public class SubmarineController : MonoBehaviour
     {
         if( IsIntroSubmarine )
         {
-            SceneManager.LoadSceneAsync(2);
+            FullscreenFade.OnFadeCompleted += OnFullscreenFadeCompleted;
+            FullscreenFade.FadeOut();
         }
     }
+
+    private void OnFullscreenFadeCompleted(FadeDirection direction)
+    {
+        if (IsIntroSubmarine && direction == FadeDirection.Out)
+        {
+            FullscreenFade.OnFadeCompleted -= OnFullscreenFadeCompleted;
+            SceneManager.LoadScene(2);
+        }
+    }
+
     private void OnLightsToggled(bool toggle)
     {
         if (PowerOn && toggle)
