@@ -117,6 +117,9 @@ public class SubmarineController : MonoBehaviour
         cabinAmbience = transform.Find("ship_ambience").GetComponent<AudioSource>();
         shipAlarmAudioSource = transform.Find("ship_alarm").GetComponent<AudioSource>();
         shipAudioSource = this.RequireComponent<AudioSource>();
+
+        var introCollisionBox = transform.Find("intro_finish_trigger").GetComponent<intro_collision_event_handler>();
+        introCollisionBox.EventCollidedWithGround += OnIntroCollisionEnter;
     }
 
     void Start()
@@ -331,15 +334,22 @@ public class SubmarineController : MonoBehaviour
         }
     }
 
+    private void OnIntroCollisionEnter(Collider other)
+    {
+        if (intro_fall)
+        {
+            if (other as TerrainCollider)
+            {
+                intro_fall = false;
+                lights.Locked = false;
+                lights.ToggleLights(true);
+                return;
+            }
+        }
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
-        if( intro_fall )
-        {
-            intro_fall = false;
-            lights.Locked = false;
-            lights.ToggleLights(true);
-            return;
-        }
         scraping = true;
         if (hasCollidedThisFrame == false)
         {
