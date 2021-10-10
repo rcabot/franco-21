@@ -433,6 +433,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1503284159, guid: 888949c7802fc11408294d95a17a8714, type: 3}
+      propertyPath: m_Text
+      value: TRACTOR BEAM
+      objectReference: {fileID: 0}
     - target: {fileID: 1655524037, guid: 888949c7802fc11408294d95a17a8714, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -592,6 +596,10 @@ PrefabInstance:
     - target: {fileID: 2054418541, guid: 888949c7802fc11408294d95a17a8714, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2054418542, guid: 888949c7802fc11408294d95a17a8714, type: 3}
+      propertyPath: m_Text
+      value: ENGINE ON/OFF
       objectReference: {fileID: 0}
     - target: {fileID: 8757668969869810158, guid: 888949c7802fc11408294d95a17a8714, type: 3}
       propertyPath: m_IsActive

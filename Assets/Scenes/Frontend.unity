@@ -1556,6 +1556,10 @@ PrefabInstance:
       value: Press Space/Start to Begin
       objectReference: {fileID: 0}
     - target: {fileID: 1919420521554287061, guid: ea5df1560bc955143ba18413590891ef, type: 3}
+      propertyPath: m_FontData.m_Font
+      value: 
+      objectReference: {fileID: 12800000, guid: b5eec611bb1813641bc6db0016665380, type: 3}
+    - target: {fileID: 1919420521554287061, guid: ea5df1560bc955143ba18413590891ef, type: 3}
       propertyPath: m_FontData.m_Alignment
       value: 7
       objectReference: {fileID: 0}
