@@ -263,7 +263,40 @@ public class @SubmarineControlMappings : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""f33a44c1-0f58-4434-b441-30059366898e"",
-                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""path"": ""<Gamepad>/rightShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""GearUp"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""93992ca7-0e2b-454e-bd91-ba803975f423"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""GearUp"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""49153967-3a79-42ea-bff3-8f4b0dd6df51"",
+                    ""path"": ""<Keyboard>/leftShift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""GearUp"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1a856620-ceb2-438b-95bf-41ffa79706c0"",
+                    ""path"": ""<Gamepad>/buttonNorth"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -274,7 +307,7 @@ public class @SubmarineControlMappings : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""994e1158-f6d6-4c57-bf26-81dbf89af5ad"",
-                    ""path"": ""<Keyboard>/ctrl"",
+                    ""path"": ""<Keyboard>/q"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -285,6 +318,17 @@ public class @SubmarineControlMappings : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""ea135d1b-3655-48cd-88a7-8d36ab45df0a"",
+                    ""path"": ""<Gamepad>/leftShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""GearDown"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7d5b2719-7998-4618-94ec-65b1006db05e"",
                     ""path"": ""<Gamepad>/buttonEast"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -309,6 +353,17 @@ public class @SubmarineControlMappings : IInputActionCollection, IDisposable
                     ""id"": ""639d2a0b-d193-4b10-8e54-9075b7c54a52"",
                     ""path"": ""<Gamepad>/rightTrigger"",
                     ""interactions"": ""Press"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Tractor"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ee15cda2-0e87-4e32-bb7c-7b6e83679a7a"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Tractor"",
