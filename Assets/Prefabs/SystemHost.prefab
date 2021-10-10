@@ -252,12 +252,12 @@ MonoBehaviour:
     Mode: 0
   m_VictoryVO:
     SoundBank: {fileID: 0}
-    SingleClip: {fileID: 0}
+    SingleClip: {fileID: 8300000, guid: 88777042562f00843860367510443b91, type: 3}
     Priority: 0
     Mode: 0
   m_ObjectiveCompleteVO:
     SoundBank: {fileID: 0}
-    SingleClip: {fileID: 8300000, guid: ef5af72f924bdec46834456cd1777455, type: 3}
+    SingleClip: {fileID: 0}
     Priority: 0
     Mode: 0
   m_EVAIntroVO:
