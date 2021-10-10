@@ -8,8 +8,9 @@ public class briefing_background_face : MonoBehaviour
     private Camera m_camera;
     private Color m_startColor;
     public Color m_targetColor;
-    
-    public float m_transitionTime = 1.0f;
+
+    public float m_delayUntilTransitionTime = 90.0f;
+    public float m_transitionTime = 30.0f;
     private float m_timeAccrued = 0.0f;
 
     // Start is called before the first frame update
@@ -25,7 +26,7 @@ public class briefing_background_face : MonoBehaviour
     {
         m_timeAccrued += Time.deltaTime;
 
-        float fadeProgress = m_timeAccrued / m_transitionTime;
+        float fadeProgress = Mathf.Clamp(m_delayUntilTransitionTime - m_timeAccrued, 0.0f, 1.0f) / m_transitionTime;
 
         m_camera.backgroundColor = m_startColor + ((m_targetColor - m_startColor) * fadeProgress);
     }
