@@ -81,6 +81,14 @@ public class @SubmarineControlMappings : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Help"",
+                    ""type"": ""Button"",
+                    ""id"": ""00ed644f-5d08-4335-84f8-a19fafbd08ef"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -413,6 +421,28 @@ public class @SubmarineControlMappings : IInputActionCollection, IDisposable
                     ""action"": ""Quit"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9a40a743-8102-42ff-9e0f-7786e32a58e5"",
+                    ""path"": ""<Gamepad>/select"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Help"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""cc926386-b0c6-4b33-be31-722c8afa19f8"",
+                    ""path"": ""<Keyboard>/f1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Help"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -429,6 +459,7 @@ public class @SubmarineControlMappings : IInputActionCollection, IDisposable
         m_Base_Tractor = m_Base.FindAction("Tractor", throwIfNotFound: true);
         m_Base_Quit = m_Base.FindAction("Quit", throwIfNotFound: true);
         m_Base_GameStart = m_Base.FindAction("GameStart", throwIfNotFound: true);
+        m_Base_Help = m_Base.FindAction("Help", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -486,6 +517,7 @@ public class @SubmarineControlMappings : IInputActionCollection, IDisposable
     private readonly InputAction m_Base_Tractor;
     private readonly InputAction m_Base_Quit;
     private readonly InputAction m_Base_GameStart;
+    private readonly InputAction m_Base_Help;
     public struct BaseActions
     {
         private @SubmarineControlMappings m_Wrapper;
@@ -498,6 +530,7 @@ public class @SubmarineControlMappings : IInputActionCollection, IDisposable
         public InputAction @Tractor => m_Wrapper.m_Base_Tractor;
         public InputAction @Quit => m_Wrapper.m_Base_Quit;
         public InputAction @GameStart => m_Wrapper.m_Base_GameStart;
+        public InputAction @Help => m_Wrapper.m_Base_Help;
         public InputActionMap Get() { return m_Wrapper.m_Base; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -531,6 +564,9 @@ public class @SubmarineControlMappings : IInputActionCollection, IDisposable
                 @GameStart.started -= m_Wrapper.m_BaseActionsCallbackInterface.OnGameStart;
                 @GameStart.performed -= m_Wrapper.m_BaseActionsCallbackInterface.OnGameStart;
                 @GameStart.canceled -= m_Wrapper.m_BaseActionsCallbackInterface.OnGameStart;
+                @Help.started -= m_Wrapper.m_BaseActionsCallbackInterface.OnHelp;
+                @Help.performed -= m_Wrapper.m_BaseActionsCallbackInterface.OnHelp;
+                @Help.canceled -= m_Wrapper.m_BaseActionsCallbackInterface.OnHelp;
             }
             m_Wrapper.m_BaseActionsCallbackInterface = instance;
             if (instance != null)
@@ -559,6 +595,9 @@ public class @SubmarineControlMappings : IInputActionCollection, IDisposable
                 @GameStart.started += instance.OnGameStart;
                 @GameStart.performed += instance.OnGameStart;
                 @GameStart.canceled += instance.OnGameStart;
+                @Help.started += instance.OnHelp;
+                @Help.performed += instance.OnHelp;
+                @Help.canceled += instance.OnHelp;
             }
         }
     }
@@ -573,5 +612,6 @@ public class @SubmarineControlMappings : IInputActionCollection, IDisposable
         void OnTractor(InputAction.CallbackContext context);
         void OnQuit(InputAction.CallbackContext context);
         void OnGameStart(InputAction.CallbackContext context);
+        void OnHelp(InputAction.CallbackContext context);
     }
 }

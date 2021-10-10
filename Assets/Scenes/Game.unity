@@ -2228,7 +2228,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Active: 0
   Overlay: {fileID: 1783337874}
-  viewControlsAction: {fileID: -5791987808830191675, guid: ce01ce83fb360f84584616367885a8cb, type: 3}
+  viewControlsAction: {fileID: -8345323038420336388, guid: ce01ce83fb360f84584616367885a8cb, type: 3}
 --- !u!222 &1934933663
 CanvasRenderer:
   m_ObjectHideFlags: 0
