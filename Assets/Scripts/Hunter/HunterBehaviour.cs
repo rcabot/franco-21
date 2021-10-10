@@ -601,6 +601,8 @@ public partial class HunterBehaviour : MonoBehaviour
 
     private IEnumerator Retreat(HunterState state)
     {
+        m_Animator.ResetTrigger(c_AttackTriggerID);
+
         //Wait for the attack animation to finish
         while (AttackEnabled)
         {
