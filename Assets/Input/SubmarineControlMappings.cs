@@ -318,7 +318,7 @@ public class @SubmarineControlMappings : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""beed35f2-79cc-4c12-80d6-78a290a6017b"",
-                    ""path"": ""<Keyboard>/space"",
+                    ""path"": ""<Keyboard>/anyKey"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
