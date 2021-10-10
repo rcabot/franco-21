@@ -2228,6 +2228,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Active: 0
   Overlay: {fileID: 1783337874}
+  viewControlsAction: {fileID: -5791987808830191675, guid: ce01ce83fb360f84584616367885a8cb, type: 3}
 --- !u!222 &1934933663
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2692,7 +2693,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -9.01, y: -26.49}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 225.3, y: 148.32}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1001 &443835276099027814
