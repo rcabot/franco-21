@@ -34,19 +34,18 @@ public class ThreatIndicator : MonoBehaviour
         AlertLevel = Mathf.FloorToInt(normAlertLevel * (indicatorCellCount - 1));
         if (prevAlertLevel != AlertLevel)
         {
-            Color indicatorColor = new Color(0, 0, 0);
-            if (normAlertLevel < 0.3f)
+            Color indicatorColor = Color.black;
+            if (normAlertLevel >= 1.0f)
             {
-                indicatorColor.g = 1.0f;
+                indicatorColor = Color.red;
             }
-            else if (normAlertLevel < 0.6f)
+            else if (normAlertLevel >= 0.6f)
             {
-                indicatorColor.g = 1.0f;
-                indicatorColor.r = 1.0f;
+                indicatorColor = Color.yellow;
             }
             else
             {
-                indicatorColor.r = 1.0f;
+                indicatorColor = Color.green;
             }
 
             foreach (Image indicator in m_Indicators)
