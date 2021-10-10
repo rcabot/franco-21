@@ -162,7 +162,6 @@ public class SubmarineController : MonoBehaviour
                 scrapingSound.Play();
             }
             scrapingSound.volume = currentSpeed.magnitude / maxAudioSpeed;
-            WorldShakeManager;
         }
         else if( scraping == false && scrapingSound.isPlaying)
         {
