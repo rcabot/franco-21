@@ -107,10 +107,13 @@ public class FullscreenFade : MonoBehaviour
     {
         if (Instance)
         {
-            Instance.m_CurrentFadeDirection = FadeDirection.Out;
-            Color c = Instance.m_Image.color;
-            c.a = 0f;
-            Instance.m_Image.color = c;
+            if (Instance.m_CurrentFadeDirection != FadeDirection.Out)
+            {
+                Instance.m_CurrentFadeDirection = FadeDirection.Out;
+                Color c = Instance.m_Image.color;
+                c.a = 0f;
+                Instance.m_Image.color = c;
+            }
         }
         else
         {
@@ -122,10 +125,13 @@ public class FullscreenFade : MonoBehaviour
     {
         if (Instance)
         {
-            Instance.m_CurrentFadeDirection = FadeDirection.In;
-            Color c = Instance.m_Image.color;
-            c.a = 1f;
-            Instance.m_Image.color = c;
+            if (Instance.m_CurrentFadeDirection != FadeDirection.In)
+            {
+                Instance.m_CurrentFadeDirection = FadeDirection.In;
+                Color c = Instance.m_Image.color;
+                c.a = 1f;
+                Instance.m_Image.color = c;
+            }
         }
         else
         {
