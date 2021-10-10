@@ -337,17 +337,6 @@
                 },
                 {
                     "name": "",
-                    "id": "7b88bbac-98ea-4ab8-b4ea-0f3c8467fc51",
-                    "path": "<Mouse>/press",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "GameStart",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "bb442475-c00e-4537-9ba4-af71229ee19b",
                     "path": "<Keyboard>/escape",
                     "interactions": "",

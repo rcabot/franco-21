@@ -32,6 +32,9 @@ public class HunterStateSettings
     [SerializeField, Tooltip("Speed of acceleration the creature has in this state")]
     private float                                  m_Acceleration = 10f;
 
+    [SerializeField, Tooltip("Speed of rotation the creature has in this state")]
+    private float                                  m_TurnSpeed = 40f;
+
     [SerializeField, Tooltip("Minimum distance to the player for passive aggro to apply")]
     private float                                  m_MinRangeAggroProximity = 0f;
 
@@ -59,6 +62,7 @@ public class HunterStateSettings
     public RangeFloat        PlayerDistanceRange          => m_PlayerDistanceRange;
     public RangeFloat        PlayerHeightOffset           => m_PlayerHeightOffset;
     public float             Acceleration                 => m_Acceleration;
+    public float             TurnSpeed                    => m_TurnSpeed;
     public float             MinRangeAggroProximity       => m_MinRangeAggroProximity;
     public float             MinRangeAggro                => m_MinRangeAggro;
 

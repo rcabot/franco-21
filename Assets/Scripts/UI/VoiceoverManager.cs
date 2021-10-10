@@ -35,6 +35,7 @@ public class VoiceoverManager : MonoBehaviour
     private float                  m_MonsterNearCooldownRemaining = 0f;
     private bool                   m_MonsterDetected = false;
     private bool                   m_MonsterWasNear = false;
+    private int                    m_IntroCounter = 0;
 
     [SerializeField, Header("Audio Sources"), Tooltip("Audio source for the handler")]
     private AudioSource            m_HandlerAudioSource = default;
@@ -45,7 +46,7 @@ public class VoiceoverManager : MonoBehaviour
     [SerializeField, Header("Handler Voice Over"), Tooltip("Handler VO Sounds played for the intro")]
     private VOSoundBank            m_IntroVO = default;
 
-    [SerializeField, Range(0f, 100f), Tooltip("Delay (seconds) on game start before the into VO will play")]
+    [SerializeField, Range(0f, 100f), Tooltip("Delay (seconds) on game start before the intro VO will play")]
     private float                  m_IntroDelay = 0f;
 
     [SerializeField, Tooltip("Handler VO played when the game is over")]
@@ -57,7 +58,13 @@ public class VoiceoverManager : MonoBehaviour
     [SerializeField, Tooltip("Handler VO played when the victory portal opens")]
     private VOSoundBank            m_ObjectiveCompleteVO = default;
 
-    [SerializeField, Header("EVA Voice Over"), Tooltip("EVA Sounds played on taking damage. Index is the number of hitpoints remaining")]
+    [SerializeField, Header("EVA Voice Over"), Tooltip("EVA VO Sounds played for the intro")]
+    private VOSoundBank            m_EVAIntroVO = default;
+
+    [SerializeField, Range(0f, 100f), Tooltip("Delay (seconds) on game start before the EVA intro VO will play")]
+    private float                  m_EVAIntroDelay = 0f;
+
+    [SerializeField, Tooltip("EVA Sounds played on taking damage. Index is the number of hitpoints remaining")]
     private List<VOSoundBank>      m_DamageVO = new List<VOSoundBank>();
 
     [SerializeField, Tooltip("EVA Audio bank played when the creature comes out from backstage")]
@@ -118,14 +125,24 @@ public class VoiceoverManager : MonoBehaviour
         }
     }
 
+    private IEnumerator CoPlayBankDelayed(VOSoundBank bank, AudioSource audio_source, float delay_seconds)
+    {
+        if (delay_seconds > 0f)
+            yield return new WaitForSeconds(delay_seconds);
+
+        yield return StartCoroutine(CoPlayBank(bank, audio_source));
+    }
+
     private IEnumerator CoPlayIntro()
     {
-        if (m_IntroDelay > 0f)
-            yield return new WaitForSeconds(m_IntroDelay);
+        Coroutine eva_audio = StartCoroutine(CoPlayBankDelayed(m_EVAIntroVO, m_EVAAudioSource, m_EVAIntroDelay));
+        Coroutine handler_audio = StartCoroutine(CoPlayBankDelayed(m_IntroVO, m_HandlerAudioSource, m_IntroDelay));
 
-        yield return StartCoroutine(CoPlayBank(m_IntroVO, m_HandlerAudioSource));
+        //Wait for all audio to finish
+        yield return eva_audio;
+        yield return handler_audio;
 
-
+        //Notify that intro is finished
         OnIntroVOComplete?.Invoke();
     }
 

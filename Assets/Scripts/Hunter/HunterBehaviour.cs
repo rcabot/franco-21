@@ -29,7 +29,6 @@ public partial class HunterBehaviour : MonoBehaviour
     private List<Vector3>                      m_Path = new List<Vector3>();
 
     [Header("Physics")]
-    [SerializeField] private float             m_TurnSpeed = 4f;
     [SerializeField] private float             m_BiteKnockbackForce = 40f;
     [SerializeField] private AnimationCurve    m_FrictionCurve = new AnimationCurve();
     [SerializeField] private float             m_PathNodeDistance = 1f;
@@ -67,14 +66,19 @@ public partial class HunterBehaviour : MonoBehaviour
         get => m_PlayerAggro;
         set
         {
-            //No Aggro changes in retreat
-            if (m_CurrentState != HunterState.Retreat)
+            //No Aggro changes in retreat or attack
+            switch (m_CurrentState)
             {
-                float clamped_value = Mathf.Clamp(value, 0f, MaxPlayerAggro);
-                if (!Mathf.Approximately(m_PlayerAggro, clamped_value))
-                {
-                    m_PlayerAggro = clamped_value; EvaluateAggroStateChange();
-                }
+                case HunterState.Attacking:
+                case HunterState.Retreat:
+                    break;
+                default:
+                    float clamped_value = Mathf.Clamp(value, 0f, MaxPlayerAggro);
+                    if (!Mathf.Approximately(m_PlayerAggro, clamped_value))
+                    {
+                        m_PlayerAggro = clamped_value; EvaluateAggroStateChange();
+                    }
+                    break;
             }
         }
     }
@@ -215,7 +219,7 @@ public partial class HunterBehaviour : MonoBehaviour
         player.TakeHit();
 
         //Start retreating
-        PlayerAggro = 0f;
+        m_PlayerAggro = 0f;
         EnterState(HunterState.Retreat);
     }
 
@@ -354,7 +358,7 @@ public partial class HunterBehaviour : MonoBehaviour
             target_rotation = Quaternion.LookRotation(target_direction, Vector3.up);
         }
 
-        m_RigidBody.MoveRotation(Quaternion.RotateTowards(m_RigidBody.rotation, target_rotation, m_TurnSpeed * Time.fixedDeltaTime));
+        m_RigidBody.MoveRotation(Quaternion.RotateTowards(m_RigidBody.rotation, target_rotation, m_CurrentStateSettings.TurnSpeed * Time.fixedDeltaTime));
     }
 
     //Woo coroutines

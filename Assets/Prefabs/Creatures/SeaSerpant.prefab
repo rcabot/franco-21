@@ -940,7 +940,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c300bcd325667345a2b4d2173de9722, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_TurnSpeed: 40
   m_BiteKnockbackForce: 30
   m_FrictionCurve:
     serializedVersion: 2
@@ -980,6 +979,7 @@ MonoBehaviour:
       start: -1
       length: 1
     m_Acceleration: 10
+    m_TurnSpeed: 40
     m_MinRangeAggroProximity: 0
     m_MinRangeAggro: 0
     m_StartSounds: {fileID: 0}
@@ -1004,6 +1004,7 @@ MonoBehaviour:
       start: -5
       length: 10
     m_Acceleration: 5
+    m_TurnSpeed: 40
     m_MinRangeAggroProximity: 90
     m_MinRangeAggro: 0.01
     m_StartSounds: {fileID: 0}
@@ -1028,6 +1029,7 @@ MonoBehaviour:
       start: -1
       length: 1
     m_Acceleration: 5
+    m_TurnSpeed: 40
     m_MinRangeAggroProximity: 40
     m_MinRangeAggro: 0.1
     m_StartSounds: {fileID: 0}
@@ -1052,6 +1054,7 @@ MonoBehaviour:
       start: -5
       length: 10
     m_Acceleration: 5
+    m_TurnSpeed: 40
     m_MinRangeAggroProximity: 50
     m_MinRangeAggro: 0.5
     m_StartSounds: {fileID: 0}
@@ -1076,6 +1079,7 @@ MonoBehaviour:
       start: -5
       length: 10
     m_Acceleration: 10
+    m_TurnSpeed: 40
     m_MinRangeAggroProximity: 40
     m_MinRangeAggro: 2
     m_StartSounds: {fileID: 0}
@@ -1100,6 +1104,7 @@ MonoBehaviour:
       start: -4
       length: 8
     m_Acceleration: 20
+    m_TurnSpeed: 250
     m_MinRangeAggroProximity: 0
     m_MinRangeAggro: 0
     m_StartSounds: {fileID: 11400000, guid: 36ffa1f3db1cf6c40b364a471ed1fa28, type: 2}
@@ -1124,6 +1129,7 @@ MonoBehaviour:
       start: -1
       length: 1
     m_Acceleration: 25
+    m_TurnSpeed: 40
     m_MinRangeAggroProximity: 0
     m_MinRangeAggro: 0
     m_StartSounds: {fileID: 0}

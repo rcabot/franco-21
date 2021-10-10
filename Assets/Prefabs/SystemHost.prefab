@@ -240,7 +240,7 @@ MonoBehaviour:
   m_HandlerAudioSource: {fileID: 856056573}
   m_EVAAudioSource: {fileID: 6169943800382460124}
   m_IntroVO:
-    SoundBank: {fileID: 11400000, guid: b41929b1350022d4581bb404a83693a9, type: 2}
+    SoundBank: {fileID: 0}
     SingleClip: {fileID: 0}
     Priority: 100
     Mode: 0
@@ -252,7 +252,7 @@ MonoBehaviour:
     Mode: 0
   m_VictoryVO:
     SoundBank: {fileID: 0}
-    SingleClip: {fileID: 8300000, guid: 8ef8f2981986e1847bb3eec8c7ad0471, type: 3}
+    SingleClip: {fileID: 0}
     Priority: 0
     Mode: 0
   m_ObjectiveCompleteVO:
@@ -260,6 +260,12 @@ MonoBehaviour:
     SingleClip: {fileID: 0}
     Priority: 0
     Mode: 0
+  m_EVAIntroVO:
+    SoundBank: {fileID: 11400000, guid: b41929b1350022d4581bb404a83693a9, type: 2}
+    SingleClip: {fileID: 0}
+    Priority: 0
+    Mode: 0
+  m_EVAIntroDelay: 2
   m_DamageVO:
   - SoundBank: {fileID: 0}
     SingleClip: {fileID: 8300000, guid: 702f9cb66d207dd43bd50c45fb2ae28c, type: 3}
