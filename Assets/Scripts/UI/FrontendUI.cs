@@ -15,6 +15,7 @@ public class FrontendUI : MonoBehaviour
     {
         m_ContinueText = FindObjectOfType<ContinueText>();
         NextSceneAction.action.performed += OnNextScenePressed;
+        FullscreenFade.OnFadeCompleted += OnFadeCompleted;
 
         if (QuitAction)
         {
@@ -41,8 +42,16 @@ public class FrontendUI : MonoBehaviour
 
     private void OnNextScenePressed(InputAction.CallbackContext obj)
     {
-        m_ContinueText?.SetText("Loading...");
-        SceneManager.LoadSceneAsync(NextScene);
-        NextSceneAction.action.performed -= OnNextScenePressed;
+        FullscreenFade.FadeOut();
+    }
+
+    private void OnFadeCompleted(FadeDirection fade_dir)
+    {
+        if (fade_dir == FadeDirection.Out)
+        {
+            m_ContinueText?.SetText("Loading...");
+            SceneManager.LoadSceneAsync(NextScene);
+            NextSceneAction.action.performed -= OnNextScenePressed;
+        }
     }
 }
