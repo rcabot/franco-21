@@ -14,7 +14,6 @@ public partial class HunterBehaviour : MonoBehaviour
     //Members
     private float                              m_PlayerAggro = 0f;
     private float                              m_TimeUntilPeriodEffect = 0f;
-    private AudioSource                        m_AudioSource;
     private Rigidbody                          m_RigidBody;
     private SphereCollider                     m_BiteTriggerSphere;
     private SkinnedMeshRenderer                m_MeshRenderer;
@@ -171,11 +170,14 @@ public partial class HunterBehaviour : MonoBehaviour
     {
         if (m_CurrentStateSettings != null)
         {
-            m_AudioSource.clip = m_CurrentStateSettings.StateStartSounds?.RandomSound;
-            if (m_AudioSource.clip)
+            AudioSource playFrom = m_CurrentStateSettings.StartAudioSource;
+            if (playFrom)
             {
-                m_AudioSource.volume = m_CurrentStateSettings.StartSoundVolume;
-                m_AudioSource.Play();
+                playFrom.clip = m_CurrentStateSettings.StateStartSounds?.RandomSound;
+                if (playFrom.clip)
+                {
+                    playFrom.Play();
+                }
             }
         }
     }
@@ -184,11 +186,14 @@ public partial class HunterBehaviour : MonoBehaviour
     {
         if (m_CurrentStateSettings != null)
         {
-            m_AudioSource.clip = m_CurrentStateSettings.PeriodicSounds?.RandomSound;
-            if (m_AudioSource.clip)
+            AudioSource playFrom = m_CurrentStateSettings.PeriodicAudioSource;
+            if (playFrom)
             {
-                m_AudioSource.volume = m_CurrentStateSettings.PeriodicSoundVolumeScale;
-                m_AudioSource.Play();
+                playFrom.clip = m_CurrentStateSettings.PeriodicSounds?.RandomSound;
+                if (playFrom.clip)
+                {
+                    playFrom.Play();
+                }
             }
         }
     }
@@ -775,7 +780,6 @@ public partial class HunterBehaviour : MonoBehaviour
         {
             Instance = this;
 
-            m_AudioSource = GetComponent<AudioSource>();
             m_RigidBody = GetComponent<Rigidbody>();
             m_BiteTriggerSphere = GetComponentInChildren<SphereCollider>();
             m_MeshRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
