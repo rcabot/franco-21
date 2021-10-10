@@ -51,6 +51,9 @@ public class WildlifeSpawner : MonoBehaviour
         }
         CollectablesRegistry = FindObjectOfType<CollectablesDistributor>();
         Submarine = FindObjectOfType<SubmarineController>().gameObject;
+
+        if (CollectablesRegistry == null)
+            Destroy(this);
     }
 
     private void HashSectorPosition(Vector3 p, out int x, out int z)

@@ -153,6 +153,9 @@ public class VoiceoverManager : MonoBehaviour
 
     private void UpdateMonsterNear()
     {
+        if (m_Creature == null)
+            return;
+
         if (m_MonsterNearCooldownRemaining > 0f)
         {
             m_MonsterNearCooldownRemaining -= Time.deltaTime;
@@ -264,7 +267,8 @@ public class VoiceoverManager : MonoBehaviour
     private void Start()
     {
         m_Creature = HunterBehaviour.Instance;
-        m_Creature.OnStateChanged += OnMonsterChangeState;
+        if (m_Creature)
+            m_Creature.OnStateChanged += OnMonsterChangeState;
 
         PlayerState.Instance.OnItemCollected += OnItemCollected;
         PlayerState.Instance.OnGameStateChanged += OnGameStateChanged;

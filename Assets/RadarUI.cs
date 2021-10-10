@@ -30,7 +30,10 @@ public class RadarUI : MonoBehaviour
 
     void FixedUpdate()
     {
-        var collectables = CollectablesRegistry.SpawnedCollectables.Where(s => s != null).OrderBy(s => Vector3.Distance(s.transform.position, CentreWaypoint.position)).ToArray();
+        if (CollectablesRegistry == null)
+            return;
+
+        Collectable[] collectables = CollectablesRegistry.SpawnedCollectables.Where(s => s != null).OrderBy(s => Vector3.Distance(s.transform.position, CentreWaypoint.position)).ToArray();
         for (int i = 0; i < CollectablesBlips.Length; ++i)
         {
             bool active = i < collectables.Length;

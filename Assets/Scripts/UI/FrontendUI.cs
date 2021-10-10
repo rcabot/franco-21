@@ -15,13 +15,21 @@ public class FrontendUI : MonoBehaviour
     {
         m_ContinueText = FindObjectOfType<ContinueText>();
         NextSceneAction.action.performed += OnNextScenePressed;
-        QuitAction.action.performed += OnQuit;
+
+        if (QuitAction)
+        {
+            QuitAction.action.performed += OnQuit;
+        }
     }
 
     private void OnDestroy()
     {
         NextSceneAction.action.performed -= OnNextScenePressed;
-        QuitAction.action.performed -= OnQuit;
+
+        if (QuitAction)
+        {
+            QuitAction.action.performed -= OnQuit;
+        }
     }
 
     private void OnQuit(InputAction.CallbackContext obj)

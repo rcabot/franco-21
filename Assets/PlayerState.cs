@@ -56,7 +56,8 @@ public class PlayerState : MonoBehaviour
     private void Update()
     {
         State prev_state = GameState;
-        if (m_victoryPortal.TouchedByPlayer)
+
+        if (m_victoryPortal?.TouchedByPlayer ?? false)
         {
             GameState = State.Victory;
         }

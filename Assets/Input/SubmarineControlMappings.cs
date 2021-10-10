@@ -381,7 +381,7 @@ public class @SubmarineControlMappings : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""beed35f2-79cc-4c12-80d6-78a290a6017b"",
-                    ""path"": ""<Keyboard>/anyKey"",
+                    ""path"": ""<Keyboard>/space"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -404,6 +404,17 @@ public class @SubmarineControlMappings : IInputActionCollection, IDisposable
                     ""name"": """",
                     ""id"": ""3d1deb8a-b173-445a-99a5-d8baec838046"",
                     ""path"": ""<Gamepad>/start"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""GameStart"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2899cd95-2b3a-4cef-bc3a-f11c35d97bd5"",
+                    ""path"": ""<Keyboard>/enter"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
