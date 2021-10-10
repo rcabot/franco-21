@@ -99,6 +99,7 @@ public class SubmarineController : MonoBehaviour
 
     public event Action<SubmarineController, MovementGear> OnGearChanged;
     public event Action OnTakeHit;
+    public event Action OnHitAnimFinished;
 
     private void Awake()
     {
@@ -355,6 +356,7 @@ public class SubmarineController : MonoBehaviour
         shipAlarmAudioSource.Stop();
         lights.ToggleLights(false);
         StartCoroutine(WaitForPowerOn());
+        OnHitAnimFinished?.Invoke();
     }
 
     IEnumerator WaitForPowerOn()

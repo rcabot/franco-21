@@ -35,7 +35,6 @@ public class VoiceoverManager : MonoBehaviour
     private float                  m_MonsterNearCooldownRemaining = 0f;
     private bool                   m_MonsterDetected = false;
     private bool                   m_MonsterWasNear = false;
-    private int                    m_IntroCounter = 0;
 
     [SerializeField, Header("Audio Sources"), Tooltip("Audio source for the handler")]
     private AudioSource            m_HandlerAudioSource = default;
@@ -189,7 +188,7 @@ public class VoiceoverManager : MonoBehaviour
         }
     }
 
-    void OnPlayerHit()
+    void OnPlayerHitAnimFinished()
     {
         int health = PlayerState.Instance?.Health ?? 0;
         if (health >= 0 && health < m_DamageVO.Count)
@@ -251,7 +250,7 @@ public class VoiceoverManager : MonoBehaviour
             m_PlayerSub = FindObjectOfType<SubmarineController>();
             if (m_PlayerSub)
             {
-                m_PlayerSub.OnTakeHit += OnPlayerHit;
+                m_PlayerSub.OnHitAnimFinished += OnPlayerHitAnimFinished;
             }
             StartCoroutine(CoPlayIntro());
         }
@@ -279,7 +278,7 @@ public class VoiceoverManager : MonoBehaviour
     private void OnDestroy()
     {
         if (m_PlayerSub)
-            m_PlayerSub.OnTakeHit -= OnPlayerHit;
+            m_PlayerSub.OnHitAnimFinished -= OnPlayerHitAnimFinished;
 
         if (HunterBehaviour.Instance)
             HunterBehaviour.Instance.OnStateChanged -= OnMonsterChangeState;
