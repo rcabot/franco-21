@@ -1091,7 +1091,7 @@ MonoBehaviour:
       start: 5
       length: 3
   m_AttackingSettings:
-    m_ActivationAggro: 100
+    m_ActivationAggro: 90
     m_ActionDistance: 10
     m_PlayerDistanceRange:
       start: 0
