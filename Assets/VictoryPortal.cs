@@ -16,7 +16,7 @@ internal class VictoryPortal : MonoBehaviour
     {
         bool objectiveComplete = (PlayerState.Instance.GameState == PlayerState.State.ObjectiveComplete);
         Collider.enabled = objectiveComplete;
-        Portal.enabled = objectiveComplete;
+        Portal.gameObject.SetActive(objectiveComplete);
     }
 
     private void OnTriggerEnter(Collider other)
