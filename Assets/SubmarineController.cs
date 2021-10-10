@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(Rigidbody), typeof(Animator), typeof(LightActivator))]
 
@@ -30,6 +31,7 @@ public class SubmarineController : MonoBehaviour
     public float lookSmoothTime;
 
     public bool enableGradualRotation = false;
+    public bool IsIntroSubmarine = false;
 
     Rigidbody rigidBody;
     Vector2 targetLookRotation;
@@ -116,6 +118,9 @@ public class SubmarineController : MonoBehaviour
         scrapingSound = transform.Find("ship_scrape").GetComponent<AudioSource>();
         cabinAmbience = transform.Find("ship_ambience").GetComponent<AudioSource>();
         shipAlarmAudioSource = transform.Find("ship_alarm").GetComponent<AudioSource>();
+
+        var vomanager = FindObjectOfType<VoiceoverManager>();
+        vomanager.OnIntroVOComplete += OnIntroVOComplete;
         shipAudioSource = this.RequireComponent<AudioSource>();
 
         var introCollisionBox = transform.Find("intro_finish_trigger").GetComponent<intro_collision_event_handler>();
@@ -133,8 +138,18 @@ public class SubmarineController : MonoBehaviour
         gearShiftUpAction.action.performed += OnGearShiftUpPressed;
         gearShiftDownAction.action.performed += OnGearShiftDownPressed;
 
-        intro_fall = 2;
-        lights.Locked = true;
+        if (IsIntroSubmarine == false)
+        {
+            intro_fall = 2;
+            lights.Locked = true;
+        }
+        else
+        {
+            intro_fall = 0;
+            m_PowerOn = false;
+            lights.Locked = true;
+            currentSpeed = new Vector3(0.0f, -2.0f, 0.0f);
+        }
     }
 
     void Update()
@@ -170,7 +185,7 @@ public class SubmarineController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if( intro_fall == 2 )
+        if( intro_fall == 2 || IsIntroSubmarine)
         {
             currentSpeed = new Vector3(0.0f, -2.0f, 0.0f);
         }
@@ -310,6 +325,13 @@ public class SubmarineController : MonoBehaviour
         Debug.Log("Player Hit");
     }
 
+    private void OnIntroVOComplete()
+    {
+        if( IsIntroSubmarine )
+        {
+            SceneManager.LoadSceneAsync(2);
+        }
+    }
     private void OnLightsToggled(bool toggle)
     {
         if (PowerOn && toggle)
