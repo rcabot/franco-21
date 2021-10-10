@@ -96,7 +96,17 @@ public class WorldShakeManager : MonoBehaviour
     }
 
     //Methods
-    public void Shake(float magnitude, float duration)
+    public static void Shake(float magnitude, float duration)
+    {
+        Instance?.ShakeImpl(magnitude, duration);
+    }
+
+    public static void StopShake()
+    {
+        Instance?.StopShakeImpl();
+    }
+
+    private void ShakeImpl(float magnitude, float duration)
     {
         if (magnitude >= m_ShakeMagnitude)
         {
@@ -110,7 +120,7 @@ public class WorldShakeManager : MonoBehaviour
         }
     }
 
-    public void StopShake()
+    private void StopShakeImpl()
     {
         m_ShakeDuration = m_ShakeMagnitude = 0f;
 

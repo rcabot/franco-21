@@ -162,6 +162,7 @@ public class SubmarineController : MonoBehaviour
                 scrapingSound.Play();
             }
             scrapingSound.volume = currentSpeed.magnitude / maxAudioSpeed;
+            WorldShakeManager;
         }
         else if( scraping == false && scrapingSound.isPlaying)
         {
@@ -308,7 +309,7 @@ public class SubmarineController : MonoBehaviour
     {
         lights.Locked = true;
         m_PowerOn = false;
-        WorldShakeManager.Instance.Shake(1.0f, 1.0f);
+        WorldShakeManager.Shake(1.0f, 1.0f);
         PlayerState player_state = PlayerState.Instance;
         --player_state.Health;
         shipAudioSource.clip = damageBonk;
@@ -394,11 +395,13 @@ public class SubmarineController : MonoBehaviour
             {
                 shipAudioSource.clip = bigBonk;
                 HunterBehaviour.Instance?.OnTerrainBump(true);
+                WorldShakeManager.Shake(0.5f, 0.2f);
             }
             else
             {
                 shipAudioSource.clip = smallBonk;
                 HunterBehaviour.Instance?.OnTerrainBump(false);
+                WorldShakeManager.Shake(0.2f, 0.2f);
             }
 
             var addedVelocity = (collision_intensity * collisionElasticity) * collision.contacts[0].normal;

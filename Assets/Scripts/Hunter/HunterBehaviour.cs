@@ -206,7 +206,7 @@ public partial class HunterBehaviour : MonoBehaviour
     {
         if (duration > 0f && !Mathf.Approximately(magnitude, 0f))
         {
-            WorldShakeManager.Instance?.Shake(magnitude, duration);
+            WorldShakeManager.Shake(magnitude, duration);
         }
     }
 

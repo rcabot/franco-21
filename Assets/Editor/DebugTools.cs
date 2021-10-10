@@ -117,11 +117,11 @@ class DebugTools : EditorWindow
             m_ShakeTestDuration = EditorGUILayout.Slider("Duration (s)", m_ShakeTestDuration, 0f, 10f);
             if (GUILayout.Button("Test Shake"))
             {
-                WorldShakeManager.Instance?.Shake(m_ShakeTestMagnitude, m_ShakeTestDuration);
+                WorldShakeManager.Shake(m_ShakeTestMagnitude, m_ShakeTestDuration);
             }
             if (GUILayout.Button("Stop"))
             {
-                WorldShakeManager.Instance?.StopShake();
+                WorldShakeManager.StopShake();
             }
         }
     }
