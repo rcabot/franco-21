@@ -1096,13 +1096,13 @@ MonoBehaviour:
       length: 3
   m_AttackingSettings:
     m_ActivationAggro: 90
-    m_ActionDistance: 10
+    m_ActionDistance: 5
     m_PlayerDistanceRange:
       start: 0
       length: 0
     m_PlayerHeightOffset:
-      start: -4
-      length: 8
+      start: -0.2
+      length: 0.4
     m_Acceleration: 20
     m_TurnSpeed: 250
     m_MinRangeAggroProximity: 0

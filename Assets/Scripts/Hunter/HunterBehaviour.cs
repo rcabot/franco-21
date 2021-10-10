@@ -303,7 +303,20 @@ public partial class HunterBehaviour : MonoBehaviour
         float sqr_target_distance = target_direction.sqrMagnitude;
 
         //Proceed to the next waypoint
-        if (sqr_target_distance <= m_PathNodeDistance)
+        Vector3 bite_sphere_position = m_BiteTriggerSphere.bounds.center;
+        Vector3 bite_sphere_offset = bite_sphere_position - position;
+        Vector3 player_position = m_PlayerSubmarine.transform.position;
+        Vector3 adjusted_player_position = player_position - bite_sphere_offset;
+        Vector3 to_attack_position = adjusted_player_position - position;
+        float sqr_distance_to_attack_position = to_attack_position.sqrMagnitude;
+        float sqr_player_distance = m_CurrentStateSettings.ActionDistance * m_CurrentStateSettings.ActionDistance;
+        bool is_in_range_of_player = (sqr_distance_to_attack_position < sqr_player_distance);
+
+        if (is_in_range_of_player)
+        {
+            target_direction = target - position;
+        }
+        else if (sqr_target_distance <= m_PathNodeDistance)
         {
             m_Path.PopFront();
             if (!m_Path.Empty())
@@ -322,43 +335,51 @@ public partial class HunterBehaviour : MonoBehaviour
         //Only square root once...
         float target_distance = Mathf.Sqrt(sqr_target_distance);
 
-        if (!Mathf.Approximately(0f, target_distance))
+        if (is_in_range_of_player == false)
         {
-            target_direction /= target_distance; //normalise the direction
-            m_Velocity += m_CurrentStateSettings.Acceleration * target_direction * Time.fixedDeltaTime;
+            if (!Mathf.Approximately(0f, target_distance))
+            {
+                target_direction /= target_distance; //normalise the direction
+                m_Velocity += m_CurrentStateSettings.Acceleration * target_direction * Time.fixedDeltaTime;
+            }
+            else
+            {
+                target_direction = transform.forward;
+            }
+
+            // apply friction
+            float current_speed = m_Velocity.magnitude;
+            Vector3 velocity_direction = Vector3.zero;
+
+            if (current_speed > 0f)
+            {
+                velocity_direction = m_Velocity / current_speed;
+
+                float friction = m_FrictionCurve.Evaluate(current_speed);
+                m_Velocity = velocity_direction * Mathf.Max(0f, current_speed - friction);
+            }
+
+            //Apply move
+            m_RigidBody.MovePosition(position + m_Velocity);
+
+            //Rotate towards velocity
+            Quaternion target_rotation = m_RigidBody.rotation;
+            if (current_speed > 0.1f)
+            {
+                target_rotation = Quaternion.LookRotation(velocity_direction, Vector3.up);
+            }
+            else if (!m_Path.Empty())
+            {
+                target_rotation = Quaternion.LookRotation(target_direction, Vector3.up);
+            }
+            m_RigidBody.MoveRotation(Quaternion.RotateTowards(m_RigidBody.rotation, target_rotation, m_CurrentStateSettings.TurnSpeed * Time.fixedDeltaTime));
         }
         else
         {
-            target_direction = transform.forward;
-        }
-
-        // apply friction
-        float current_speed = m_Velocity.magnitude;
-        Vector3 velocity_direction = Vector3.zero;
-
-        if (current_speed > 0f)
-        {
-            velocity_direction = m_Velocity / current_speed;
-
-            float friction = m_FrictionCurve.Evaluate(current_speed);
-            m_Velocity = velocity_direction * Mathf.Max(0f, current_speed - friction);
-        }
-
-        //Apply move
-        m_RigidBody.MovePosition(position + m_Velocity);
-
-        //Rotate towards velocity
-        Quaternion target_rotation = m_RigidBody.rotation;
-        if (current_speed > 0.1f)
-        {
-            target_rotation = Quaternion.LookRotation(velocity_direction, Vector3.up);
-        }
-        else if (!m_Path.Empty())
-        {
+            Quaternion target_rotation = m_RigidBody.rotation;
             target_rotation = Quaternion.LookRotation(target_direction, Vector3.up);
+            m_RigidBody.MoveRotation(Quaternion.RotateTowards(m_RigidBody.rotation, target_rotation, m_CurrentStateSettings.TurnSpeed * Time.fixedDeltaTime));
         }
-
-        m_RigidBody.MoveRotation(Quaternion.RotateTowards(m_RigidBody.rotation, target_rotation, m_CurrentStateSettings.TurnSpeed * Time.fixedDeltaTime));
     }
 
     //Woo coroutines
@@ -573,7 +594,7 @@ public partial class HunterBehaviour : MonoBehaviour
             LogHunterMessage($"[Hunter] Distance to attack: {Mathf.Sqrt(sqr_distance_to_attack_position):#.##}");
 #endif
 
-            if (sqr_distance_to_attack_position < sqr_player_distance && m_CurrentStateSettings.PlayerHeightOffset.InRange(Mathf.Abs(to_attack_position.y)))
+            if (sqr_distance_to_attack_position <= sqr_player_distance)
             {
                 //Trigger an attack
                 m_Animator.SetTrigger(c_AttackTriggerID);
