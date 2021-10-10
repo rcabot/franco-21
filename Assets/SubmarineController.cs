@@ -54,6 +54,7 @@ public class SubmarineController : MonoBehaviour
     private bool hasCollidedThisFrame = false;
     private bool scraping = false;
 
+    private bool intro_fall = true;
     public enum MovementGear
     {
         STOP,
@@ -125,6 +126,9 @@ public class SubmarineController : MonoBehaviour
 
         gearShiftUpAction.action.performed += OnGearShiftUpPressed;
         gearShiftDownAction.action.performed += OnGearShiftDownPressed;
+
+        intro_fall = true;
+        lights.Locked = true;
     }
 
     void Update()
@@ -142,13 +146,13 @@ public class SubmarineController : MonoBehaviour
             scrapingSound.Stop();
         }
 
-        if( LightsOn && engineSound.isPlaying == false)
+        if( (LightsOn && m_PowerOn) && engineSound.isPlaying == false)
         {
             engineSound.Play();
             cabinAmbience.Play();
             sonarPingSound.Play();
         }
-        else if( LightsOn == false )
+        else if( LightsOn == false || m_PowerOn == false)
         {
             engineSound.Stop();
             sonarPingSound.Stop();
@@ -160,6 +164,10 @@ public class SubmarineController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if( intro_fall )
+        {
+            currentSpeed = new Vector3(0.0f, -2.0f, 0.0f);
+        }
         UpdateMovement();
         UpdateSonar();
         hasCollidedThisFrame = false;
@@ -317,6 +325,13 @@ public class SubmarineController : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        if( intro_fall )
+        {
+            intro_fall = false;
+            lights.Locked = false;
+            lights.ToggleLights(true);
+            return;
+        }
         scraping = true;
         if (hasCollidedThisFrame == false)
         {

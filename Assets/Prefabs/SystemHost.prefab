@@ -262,36 +262,36 @@ MonoBehaviour:
     Mode: 0
   m_DamageVO:
   - SoundBank: {fileID: 0}
-    SingleClip: {fileID: 8300000, guid: dc31c0c60ab98a24396977154b40d06d, type: 3}
+    SingleClip: {fileID: 8300000, guid: 702f9cb66d207dd43bd50c45fb2ae28c, type: 3}
     Priority: 50
     Mode: 0
   - SoundBank: {fileID: 0}
-    SingleClip: {fileID: 8300000, guid: df823ae0f7b116e43a2943b617043f06, type: 3}
+    SingleClip: {fileID: 8300000, guid: ad355619c8918f34bad45f7427f0de6e, type: 3}
     Priority: 50
     Mode: 0
   - SoundBank: {fileID: 0}
-    SingleClip: {fileID: 8300000, guid: 08da0458c73133548b90d980b6ce5a88, type: 3}
+    SingleClip: {fileID: 8300000, guid: 4f92d22638866c041ad7f8d4ec1f68d6, type: 3}
     Priority: 50
     Mode: 0
   m_MonsterDetectedVO:
     SoundBank: {fileID: 0}
-    SingleClip: {fileID: 8300000, guid: 34a8c485f2f032f4e9f2581985f70db6, type: 3}
+    SingleClip: {fileID: 8300000, guid: fe47e8bac33613148813dba0948be81b, type: 3}
     Priority: 45
     Mode: 0
   m_MonsterNearVO:
     SoundBank: {fileID: 0}
-    SingleClip: {fileID: 8300000, guid: ab087c3282114f1498faa44068e330eb, type: 3}
+    SingleClip: {fileID: 0}
     Priority: 200
     Mode: 0
   m_MonsterNearRange: 10
   m_MonsterNearCooldown: 5
   m_PickupsVO:
   - SoundBank: {fileID: 0}
-    SingleClip: {fileID: 8300000, guid: 1038809b5bb32814998e49a51b0f4535, type: 3}
+    SingleClip: {fileID: 8300000, guid: 29e3cf1e917afbd49bdbb55946f559a3, type: 3}
     Priority: 500
     Mode: 0
   - SoundBank: {fileID: 0}
-    SingleClip: {fileID: 8300000, guid: cc143160b89888e41a7535e020a00a9f, type: 3}
+    SingleClip: {fileID: 8300000, guid: 39b76d568492e664d9fed4ade1b21e2b, type: 3}
     Priority: 500
     Mode: 0
 --- !u!1 &5470941763397547550

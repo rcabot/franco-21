@@ -9759,7 +9759,8 @@ MonoBehaviour:
   CentreWaypoint: {fileID: 7626430705779275366}
   RotationWaypoint: {fileID: 215297124}
   Background: {fileID: 2087247758848671120}
-  Altimeter: {fileID: 2249390944526658649}
+  Altimeter: {fileID: 0}
+  TrashProgress: {fileID: 2249390944526658649}
   RadarDistance: 100
 --- !u!1 &6579096735789916392
 GameObject:

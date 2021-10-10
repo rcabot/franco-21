@@ -7,7 +7,7 @@ using UnityEngine.InputSystem;
 public class LightActivator : MonoBehaviour
 {
     private readonly int emissive_pulse_id = Shader.PropertyToID("use_emissive_pulse");
-    private bool m_LightsEnabled = true;
+    private bool m_LightsEnabled = false;
     public InputActionReference m_ButtonAction;
     public Light[] m_Lights;
     public Material[] pulsePropMaterials;

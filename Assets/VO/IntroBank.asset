@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e0ad07c92affd341943f86bc684b531, type: 3}
   m_Name: IntroBank
   m_EditorClassIdentifier: 
-  m_AudioClips: []
+  m_AudioClips:
+  - {fileID: 8300000, guid: a05be74ba7cbd4c4c9985fc02d608958, type: 3}

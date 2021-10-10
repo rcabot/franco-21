@@ -14,8 +14,10 @@ public class RadarUI : MonoBehaviour
     public RectTransform Background;
     private CollectablesDistributor CollectablesRegistry;
     private VictoryPortal VictoryPortal;
+    private PlayerState m_playerState;
 
     public Image Altimeter = null;
+    public Image TrashProgress = null;
 
     public float RadarDistance = 100f;
 
@@ -23,6 +25,7 @@ public class RadarUI : MonoBehaviour
     {
         CollectablesRegistry = FindObjectOfType<CollectablesDistributor>();
         VictoryPortal = FindObjectOfType<VictoryPortal>();
+        m_playerState = FindObjectOfType<PlayerState>();
     }
 
     void FixedUpdate()
@@ -49,8 +52,17 @@ public class RadarUI : MonoBehaviour
         Background.eulerAngles = radarRotation;
 
         // Altimeter
-        float normAltitude = Mathf.Clamp(transform.position.y / TerrainManager.Instance.Definition.MaxHeight, 0.0f, 1.0f);
-        Altimeter.fillAmount = normAltitude;
+        if (Altimeter)
+        {
+            float normAltitude = Mathf.Clamp(transform.position.y / TerrainManager.Instance.Definition.MaxHeight, 0.0f, 1.0f);
+            Altimeter.fillAmount = normAltitude;
+        }
+
+        if(m_playerState && TrashProgress)
+        {
+            float normTrashProgress = 1.0f - ((float)m_playerState.CalculateLeftToCollect / (float)m_playerState.TotalCollectables);
+            TrashProgress.fillAmount = normTrashProgress;
+        }
     }
 
     private void PositionBlip(GameObject blip, GameObject inWorldObject)
