@@ -1278,7 +1278,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1919420521554287060, guid: ea5df1560bc955143ba18413590891ef, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 125
+      value: 320
       objectReference: {fileID: 0}
     - target: {fileID: 1919420521554287060, guid: ea5df1560bc955143ba18413590891ef, type: 3}
       propertyPath: m_SizeDelta.y
@@ -1314,7 +1314,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1919420521554287060, guid: ea5df1560bc955143ba18413590891ef, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: -60
       objectReference: {fileID: 0}
     - target: {fileID: 1919420521554287060, guid: ea5df1560bc955143ba18413590891ef, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -1331,6 +1331,10 @@ PrefabInstance:
     - target: {fileID: 1919420521554287060, guid: ea5df1560bc955143ba18413590891ef, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1919420521554287061, guid: ea5df1560bc955143ba18413590891ef, type: 3}
+      propertyPath: m_FontData.m_Alignment
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ea5df1560bc955143ba18413590891ef, type: 3}
