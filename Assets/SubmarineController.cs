@@ -400,7 +400,7 @@ public class SubmarineController : MonoBehaviour
             {
                 shipAudioSource.clip = smallBonk;
                 HunterBehaviour.Instance?.OnTerrainBump(false);
-                WorldShakeManager.Shake(0.2f, 0.2f);
+                WorldShakeManager.Shake(0.1f, 0.05f);
             }
 
             var addedVelocity = (collision_intensity * collisionElasticity) * collision.contacts[0].normal;
