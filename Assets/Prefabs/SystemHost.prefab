@@ -257,7 +257,7 @@ MonoBehaviour:
     Mode: 0
   m_ObjectiveCompleteVO:
     SoundBank: {fileID: 0}
-    SingleClip: {fileID: 0}
+    SingleClip: {fileID: 8300000, guid: ef5af72f924bdec46834456cd1777455, type: 3}
     Priority: 0
     Mode: 0
   m_EVAIntroVO:
