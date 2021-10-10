@@ -1443,7 +1443,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_targetColor: {r: 0, g: 0, b: 0, a: 0}
-  m_transitionTime: 120
+  m_delayUntilTransitionTime: 80
+  m_transitionTime: 40
 --- !u!4 &1754393553 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 215297124, guid: d58106fc1154cc249ba0bfe455a7d056, type: 3}

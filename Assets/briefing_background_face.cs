@@ -26,7 +26,7 @@ public class briefing_background_face : MonoBehaviour
     {
         m_timeAccrued += Time.deltaTime;
 
-        float fadeProgress = Mathf.Clamp(m_timeAccrued - m_delayUntilTransitionTime, 0.0f, 1.0f) / m_transitionTime;
+        float fadeProgress = Mathf.Clamp(m_timeAccrued - m_delayUntilTransitionTime, 0.0f, m_transitionTime) / m_transitionTime;
 
         m_camera.backgroundColor = m_startColor + ((m_targetColor - m_startColor) * fadeProgress);
     }
