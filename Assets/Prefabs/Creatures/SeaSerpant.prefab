@@ -1091,7 +1091,7 @@ MonoBehaviour:
       start: 5
       length: 3
   m_AttackingSettings:
-    m_ActivationAggro: 90
+    m_ActivationAggro: 100
     m_ActionDistance: 10
     m_PlayerDistanceRange:
       start: 0
@@ -1149,7 +1149,7 @@ MonoBehaviour:
     m_PickupCollectedAggro: 0
     m_LightOnCreatureAggro: 5
     m_TerrainBumpAggro: 5
-    m_BigTerrainBumpAggro: 10
+    m_BigTerrainBumpAggro: 20
     m_TerrainScrapeAggro: 0.2
     m_SeaCreatureBumpAggro: 100
     m_HeightAggroStart: 100

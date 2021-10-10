@@ -28,7 +28,7 @@ public class ThreatIndicator : MonoBehaviour
     void UpdateAlertLevel()
     {
         int prevAlertLevel = AlertLevel;
-        float normAlertLevel = HunterBehaviour.Instance.PlayerAggro / HunterBehaviour.Instance.MaxPlayerAggro;
+        float normAlertLevel = HunterBehaviour.Instance.PlayerAggro / HunterBehaviour.Instance.AggroToAttack;
         int indicatorCellCount = GetIndicatorCellCount();
 
         AlertLevel = Mathf.Min(IndicatorTextures.Length - 1, Mathf.FloorToInt(normAlertLevel * (indicatorCellCount-1)));

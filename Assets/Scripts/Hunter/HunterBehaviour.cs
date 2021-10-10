@@ -80,7 +80,7 @@ public partial class HunterBehaviour : MonoBehaviour
     }
 
     public int MaxPlayerAggro => m_MaxPlayerAggro;
-
+    public int AggroToAttack => m_AttackingSettings.ActivationAggro;
     public HunterStateSettings CurrentStateSettings => m_CurrentStateSettings;
     public HunterState         CurrentState => m_CurrentState;
 

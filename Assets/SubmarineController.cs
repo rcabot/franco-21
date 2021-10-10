@@ -41,6 +41,8 @@ public class SubmarineController : MonoBehaviour
     AudioSource underwaterSound;
     AudioSource scrapingSound;
 
+    private AudioSource shipAlarmAudioSource;
+
     public AudioClip powerDownAudio;
     public AudioClip powerUpAudio;
 
@@ -113,6 +115,7 @@ public class SubmarineController : MonoBehaviour
         underwaterSound = transform.Find("water_ambience").GetComponent<AudioSource>();
         scrapingSound = transform.Find("ship_scrape").GetComponent<AudioSource>();
         cabinAmbience = transform.Find("ship_ambience").GetComponent<AudioSource>();
+        shipAlarmAudioSource = transform.Find("ship_alarm").GetComponent<AudioSource>();
         shipAudioSource = this.RequireComponent<AudioSource>();
     }
 
@@ -305,8 +308,13 @@ public class SubmarineController : MonoBehaviour
         }
     }
 
+    private void OnHitAnimationStarted()
+    {
+        shipAlarmAudioSource.Play();
+    }
     private void OnHitAnimationCompleted()
     {
+        shipAlarmAudioSource.Stop();
         lights.ToggleLights(false);
         StartCoroutine(WaitForPowerOn());
     }
