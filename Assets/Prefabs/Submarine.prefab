@@ -8710,7 +8710,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: d14685dae34e0244490267555f73ef06, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.75
+  m_Volume: 0.5
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -10676,6 +10676,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   lookSmoothTime: 0.15
   enableGradualRotation: 0
+  IsIntroSubmarine: 0
   currentSpeed: {x: 0, y: 0, z: 0}
   powerDownAudio: {fileID: 8300000, guid: f4015445a39c82c47908bfc887ef90b3, type: 3}
   powerUpAudio: {fileID: 8300000, guid: dd498dc47e161ef4185785f4d68467cf, type: 3}
