@@ -398,6 +398,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -12.9
       objectReference: {fileID: 0}
+    - target: {fileID: 1697846664, guid: 888949c7802fc11408294d95a17a8714, type: 3}
+      propertyPath: m_FontData.m_Font
+      value: 
+      objectReference: {fileID: 12800000, guid: b5eec611bb1813641bc6db0016665380, type: 3}
     - target: {fileID: 1709405511, guid: 888949c7802fc11408294d95a17a8714, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
@@ -530,6 +534,78 @@ PrefabInstance:
       propertyPath: m_Text
       value: ENGINE ON/OFF
       objectReference: {fileID: 0}
+    - target: {fileID: 753270188856544696, guid: 888949c7802fc11408294d95a17a8714, type: 3}
+      propertyPath: m_Text
+      value: 'Press Start to Continue
+
+'
+      objectReference: {fileID: 0}
+    - target: {fileID: 753270188856544696, guid: 888949c7802fc11408294d95a17a8714, type: 3}
+      propertyPath: m_FontData.m_Font
+      value: 
+      objectReference: {fileID: 12800000, guid: b5eec611bb1813641bc6db0016665380, type: 3}
+    - target: {fileID: 753270188856544696, guid: 888949c7802fc11408294d95a17a8714, type: 3}
+      propertyPath: m_FontData.m_Alignment
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 753270188856544697, guid: 888949c7802fc11408294d95a17a8714, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 753270188856544697, guid: 888949c7802fc11408294d95a17a8714, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 753270188856544697, guid: 888949c7802fc11408294d95a17a8714, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 753270188856544697, guid: 888949c7802fc11408294d95a17a8714, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 753270188856544697, guid: 888949c7802fc11408294d95a17a8714, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -5
+      objectReference: {fileID: 0}
+    - target: {fileID: 753270188856544697, guid: 888949c7802fc11408294d95a17a8714, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4309536657436052490, guid: 888949c7802fc11408294d95a17a8714, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5122696634582431838, guid: 888949c7802fc11408294d95a17a8714, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 5122696634582431838, guid: 888949c7802fc11408294d95a17a8714, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5122696634582431838, guid: 888949c7802fc11408294d95a17a8714, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5122696634582431839, guid: 888949c7802fc11408294d95a17a8714, type: 3}
+      propertyPath: m_Text
+      value: 'Press Start to Continue
+
+'
+      objectReference: {fileID: 0}
+    - target: {fileID: 5122696634582431839, guid: 888949c7802fc11408294d95a17a8714, type: 3}
+      propertyPath: m_FontData.m_Font
+      value: 
+      objectReference: {fileID: 12800000, guid: b5eec611bb1813641bc6db0016665380, type: 3}
+    - target: {fileID: 5122696634582431839, guid: 888949c7802fc11408294d95a17a8714, type: 3}
+      propertyPath: m_FontData.m_Alignment
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 8757668969359114924, guid: 888949c7802fc11408294d95a17a8714, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8757668970643781865, guid: 888949c7802fc11408294d95a17a8714, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -577,6 +653,10 @@ PrefabInstance:
     - target: {fileID: 8757668970643781866, guid: 888949c7802fc11408294d95a17a8714, type: 3}
       propertyPath: m_Name
       value: UI and Overlay
+      objectReference: {fileID: 0}
+    - target: {fileID: 9054233525752200101, guid: 888949c7802fc11408294d95a17a8714, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 888949c7802fc11408294d95a17a8714, type: 3}
