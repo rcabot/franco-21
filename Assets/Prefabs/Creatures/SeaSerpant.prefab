@@ -506,7 +506,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5522962263015007576}
-  m_LocalRotation: {x: -1.559556e-11, y: -0.0000000016176006, z: -0.009640721, w: 0.99995357}
+  m_LocalRotation: {x: -1.5595558e-11, y: -0.0000000016176005, z: -0.00964072, w: 0.9999535}
   m_LocalPosition: {x: -1.4931173, y: 0, z: -1.6170816e-12}
   m_LocalScale: {x: 0.99999994, y: 0.99999994, z: 1}
   m_Children:
@@ -1006,7 +1006,7 @@ MonoBehaviour:
     m_Acceleration: 5
     m_TurnSpeed: 40
     m_MinRangeAggroProximity: 90
-    m_MinRangeAggro: 0.01
+    m_MinRangeAggro: 0.5
     m_StartSounds: {fileID: 0}
     m_StartAudioSourceToPlayFrom: {fileID: 0}
     m_StartScreenShakeMagnitude: 0
@@ -1023,15 +1023,15 @@ MonoBehaviour:
     m_ActivationAggro: 20
     m_ActionDistance: 20
     m_PlayerDistanceRange:
-      start: 70
-      length: 80
+      start: 50
+      length: 100
     m_PlayerHeightOffset:
       start: -1
       length: 1
     m_Acceleration: 5
     m_TurnSpeed: 40
-    m_MinRangeAggroProximity: 40
-    m_MinRangeAggro: 0.1
+    m_MinRangeAggroProximity: 60
+    m_MinRangeAggro: 2
     m_StartSounds: {fileID: 0}
     m_StartAudioSourceToPlayFrom: {fileID: 0}
     m_StartScreenShakeMagnitude: 0
@@ -1048,15 +1048,15 @@ MonoBehaviour:
     m_ActivationAggro: 30
     m_ActionDistance: 20
     m_PlayerDistanceRange:
-      start: 40
-      length: 80
+      start: 0
+      length: 120
     m_PlayerHeightOffset:
       start: -5
       length: 10
     m_Acceleration: 5
     m_TurnSpeed: 40
-    m_MinRangeAggroProximity: 50
-    m_MinRangeAggro: 0.5
+    m_MinRangeAggroProximity: 30
+    m_MinRangeAggro: 4
     m_StartSounds: {fileID: 0}
     m_StartAudioSourceToPlayFrom: {fileID: 0}
     m_StartScreenShakeMagnitude: 0
@@ -1073,15 +1073,15 @@ MonoBehaviour:
     m_ActivationAggro: 40
     m_ActionDistance: 20
     m_PlayerDistanceRange:
-      start: 30
-      length: 70
+      start: 0
+      length: 100
     m_PlayerHeightOffset:
       start: -5
       length: 10
     m_Acceleration: 10
     m_TurnSpeed: 40
-    m_MinRangeAggroProximity: 40
-    m_MinRangeAggro: 2
+    m_MinRangeAggroProximity: 30
+    m_MinRangeAggro: 10
     m_StartSounds: {fileID: 0}
     m_StartAudioSourceToPlayFrom: {fileID: 0}
     m_StartScreenShakeMagnitude: 0
@@ -1151,12 +1151,12 @@ MonoBehaviour:
     m_MidSpeedAggro: 0.8
     m_HighSpeedAggro: 1.3
     m_MinMovementForSpeedAgro: 0.5
-    m_TractorBeamAggro: 1
-    m_PickupCollectedAggro: 0
+    m_TractorBeamAggro: 1.5
+    m_PickupCollectedAggro: 0.2
     m_LightOnCreatureAggro: 5
     m_TerrainBumpAggro: 5
     m_BigTerrainBumpAggro: 20
-    m_TerrainScrapeAggro: 0.2
+    m_TerrainScrapeAggro: 3
     m_SeaCreatureBumpAggro: 100
     m_HeightAggroStart: 100
     m_HeightAggroPerMeter: 1
@@ -1339,7 +1339,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7988961686759101060}
-  m_LocalRotation: {x: 0.7642005, y: 0.12234979, z: 0.004407137, w: 0.6332525}
+  m_LocalRotation: {x: 0.76420057, y: 0.1223498, z: 0.004407137, w: 0.6332525}
   m_LocalPosition: {x: -1.5871869, y: 0.000000048446655, z: -0.00000019378662}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -1399,7 +1399,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8700414077440392896}
-  m_LocalRotation: {x: -0.00000000370464, y: -0.00000006824951, z: -0.054201044, w: 0.9985301}
+  m_LocalRotation: {x: -0.0000000037046397, y: -0.000000068249506, z: -0.05420104, w: 0.99853003}
   m_LocalPosition: {x: -1.2386717, y: 0.00000019378662, z: -0.00000014582919}
   m_LocalScale: {x: 0.99999994, y: 0.99999994, z: 1}
   m_Children:
